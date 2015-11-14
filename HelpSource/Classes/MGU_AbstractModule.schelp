@@ -1,0 +1,145 @@
+TITLE:: MGU_AbstractModule
+summary:: essai
+categories:: Undocumented classes
+related:: Classes/SomeRelatedClass, Reference/SomeRelatedStuff, etc.
+
+DESCRIPTION::
+(put long description here)
+
+
+CLASSMETHODS::
+
+METHOD:: new
+(describe method here)
+
+ARGUMENT:: out
+(describe argument here)
+
+ARGUMENT:: server
+(describe argument here)
+
+ARGUMENT:: numChannels
+(describe argument here)
+
+ARGUMENT:: name
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+METHOD:: container
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: registerToMinuit
+(describe method here)
+
+ARGUMENT:: minuitInterface
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: killSynths
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: recallState
+(describe method here)
+
+ARGUMENT:: fileName
+(describe argument here)
+
+ARGUMENT:: openDialog
+(describe argument here)
+
+ARGUMENT:: interp
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: out
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: saveState
+(describe method here)
+
+ARGUMENT:: fileName
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: nodeArray
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: inbus
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: connectToModule
+(describe method here)
+
+ARGUMENT:: module
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: availablePresets
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: nodeGroup
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: sendSynth
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: server
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: numChannels
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: name
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: def
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: thisInstance
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: init
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::

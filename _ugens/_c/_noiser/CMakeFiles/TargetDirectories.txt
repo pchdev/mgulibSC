@@ -1,0 +1,1 @@
+/Users/pchdev/Dropbox/_dev/_collider/mgulibSC/_ugens/_c/_noiser/CMakeFiles/Noiser.dir
