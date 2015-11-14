@@ -1,2 +1,13 @@
 # mgulibSC
-*set of tools for superCollider*
+_set of tools for superCollider_
+
+## Installation
+
+- simply place the folder in your SC Extension Folder :
+_~/Library/Application Support/SuperCollider/Extensions/ on OSX_
+_~/.local/share/SuperCollider/Extensions/ on Linux_
+
+locations can also be obtained by running:
+_Platform.userExtensionDir_ and
+_Platform.systemExtensionDir_
+
