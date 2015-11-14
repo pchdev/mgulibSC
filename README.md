@@ -1,2 +1,2 @@
 # mgulibSC
-set of tools for superCollider
+*set of tools for superCollider*
