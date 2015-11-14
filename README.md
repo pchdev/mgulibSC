@@ -17,8 +17,19 @@ _Platform.systemExtensionDir_
 * OSC audio module architecture
 	* Minuit implementation 
 	* GUI generation from module parameters
+	* convenient connexions between modules
+	
+* built-in modules
+	* filters, eq, compressors
+	* convolution
+	* soundFile players
+	* granulators
+	* pitch & frequency shifters
+	* chorus, delay, reverb (zita_rev1)
+	
 * various audio plug-ins (C & Faust implementations)
 * interface for Ableton Push
+* various utility/convenience classes
 
 
 
