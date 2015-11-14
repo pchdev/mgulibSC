@@ -14,4 +14,11 @@ _Platform.userExtensionDir_ and
 _Platform.systemExtensionDir_
 
 ## Features
+* OSC audio module architecture
+	* Minuit implementation 
+	* GUI generation from module parameters
+* various audio plug-ins (C & Faust implementations)
+* interface for Ableton Push
+
+
 
