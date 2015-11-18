@@ -66,7 +66,7 @@ MGU_AbstractModule {
 
 		// if path doesn't exist, create path
 
-		if(PathName("~Documents/SuperCollider/MGU-modules/module-presets" +/+
+		if(PathName("~/Documents/SuperCollider/MGU-modules/module-presets" +/+
 			this.class.asCompileString).isFolder == false, {
 			("mkdir -p ~/Documents/SuperCollider/MGU-modules/module-presets" +/+
 				this.class.asCompileString).unixCmd;});
@@ -80,7 +80,7 @@ MGU_AbstractModule {
 		stateFile.close;
 	}
 
-	recallState { |fileName, openDialog = false, interp = false|
+	recallState { |fileName, interp = false, length = 2000, curve = \lin|
 
 		// + preset interpolation to implement
 

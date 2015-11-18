@@ -1,11 +1,10 @@
 TITLE:: MGU_AbstractModule
-summary:: essai
-categories:: Undocumented classes
-related:: Classes/SomeRelatedClass, Reference/SomeRelatedStuff, etc.
+summary:: Abstract class for all MGU modules
+categories:: Libraries/MGU
+related:: MGU_AbstractBufferModule, MGU_AbstractFilterModule, MGU_AbstractWavetableModule
 
 DESCRIPTION::
-(put long description here)
-
+Main class for MGU module implementation. All MGU_module classes should inherit from this.
 
 CLASSMETHODS::
 
@@ -29,55 +28,42 @@ returns:: (describe returnvalue here)
 
 INSTANCEMETHODS::
 
-METHOD:: container
-(describe method here)
+private:: nodeArray, nodeGroup, thisInstance, init
 
-returns:: (describe returnvalue here)
+METHOD:: container
+See MGU_container for more information. Users should not have to directly access/modify this attribute.
 
 METHOD:: registerToMinuit
-(describe method here)
+registers the module for Minuit communication
 
 ARGUMENT:: minuitInterface
-(describe argument here)
-
-returns:: (describe returnvalue here)
+a MGU_minuitInterface
 
 METHOD:: killSynths
-(describe method here)
+kill all synths related to this module on the server
 
-returns:: (describe returnvalue here)
-
-METHOD:: recallState
-(describe method here)
-
-ARGUMENT:: fileName
-(describe argument here)
-
-ARGUMENT:: openDialog
-(describe argument here)
-
-ARGUMENT:: interp
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: out
+METHOD:: availablePresets
 (describe method here)
 
 returns:: (describe returnvalue here)
 
 METHOD:: saveState
-(describe method here)
+saves the module state
 
 ARGUMENT:: fileName
 (describe argument here)
 
-returns:: (describe returnvalue here)
+METHOD:: recallState
+recalls a previously saved state
 
-METHOD:: nodeArray
-(describe method here)
+ARGUMENT:: fileName
+String containing preset name
 
-returns:: (describe returnvalue here)
+ARGUMENT:: interp
+parameter interpolation from current state (not yet implemented)
+
+METHOD:: out
+Module's outbut bus, users should not have to use & access this: see the .connectToModule method instead
 
 METHOD:: inbus
 (describe method here)
@@ -92,16 +78,6 @@ ARGUMENT:: module
 
 returns:: (describe returnvalue here)
 
-METHOD:: availablePresets
-(describe method here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: nodeGroup
-(describe method here)
-
-returns:: (describe returnvalue here)
-
 METHOD:: sendSynth
 (describe method here)
 
@@ -113,9 +89,9 @@ METHOD:: server
 returns:: (describe returnvalue here)
 
 METHOD:: numChannels
-(describe method here)
+gets/sets the number of channels for the module's output. Note: only works for modules supporting Multichannel expansion (see MGU module reference)
 
-returns:: (describe returnvalue here)
+returns:: anInteger
 
 METHOD:: name
 (describe method here)
@@ -123,16 +99,6 @@ METHOD:: name
 returns:: (describe returnvalue here)
 
 METHOD:: def
-(describe method here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: thisInstance
-(describe method here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: init
 (describe method here)
 
 returns:: (describe returnvalue here)
