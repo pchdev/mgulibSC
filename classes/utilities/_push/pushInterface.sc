@@ -1,4 +1,4 @@
-MGU_pushInterface_2 {
+MGU_pushInterface {
 
 	var <target_osc_ip, <target_osc_port, <target_midi_device;
 	var parser;
