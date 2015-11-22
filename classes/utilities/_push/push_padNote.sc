@@ -8,14 +8,14 @@ MGU_push_padNote {
 
 	init {
 
-		MIDIFunc.noteOn({|vel, note|
+		MIDIFunc.noteOn({|vel, index|
 			["push", name, "noteOn", vel].postln;
-			this.valueNote(note, vel);
+			parser.parseNoteOn(index, vel);
 		}, midi_index);
 
-		MIDIFunc.noteOff({|vel, note|
+		MIDIFunc.noteOff({|vel, index|
 			["push", name, "noteOff"].postln;
-			this.valueNote(note, 0);
+			parser.parseNoteOff(index, 0);
 		}, midi_index);
 
 	}

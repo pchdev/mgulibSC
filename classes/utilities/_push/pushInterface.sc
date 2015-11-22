@@ -2,7 +2,7 @@ MGU_pushInterface {
 
 	var <target_osc_ip, <target_osc_port, <target_midi_device;
 	var parser;
-	var reaper_responder, push_responder;
+	var reaper_responder, <push_responder;
 	var reaper_device, push_device;
 
 	*new { |target_osc_ip, target_osc_port = 8888|

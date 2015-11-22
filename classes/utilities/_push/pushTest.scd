@@ -1,5 +1,7 @@
 p = MGU_pushInterface("127.0.0.1", 8888);
 
+p.push_responder.setColor(11, 15, 15, 15);
+
 MIDIIn.connectAll;
 MIDIClient.init;
 MIDIClient.sources;

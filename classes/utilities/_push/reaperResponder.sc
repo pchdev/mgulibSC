@@ -62,11 +62,11 @@ MGU_reaperResponder {
 	}
 
 	stop {
-		reaper.sendMsg("stop", 1);
+		reaper.sendMsg("/stop", 1);
 	}
 
 	record { |value|
-		reaper.sendMsg("record", value);
+		reaper.sendMsg("/record", value);
 	}
 
 }
