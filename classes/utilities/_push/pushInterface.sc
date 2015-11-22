@@ -11,6 +11,8 @@ MGU_pushInterface {
 
 	init {
 
+		var init_array;
+
 		target_osc_ip ?? { target_osc_ip = "127.0.0.1" };
 
 		"initializing push-reaper interface".postln;
@@ -33,6 +35,8 @@ MGU_pushInterface {
 
 		push_device = MGU_pushDevice(parser);
 		reaper_device = MGU_reaperDevice(parser);
+
+		parser.init_push();
 
 		// device only sends push information to the parser.
 		// parser interprets and passes the information to the responder (reaper)

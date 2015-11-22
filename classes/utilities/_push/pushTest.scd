@@ -1,6 +1,7 @@
 p = MGU_pushInterface("127.0.0.1", 8888);
 
-p.push_responder.setColor(11, 15, 15, 15);
+p.push_responder.setPadColor(100, 10, 5, 2);
+p.push_responder.setControl(27, 6);
 
 MIDIIn.connectAll;
 MIDIClient.init;
@@ -29,8 +30,7 @@ n.sendMsg("/vkb_midi/1/note/62", 0);
 
 n.sendMsg("/vkb_midi/1/pitch", 6400);
 
-o = OSCFunc.trace(true);
-
+o = OSCFunc.trace(false);
 o = OSCFunc({|msg| msg.postln; f.value(msg[1])}, "/track/1/vu/L", nil, 8889);
 
 
