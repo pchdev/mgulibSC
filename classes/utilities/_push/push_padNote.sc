@@ -1,4 +1,4 @@
-MGU_padNote {
+MGU_push_padNote {
 
 	var name, midi_index, parser;
 

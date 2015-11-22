@@ -7,7 +7,8 @@ MGU_push_controlButton {
 	}
 
 	init {
-
+		MIDIFunc.cc({|value, num|
+			parser.parseControl(name, value)}, midi_index);
 	}
 
 }

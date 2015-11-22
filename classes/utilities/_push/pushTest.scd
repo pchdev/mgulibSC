@@ -1,4 +1,4 @@
-p = MGU_pushInterface(nil, nil);
+p = MGU_pushInterface("127.0.0.1", 8888);
 
 MIDIIn.connectAll;
 MIDIClient.init;

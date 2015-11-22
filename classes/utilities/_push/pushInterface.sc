@@ -5,20 +5,26 @@ MGU_pushInterface {
 	var reaper_responder, push_responder;
 	var reaper_device, push_device;
 
-	*new { |target_osc_ip = "127.0.0.1", target_osc_port = 8888|
-		^this.newCopyArgs(target_osc_ip, target_osc_port).init
+	*new { |target_osc_ip, target_osc_port = 8888|
+		^this.newCopyArgs(target_osc_ip, target_osc_port).init;
 	}
 
 	init {
 
-		MIDIIn.connectAll;
+		target_osc_ip ?? { target_osc_ip = "127.0.0.1" };
+
+		"initializing push-reaper interface".postln;
+
 		MIDIClient.init;
 		target_midi_device = MIDIClient.sources;
+		target_midi_device.postln;
 		target_midi_device.size.do({|i|
 			if((target_midi_device[i].device == "Ableton Push")
 				&& (target_midi_device[i].name == "User Port"), {
 				target_midi_device = i })
 		});
+
+		MIDIIn.connectAll;
 
 		reaper_responder = MGU_reaperResponder(target_osc_ip, target_osc_port);
 		push_responder = MGU_pushResponder(target_midi_device);
