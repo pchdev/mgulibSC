@@ -9,7 +9,10 @@ MGU_push_toggle {
 	init {
 
 		MIDIFunc.cc({|value, num|
-			parser.parseToggle(midi_index, value)}, midi_index);
+			if(midi_index < 100, {
+				parser.parseUpToggle(midi_index - 20, value)}, {
+				parser.parseDownToggle(midi_index - 100, value)})}, midi_index
+		);
 
 	}
 }

@@ -2,6 +2,7 @@ MGU_pushResponder {
 
 	var <>target_midi_device_number;
 	var target_midi_device;
+	var uptoggles, downtoggles;
 
 	*new { |target_midi_device|
 		^this.newCopyArgs(target_midi_device).init
@@ -9,6 +10,7 @@ MGU_pushResponder {
 
 	init {
 		target_midi_device = MIDIOut(target_midi_device_number);
+		uptoggles = Array.fill(8, {|i| i+20});
 	}
 
 	// BUTTON CONTROL functions
@@ -34,6 +36,15 @@ MGU_pushResponder {
 		7 -> 127 - Lit
 		*/
 
+	}
+
+	setControl_uptoggles { |value|
+		switch(value,
+			\off, {
+				uptoggles.size.do({|i|
+					this.setControl(uptoggles[i], 0)
+			})}
+		)
 	}
 
 	// LCD functions

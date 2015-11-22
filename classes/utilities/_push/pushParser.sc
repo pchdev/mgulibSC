@@ -4,6 +4,7 @@ MGU_pushParser {
 	var currentchannel_array;
 
 	var reaper_isplaying, reaper_isrecording;
+	var select_mode;
 
 	*new { |reaper_responder, push_responder|
 		^this.newCopyArgs(reaper_responder, push_responder).init
@@ -39,11 +40,11 @@ MGU_pushParser {
 		// 1 3 2 for blue/green
 
 		toggle_up_array.size.do({|i|
-			push_responder.setControl(toggle_up_array[i], 19)
+			push_responder.setControl(toggle_up_array[i], 0)
 		});
 
 		toggle_down_array.size.do({|i|
-			push_responder.setPadColor(toggle_down_array[i], 0, 5, 2);
+			push_responder.setPadColor(toggle_down_array[i], 0, 0, 0);
 		});
 
 		push_responder.lcd_clearAll;
@@ -55,15 +56,17 @@ MGU_pushParser {
 	}
 
 	initUser {
-		var choice_array = [63, 64, 71, 72];
+
+		var choice_array = [20, 21, 22, 23];
+		select_mode = \init;
 		push_responder.lcd_clearAll;
 		push_responder.lcd_display("PCHDEV", 1);
-		push_responder.lcd_display("reaper / collider", 2);
+		push_responder.lcd_display("reaper  /  collider", 2);
 		push_responder.lcd_display("1 = reaper, 2 = collider", 3);
-		push_responder.lcd_display("3 = mix, 4 = game", 4);
+		push_responder.lcd_display("3 = max, 4 = game", 4);
 
 		choice_array.size.do({|i|
-			push_responder.setPadColor(choice_array[i], 15, 0, 0);
+			push_responder.setControl(choice_array[i], 2);
 		});
 	}
 
@@ -88,6 +91,28 @@ MGU_pushParser {
 	}
 
 	// TOGGLES
+
+	parseUpToggle { |index, value|
+		switch(select_mode,
+			\init, {
+				switch(index,
+					0, { select_mode = \reaper; this.parseInitReaper },
+					1, { select_mode = \collider; this.parseInitCollider },
+					2, { select_mode = \max; this.parseInitMix },
+					3, { select_mode = \game; this.parseInitGame })},
+			\reaper, { },
+			\collider, { },
+			\mix, { },
+			\game, { }
+		);
+	}
+
+	parseInitReaper {
+		push_responder.setControl_uptoggles(\off);
+		push_responder.setControl(20, 19);
+		push_responder.lcd_clearAll();
+		push_responder.lcd_display(" PCHD: reaper  mode selected", 2);
+	}
 
 	// CC - KNOBS
 

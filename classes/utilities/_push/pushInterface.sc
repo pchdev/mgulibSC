@@ -57,6 +57,20 @@ MGU_pushInterface {
 		----- reaper_responder -> called to transmit values to reaper
 		----- push_parser -> manages all transiting information, calling responder classes when needed
 
+		1/ choose mode (user button)
+		a. reaper daw control
+		b. supercollider modules
+		c. max w/ jamoma
+		d. game
+
+		delete / mute note : if played, not transmitted
+		shift+note = toggles menu : set custom midi note number (special note : change color)
+
+		sustained note : select + note
+		display octave on top right side of LCD
+		multi-instrument mode : divide the pad matrix : 1, 2, 4, 8, 16 (user + duplicate)
+		guitar hero mode (user + low-arrow) + (low-toggle + time-division)
+
 		*/
 
 	}

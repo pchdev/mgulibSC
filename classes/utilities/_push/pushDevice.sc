@@ -46,7 +46,7 @@ MGU_pushDevice {
 		});
 
 		toggle_topRow_array = Array.fill(8, {|i|
-			MGU_push_toggle("topToggle_" ++ (i+1), i+1, parser)
+			MGU_push_toggle("topToggle_" ++ (i+1), i+20, parser)
 		});
 
 		toggle_bottomRow_array = Array.fill(8, {|i|
