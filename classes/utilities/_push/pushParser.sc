@@ -3,7 +3,7 @@ MGU_pushParser {
 	var reaper_responder, push_responder;
 	var currentchannel_array;
 
-	var reaper_isplaying;
+	var reaper_isplaying, reaper_isrecording;
 
 	*new { |reaper_responder, push_responder|
 		^this.newCopyArgs(reaper_responder, push_responder).init
@@ -13,6 +13,8 @@ MGU_pushParser {
 		currentchannel_array = [0];
 		reaper_isplaying = false;
 	}
+
+	// NOTES
 
 	parseNoteOn { |index, velocity|
 
@@ -31,6 +33,10 @@ MGU_pushParser {
 			reaper_responder.send_noteOff(index, currentchannel_array[i])
 		});
 	}
+
+	// TOGGLES
+
+	// CC - KNOBS
 
 	// CONTROLS
 
@@ -57,5 +63,8 @@ MGU_pushParser {
 		}, { // else 127 : do nothing except blink
 			push_responder.setControl(85, 5)});
 	}
+
+	// FEEDBACK FROM REAPER
+
 
 }

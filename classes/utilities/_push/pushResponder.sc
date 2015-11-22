@@ -11,6 +11,8 @@ MGU_pushResponder {
 		target_midi_device = MIDIOut(target_midi_device_number);
 	}
 
+	// BUTTON CONTROL functions
+
 	setPadColor {|target, r = 1, v = 4, b = 1|
 		var preArray = [240, 71, 127, 21, 4, 0, 8, target - 36, 0];
 		var colorArray = [r, 0, v, 0, b, 0, 247];
@@ -33,6 +35,8 @@ MGU_pushResponder {
 		*/
 
 	}
+
+	// LCD functions
 
 	lcd_display { |string, line, divide = 1, slot = 1, align = \center|
 
