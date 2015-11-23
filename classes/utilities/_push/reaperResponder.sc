@@ -35,6 +35,16 @@ MGU_reaperResponder {
 
 	select_track { |trackArray|
 		if(trackArray.class != Array) { trackArray = [trackArray] };
+		trackArray.do({|i|
+			reaper.sendMsg("/track/" ++ trackArray[i] ++ "select", 1)
+		});
+	}
+
+	unselect_track { |trackArray|
+				if(trackArray.class != Array) { trackArray = [trackArray] };
+		trackArray.do({|i|
+			reaper.sendMsg("/track/" ++ trackArray[i] ++ "select", 0)
+		});
 	}
 
 	arm_track { |trackArray|

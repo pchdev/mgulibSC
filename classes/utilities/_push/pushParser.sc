@@ -15,7 +15,7 @@ MGU_pushParser {
 		currentchannel_array = [0];
 		reaper_isplaying = false;
 
-		OSCFunc({|msg, time|
+		OSCFunc({|msg, time| // redirect reaper feedback to parser's matching method
 			this.parse_reaperfeedback(msg[0], msg[1]);
 		}, "/play", nil, 8889)
 	}
@@ -145,9 +145,10 @@ MGU_pushParser {
 	// FEEDBACK FROM REAPER
 
 	parse_reaperfeedback { |address, value|
+		address = address.asSymbol;
 		["from reaper", address, value].postln;
 		switch(address,
-			"/play".asSymbol, { this.parse_reaperfbk_play(value) }
+			"/play", { this.parse_reaperfbk_play(value) }
 		);
 	}
 

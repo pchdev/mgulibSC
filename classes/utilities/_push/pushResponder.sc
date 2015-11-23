@@ -15,7 +15,7 @@ MGU_pushResponder {
 
 	// BUTTON CONTROL functions
 
-	setPadColor {|target, r = 1, v = 4, b = 1|
+	setPadColor {|target, r = 1, v = 4, b = 1| // make array instead
 		var preArray = [240, 71, 127, 21, 4, 0, 8, target - 36, 0];
 		var colorArray = [r, 0, v, 0, b, 0, 247];
 		var intArray = Int8Array.newFrom(preArray ++ colorArray);
@@ -25,7 +25,7 @@ MGU_pushResponder {
 	setControl { |target, value|
 		target_midi_device.control(0, target, value);
 
-		/*
+		/* -> MAKE DICTIONARY
 		0 - Off
 		1 - Dim
 		2 - Dim Blink
