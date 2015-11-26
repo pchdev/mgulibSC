@@ -29,9 +29,9 @@ PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 
 		def = SynthDef(name, {
 			var bufrd;
-			bufrd = PlayBuf.ar(numChannels, buffer.bufnum, 1, 1, startPos.smbKr,
-				loop.smbKr, 2);
-			Out.ar(out, bufrd * gain.smbKr);
+			bufrd = PlayBuf.ar(numChannels, buffer.bufnum, 1, 1, startPos.kr,
+				loop.kr, 2);
+			Out.ar(out, bufrd * gain.kr);
 		}).add;
 
 	}

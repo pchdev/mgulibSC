@@ -23,9 +23,9 @@ MGU_onsetDetector : MGU_AbstractModule {
 
 		def = SynthDef(name, {
 			var chain, onset;
-			chain = FFT(LocalBuf(fftsize.smbKr), In.ar(inbus.smbKr), 0.5, 1, 1);
-			onset = Onsets.kr(chain, thresh.smbKr, odftype.smbKr, relaxtime.smbKr,
-				floor.smbKr, mingap.smbKr, medianspan.smbKr, 1, 0);
+			chain = FFT(LocalBuf(fftsize.kr), In.ar(inbus.kr), 0.5, 1, 1);
+			onset = Onsets.kr(chain, thresh.kr, odftype.kr, relaxtime.kr,
+				floor.kr, mingap.kr, medianspan.kr, 1, 0);
 			SendReply.kr(onset, '/onset', onset, -1);
 			Out.kr(out.index, onset);
 		}).add;

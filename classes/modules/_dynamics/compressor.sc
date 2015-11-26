@@ -15,8 +15,8 @@ MGU_compressor : MGU_AbstractModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.smbKr, numChannels);
-			process = FaustComp.ar(in, attack.smbKr, ratio.smbKr, release.smbKr, threshold.smbKr);
+			in = In.ar(inbus.kr, numChannels);
+			process = FaustComp.ar(in, attack.kr, ratio.kr, release.kr, threshold.kr);
 			Out.ar(out, process)
 		}).add;
 

@@ -11,7 +11,7 @@ MGU_inModule : MGU_AbstractModule {
 		gain = MGU_parameter(container, \gain, Float, [-96, 12], 0, true, \dB, \amp);
 
 		def = SynthDef(name, {
-			var in = SoundIn.ar(inbus.smbKr, gain.smbKr);
+			var in = SoundIn.ar(inbus.kr, gain.kr);
 			Out.ar(out, in);
 		}).add
 

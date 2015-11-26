@@ -22,4 +22,18 @@ w.front;
 
 j.loop.val;
 
+p = PO_sfPlayer(0, s);
+p.readFile();
+p.sendSynth;
+p.gain.val = 0.5;
+
+
+
+
+
+
+
+
+
+
 

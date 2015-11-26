@@ -128,7 +128,7 @@ MGU_parameter {
 
 	}
 
-	enableListening { |netaddr, device|
+	enableListening { |netaddr, device| // accessed by minuit interfaces only
 		listening = true;
 		netaddr_responder ?? { netaddr_responder = netaddr };
 		responder_device ?? { responder_device = device };
@@ -146,15 +146,15 @@ MGU_parameter {
 		^defName.asSymbol
 	}
 
-	smbKr {
+	kr {
 		^defName.asSymbol.kr
 	}
 
-	smbAr {
+	ar {
 		^defName.asSymbol.ar
 	}
 
-	smbTr {
+	tr {
 		^defName.asSymbol.tr
 	}
 

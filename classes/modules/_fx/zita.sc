@@ -25,12 +25,12 @@ PO_zita : MGU_AbstractModule { // faust zita_rev1
 
 		def = SynthDef(name, {
 			var inleft, inright, verb, process;
-			inleft = In.ar(inbus.smbKr);
-			inright = In.ar(inbus.smbKr + 1);
-			verb = FaustZitaRev1.ar(inleft, inright, indel.smbKr, lfx.smbKr,
-				low_rt60.smbKr, mid_rt60.smbKr, hf_damping.smbKr, eq1_freq.smbKr,
-				eq1_lvl.smbKr,
-				eq2_freq.smbKr, eq2_lvl.smbKr, mix.smbKr, lvl.smbKr);
+			inleft = In.ar(inbus.kr);
+			inright = In.ar(inbus.kr + 1);
+			verb = FaustZitaRev1.ar(inleft, inright, indel.kr, lfx.kr,
+				low_rt60.kr, mid_rt60.kr, hf_damping.kr, eq1_freq.kr,
+				eq1_lvl.kr,
+				eq2_freq.kr, eq2_lvl.kr, mix.kr, lvl.kr);
 			Out.ar(out, verb);
 		}).add;
 

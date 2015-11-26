@@ -14,9 +14,9 @@ PO_pShifter : MGU_AbstractModule { // pitch-shifting module (doesn't work with f
 		def = SynthDef(name, {
 			var in, shifter, process;
 			inbus.val.postln;
-			in = In.ar(inbus.smbKr);
-			shifter = PitchShift.ar(in, 0.2, shift.smbKr);
-			process = Mix.ar([in * (1 - mix.smbKr), shifter * mix.smbKr]);
+			in = In.ar(inbus.kr, numChannels);
+			shifter = PitchShift.ar(in, 0.2, shift.kr);
+			process = FaustDrywet.ar(in, shifter, mix.kr);
 			Out.ar(out, process);
 		}).add;
 

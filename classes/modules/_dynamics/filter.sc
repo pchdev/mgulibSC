@@ -21,8 +21,8 @@ PO_moogVCF : MGU_AbstractFilterModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.smbKr, numChannels);
-			process = MoogFF.ar(in, freq.smbKr, gain.smbKr, 0)
+			in = In.ar(inbus.kr, numChannels);
+			process = MoogFF.ar(in, freq.kr, gain.kr, 0)
 		}).add
 	}
 }
@@ -37,8 +37,8 @@ PO_lpf : MGU_AbstractFilterModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.smbKr, numChannels);
-			process = BLowPass.ar(in, freq.smbKr, q.smbKr, gain.smbKr);
+			in = In.ar(inbus.kr, numChannels);
+			process = BLowPass.ar(in, freq.kr, q.kr, gain.kr);
 			Out.ar(out, process);
 		}).add
 	}
@@ -54,8 +54,8 @@ PO_hpf : MGU_AbstractFilterModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.smbKr, numChannels);
-			process = BHiPass.ar(in, freq.smbKr, q.smbKr, gain.smbKr);
+			in = In.ar(inbus.kr, numChannels);
+			process = BHiPass.ar(in, freq.kr, q.kr, gain.kr);
 			Out.ar(out, process);
 		}).add
 	}
@@ -72,8 +72,8 @@ PO_bpf : MGU_AbstractFilterModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.smbKr, numChannels);
-			process = BBandPass.ar(in, freq.smbKr, q.smbKr, gain.smbKr);
+			in = In.ar(inbus.kr, numChannels);
+			process = BBandPass.ar(in, freq.kr, q.kr, gain.kr);
 			Out.ar(out, process);
 		}).add
 	}
@@ -90,8 +90,8 @@ PO_brf : MGU_AbstractFilterModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.smbKr, numChannels);
-			process = BBandStop.ar(in, freq.smbKr, q.smbKr, gain.smbKr);
+			in = In.ar(inbus.kr, numChannels);
+			process = BBandStop.ar(in, freq.kr, q.kr, gain.kr);
 			Out.ar(out, process);
 		}).add
 	}
@@ -110,8 +110,8 @@ PO_lsf : MGU_AbstractFilterModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.smbKr, numChannels);
-			process = BLowShelf.ar.ar(in, freq.smbKr, q.smbKr, gain.smbKr);
+			in = In.ar(inbus.kr, numChannels);
+			process = BLowShelf.ar(in, freq.kr, q.kr, gain.kr);
 			Out.ar(out, process);
 		}).add
 	}
@@ -130,8 +130,8 @@ PO_hsf : MGU_AbstractFilterModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.smbKr, numChannels);
-			process = BHiShelf.ar.ar(in, freq.smbKr, q.smbKr, gain.smbKr);
+			in = In.ar(inbus.kr, numChannels);
+			process = BHiShelf.ar(in, freq.kr, q.kr, gain.kr);
 			Out.ar(out, process);
 		}).add
 	}
@@ -148,8 +148,8 @@ PO_apf : MGU_AbstractFilterModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.smbKr, numChannels);
-			process = BAllPass.ar(in, freq.smbKr, q.smbKr, gain.smbKr);
+			in = In.ar(inbus.kr, numChannels);
+			process = BAllPass.ar(in, freq.kr, q.kr, gain.kr);
 			Out.ar(out, process);
 		}).add
 	}
@@ -168,8 +168,8 @@ PO_midEQ : MGU_AbstractFilterModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.smbKr, numChannels);
-			process = BPeakEQ.ar.ar(in, freq.smbKr, q.smbKr, gain.smbKr);
+			in = In.ar(inbus.kr, numChannels);
+			process = BPeakEQ.ar.ar(in, freq.kr, q.kr, gain.kr);
 			Out.ar(out, process);
 		}).add
 	}

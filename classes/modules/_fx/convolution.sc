@@ -23,8 +23,8 @@ MGU_convolver : MGU_AbstractBufferModule {
 
 		def = SynthDef(name, {
 			var conv_l, conv_r;
-			conv_l = PartConv.ar(In.ar(inbus.smbKr), fftsize.smbKr, irspectrum.bufnum);
-			conv_r = PartConv.ar(In.ar(inbus.smbKr + 1), fftsize.smbKr, irspectrum.bufnum);
+			conv_l = PartConv.ar(In.ar(inbus.kr), fftsize.kr, irspectrum.bufnum);
+			conv_r = PartConv.ar(In.ar(inbus.kr + 1), fftsize.kr, irspectrum.bufnum);
 			Out.ar(out, [conv_l, conv_r]);
 		}).add;
 

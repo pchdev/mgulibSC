@@ -20,15 +20,12 @@ PO_sdelaySTS : MGU_AbstractModule { // faust smooth delay
 
 		def = SynthDef(name, {
 			var inleft, inright, dl_left, dl_right, process;
-			inleft = In.ar(inbus.smbKr, 1);
-			inright = In.ar(inbus.smbKr + 1, 1);
-			dl_left = FaustMguSdelay.ar(inleft, dtime_left.smbKr, fbk_left.smbKr);
-			dl_right = FaustMguSdelay.ar(inright, dtime_right.smbKr, fbk_right.smbKr);
-			Out.ar(out, [inleft * (1 - mix.smbKr) + (dl_left * mix.smbKr),
-				inright * (1 - mix.smbKr) + (dl_right * mix.smbKr)]);
+			inleft = In.ar(inbus.kr, 1);
+			inright = In.ar(inbus.kr + 1, 1);
+			dl_left = FaustMguSdelay.ar(inleft, dtime_left.kr, fbk_left.kr);
+			dl_right = FaustMguSdelay.ar(inright, dtime_right.kr, fbk_right.kr);
+			Out.ar(out, [FaustDrywet.ar(inleft, dl_left, mix.kr), FaustDrywet.ar(inright, dl_right, mix.kr)]);
 		}).add;
-
-
 	}
 
 }
@@ -56,10 +53,9 @@ PO_sdelayMTS : MGU_AbstractModule {
 		def = SynthDef(name, {
 			var in, dl_left, dl_right, process;
 			in = In.ar(inbus.smbKr, 1);
-			dl_left = FaustMguSdelay.ar(in, dtime_left.smbKr, fbk_left.smbKr);
-			dl_right = FaustMguSdelay.ar(in, dtime_right.smbKr, fbk_right.smbKr);
-			Out.ar(out, [in * (1 - mix.smbKr) + (dl_left * mix.smbKr),
-				in * (1 - mix.smbKr) + (dl_right * mix.smbKr)]);
+			dl_left = FaustMguSdelay.ar(in, dtime_left.kr, fbk_left.kr);
+			dl_right = FaustMguSdelay.ar(in, dtime_right.kr, fbk_right.kr);
+			Out.ar(out, [FaustDrywet.ar(in, dl_left, mix.kr), FaustDrywet.ar(in, dl_right, mix.kr)]);
 		}).add;
 
 	}
@@ -86,9 +82,9 @@ PO_sdelayMTM : MGU_AbstractModule {
 
 		def = SynthDef(name, {
 			var in, delay, process;
-			in = In.ar(inbus.smbKr, 1);
-			delay = FaustMguSdelay.ar(in, dtime.smbKr, fbk.smbKr);
-			Out.ar(out, [in * (1 - mix.smbKr) + (delay * mix.smbKr)]);
+			in = In.ar(inbus.kr, 1);
+			delay = FaustMguSdelay.ar(in, dtime.kr, fbk.kr);
+			Out.ar(out, FaustDrywet.ar(in, delay, mix.kr));
 		}).add;
 
 
