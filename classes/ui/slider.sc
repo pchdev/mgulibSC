@@ -49,8 +49,7 @@ MGU_slider {
 				Pen.width = 0.5;
 				Pen.fillColor = color;
 				Pen.strokeColor = Color.black;
-				Pen.addRect(Rect(0, 0, (val / range[1]) * me.bounds.width,
-					me.bounds.height));
+				Pen.addRect(Rect(0, 0, ((val / range[1]) * me.bounds.width), me.bounds.height));
 				Pen.fillStroke;
 			}}, { // else vertical
 				sliderView.drawFunc = {
@@ -104,7 +103,6 @@ MGU_slider {
 		text.acceptsMouse = false;
 		text.align = \topLeft;
 
-
 	}
 
 	bindToParameter { |parameter|
@@ -112,12 +110,14 @@ MGU_slider {
 		boundParameter = parameter;
 		range = boundParameter.range;
 		type = boundParameter.type;
-
+		initVal = boundParameter.default;
 	}
 
 	unbindFromParameter {
 		boundToParameter = false;
 	}
+
+	// to implement : transfer function, or exp for gain
 
 
 

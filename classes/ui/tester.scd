@@ -14,7 +14,7 @@ w = Window("bleurfp", Rect(0, 0, 640, 480));
 w.background = Color.white;
 
 b = MGU_slider(w, Rect(20, 20, 150, 20), nil);
-b.bindToParameter(j.loop);
+b.bindToParameter(j.gain);
 
 w.front;
 
@@ -26,6 +26,9 @@ p = PO_sfPlayer(0, s);
 p.readFile();
 p.sendSynth;
 p.gain.val = 0.5;
+
+
+
 
 
 

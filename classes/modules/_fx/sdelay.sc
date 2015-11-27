@@ -24,7 +24,8 @@ PO_sdelaySTS : MGU_AbstractModule { // faust smooth delay
 			inright = In.ar(inbus.kr + 1, 1);
 			dl_left = FaustMguSdelay.ar(inleft, dtime_left.kr, fbk_left.kr);
 			dl_right = FaustMguSdelay.ar(inright, dtime_right.kr, fbk_right.kr);
-			Out.ar(out, [FaustDrywet.ar(inleft, dl_left, mix.kr), FaustDrywet.ar(inright, dl_right, mix.kr)]);
+			process = [FaustDrywet.ar(inleft, dl_left, mix.kr), FaustDrywet.ar(inright, dl_right, mix.kr)];
+			Out.ar(out, process);
 		}).add;
 	}
 
@@ -55,7 +56,8 @@ PO_sdelayMTS : MGU_AbstractModule {
 			in = In.ar(inbus.smbKr, 1);
 			dl_left = FaustMguSdelay.ar(in, dtime_left.kr, fbk_left.kr);
 			dl_right = FaustMguSdelay.ar(in, dtime_right.kr, fbk_right.kr);
-			Out.ar(out, [FaustDrywet.ar(in, dl_left, mix.kr), FaustDrywet.ar(in, dl_right, mix.kr)]);
+			process = [FaustDrywet.ar(in, dl_left, mix.kr), FaustDrywet.ar(in, dl_right, mix.kr)];
+			Out.ar(out, process);
 		}).add;
 
 	}
@@ -84,7 +86,8 @@ PO_sdelayMTM : MGU_AbstractModule {
 			var in, delay, process;
 			in = In.ar(inbus.kr, 1);
 			delay = FaustMguSdelay.ar(in, dtime.kr, fbk.kr);
-			Out.ar(out, FaustDrywet.ar(in, delay, mix.kr));
+			process = FaustDrywet.ar(in, delay, mix.kr);
+			Out.ar(out, process);
 		}).add;
 
 
