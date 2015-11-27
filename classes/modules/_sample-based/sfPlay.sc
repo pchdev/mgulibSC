@@ -11,7 +11,7 @@ PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 
 		loop = MGU_parameter(container, \loop, Integer, [0, 1], 1, true);
 		playstop = MGU_parameter(container, \startstop, Symbol, nil, \stop, true);
-		gain = MGU_parameter(container, \gain, Float, [0.0, 10.0], 1.0, true);
+		gain = MGU_parameter(container, \gain, Float, [0.0, 4.0], 1.0, true);
 		startPos = MGU_parameter(container, \startPos, Integer, [0, inf], 0, true);
 		playstop.parentAccess = this;
 
