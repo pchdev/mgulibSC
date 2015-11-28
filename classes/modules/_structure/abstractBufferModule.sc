@@ -20,6 +20,7 @@ MGU_AbstractBufferModule : MGU_AbstractModule {
 				temp.free;
 			})
 		};
+
 		buffer ?? { buffer = Buffer.read(server, path, action: { this.sendDef })};
 
 		("[] File:" + path + "succesfully loaded.").postln;

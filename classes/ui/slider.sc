@@ -2,9 +2,11 @@ MGU_slider {
 
 	var parent, bounds, bound_parameter;
 	var orientation, background_color;
-	var frame_view, view, value_display;
+	var frame_view, view, value_display, parameter_address_display;
 	var type, range, value, default_value, graphical_value;
 	var curve_factor;
+
+	// implement reactive tooltip
 
 
 	*new { |parent, bounds, bound_parameter|
@@ -71,20 +73,18 @@ MGU_slider {
 					if(type == Integer) { graphical_value = graphical_value.round(1) };
 			}});
 
-			// double click resets to default value
-			if(cc == 2) { graphical_value = default_value };
 			this.calculate_value;
+
+			// double click resets to default value
+			if(cc == 2) { value = default_value; this.calculate_graphical_value };
+
 			view.refresh;
 
 			// update parameter value
 			bound_parameter.val = value;
 
 			// value string display
-			value_display.string = value.round(0.01);
-			if(graphical_value > (range[1] / 2), {
-				value_display.stringColor = Color.white}, {
-				value_display.stringColor = Color.black
-			});
+			this.refresh_displayed_value;
 		};
 
 		view.mouseDownAction = mouse_actions;
@@ -97,12 +97,30 @@ MGU_slider {
 		value_display.acceptsMouse = false;
 		value_display.align = \topLeft;
 
+		this.refresh_displayed_value();
+
+
+		// parameter address display
+		parameter_address_display = StaticText(parent, Rect(bounds.left + bounds.width + 15,
+			bounds.top + (frame_view.bounds.height/4) - 1, bound_parameter.address.size * 11, 12));
+		parameter_address_display.font = Font("Arial", 11);
+		parameter_address_display.align = \topLeft;
+		parameter_address_display.string = bound_parameter.address;
+
+		parameter_address_display.mouseDownAction = { |me, x, y, mod, bn, cc|
+			if(cc == 2) { value = default_value; this.calculate_graphical_value };
+			view.refresh;
+			this.refresh_displayed_value();
+		};
+
+	}
+
+	refresh_displayed_value {
 		value_display.string = value.round(0.01);
-		if(graphical_value > (range[1] / 2), {
+		if(graphical_value > (range[1] / 2 + (range[1] / 10)), {
 			value_display.stringColor = Color.white}, {
 			value_display.stringColor = Color.black
 		});
-
 	}
 
 	calculate_value {
