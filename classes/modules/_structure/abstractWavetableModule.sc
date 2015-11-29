@@ -6,7 +6,7 @@ MGU_AbstractWavetableModule : MGU_AbstractModule {
 	var waveform;
 
 	*new { |out, server, name|
-		^super.newCopyArgs(out, server, name)
+		^super.newCopyArgs(out, server, name).init.initWavetable
 	}
 
 	initWavetable {

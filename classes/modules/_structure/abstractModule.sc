@@ -56,8 +56,24 @@ MGU_AbstractModule {
 
 	// PRESET SUPPORT
 
-	saveState { |fileName|
+	getPresetFolderPath {
+		var folder_path;
+		folder_path = Platform.userExtensionDir +/+ "mgulibSC/classes/modules/presets" +/+
+		this.class.asCompileString;
+		folder_path = folder_path.standardizePath;
+		^folder_path
+	}
 
+	getPresetFilePath { |fileName|
+		var file_path;
+		file_path = this.getPresetFolderPath +/+ fileName ++ ".txt";
+		file_path = file_path.standardizePath;
+		^file_path
+	}
+
+	saveState { |fileName|
+		var folder_path = this.getPresetFolderPath;
+		var file_path = this.getPresetFilePath(fileName);
 		var stateArray = [];
 		var stateFile;
 		this.instVarSize.do({|i|
@@ -68,31 +84,28 @@ MGU_AbstractModule {
 		});
 
 		// if path doesn't exist, create path
-
-		if(PathName("~/Documents/SuperCollider/MGU-modules/module-presets" +/+
-			this.class.asCompileString).isFolder == false, {
-			("mkdir -p ~/Documents/SuperCollider/MGU-modules/module-presets" +/+
-				this.class.asCompileString).unixCmd;});
+		if(PathName(folder_path).isFolder == false, {
+			folder_path.mkdir;
+			("module: preset folder created at" + folder_path).postln;
+		});
 
 		// create or overwrite text file
-
-		stateFile = File(("~/Documents/SuperCollider/MGU-modules/module-presets"
-			+/+ this.class.asCompileString +/+ fileName ++ ".txt").standardizePath, "w+");
-
+		stateFile = File((file_path).standardizePath, "w+");
 		stateFile.write(stateArray.asCompileString);
 		stateFile.close;
+		("module: preset file created at" + file_path).postln;
 	}
 
 	recallState { |fileName, interp = false, length = 2000, curve = \lin|
 
 		// + preset interpolation to implement
-
+		var folder_path = this.getPresetFolderPath();
+		var file_path = this.getPresetFilePath(fileName);
 		var stateFile;
 		var stateArray = [];
 		var j = 0;
 
-		stateFile = File(("~/Documents/SuperCollider/MGU-modules/module-presets"
-			+/+ this.class.asCompileString +/+ fileName ++ ".txt").standardizePath, "r");
+		stateFile = File(file_path, "r");
 		stateArray = stateFile.readAllString.interpret;
 
 		this.instVarSize.do({|i|

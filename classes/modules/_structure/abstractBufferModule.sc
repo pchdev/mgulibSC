@@ -1,6 +1,6 @@
 MGU_AbstractBufferModule : MGU_AbstractModule {
 
-	var buffer, numFrames, sampleRate;
+	var <buffer, <numFrames, <sampleRate;
 
 	readFileFunc {|path, read| // private
 		var soundFile;

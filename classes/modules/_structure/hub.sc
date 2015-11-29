@@ -104,5 +104,9 @@ MGU_container {
 		moduleGUI = MGU_moduleGUI(address, paramAccesses);
 	}
 
+	controlWithPush {
+
+	}
+
 }
 
