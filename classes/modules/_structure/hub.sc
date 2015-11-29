@@ -2,15 +2,15 @@ MGU_container {
 
 	classvar instanceCount;
 
-	var <>name, <>parentContainer, <>node, <>oscPort;
+	var <>name, <>parentContainer, <>node, <>oscPort, module;
 	var <>address;
 
 	var <paramAccesses, <paramAddresses;
 	var <contAccesses, <contAddresses;
 	var <oscPort;
 
-	*new { |address, parentContainer, node, oscPort|
-		^this.newCopyArgs(address, parentContainer, node, oscPort).init
+	*new { |address, parentContainer, node, oscPort, module|
+		^this.newCopyArgs(address, parentContainer, node, oscPort, module).init
 	}
 
 	init {

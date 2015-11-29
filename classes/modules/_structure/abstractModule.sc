@@ -22,7 +22,7 @@ MGU_AbstractModule {
 		name ?? { name = this.class.asCompileString.split($_)[1] ++ "_" ++ thisInstance };
 
 		nodeGroup = Group(1, 'addToTail');
-		container = MGU_container(name, nil, nodeGroup, 3127);
+		container = MGU_container(name, nil, nodeGroup, 3127, this);
 		inbus = MGU_parameter(container, \inbus, Integer, [0, inf], inf, true);
 
 	}
@@ -49,7 +49,6 @@ MGU_AbstractModule {
 			module.inbus.val = out });
 		module.numChannels = numChannels;
 	}
-
 
 	// PRESET SUPPORT
 

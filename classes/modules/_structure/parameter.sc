@@ -11,6 +11,7 @@ MGU_parameter {
 	var oscFunc, <>oscPort;
 	var <>parentAccess;
 	var listening, netaddr_responder, responder_device;
+	var <>bound_to_ui, <>ui;
 
 
 	*new { |container, name, type, range, default, alwaysOnServ = false,
@@ -24,6 +25,7 @@ MGU_parameter {
 		instanceCount !? { instanceCount = instanceCount + 1 };
 		instanceCount ?? { instanceCount = 1 };
 
+		bound_to_ui = false;
 		listening = false;
 
 		// register to parent container
@@ -56,7 +58,7 @@ MGU_parameter {
 	}
 
 	val_ { |value, node, interp = false, duration = 2000, curve = \lin, onServ,
-		absolute_unit = false|
+		absolute_unit = false, report_to_ui = true|
 
 		var process;
 		process = {
@@ -68,7 +70,6 @@ MGU_parameter {
 				if((value[i].isKindOf(Integer)) && (type == Float), {
 					value.put(i, value[i].asFloat)});
 
-
 				if((value[i].isKindOf(Float)) && (type == Integer), {
 					value.put(i, value[i].asInteger)});
 
@@ -77,8 +78,7 @@ MGU_parameter {
 
 				// range check
 				if((value[i].isKindOf(Integer)) || (value[i].isKindOf(Float)), {
-					if(value[i] < range[0], { value.put(i, range[0]) });
-					if(value[i] > range[1], { value.put(i, range[1]) });
+					value[i] = value[i].clip(range[0], range[1]);
 				});
 
 				if(type == Array, { val = value }, { val = value[i] });
@@ -97,10 +97,16 @@ MGU_parameter {
 
 			});
 
+			// call parent methods
 			parentAccess !? { parentAccess.paramCallBack(name, value)};
+
+			// reply to minuit listening
 			if(listening,
 				{ netaddr_responder.sendBundle(nil, [responder_device ++ ":listen",
 					address ++ ":value", val].postln)});
+
+			// reply to gui element
+			if((bound_to_ui) && (report_to_ui)) { ui.value_from_parameter(val) };
 
 		};
 
