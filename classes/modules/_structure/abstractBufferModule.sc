@@ -21,7 +21,7 @@ MGU_AbstractBufferModule : MGU_AbstractModule {
 			})
 		};
 
-		buffer ?? { buffer = Buffer.read(server, path, action: { this.sendDef })};
+		buffer ?? { buffer = Buffer.read(server, path, action: { this.bufferLoaded })};
 
 		("[] File:" + path + "succesfully loaded.").postln;
 		out ?? { out = Bus.audio(server, numChannels) };

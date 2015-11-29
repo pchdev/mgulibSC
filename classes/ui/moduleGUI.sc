@@ -20,12 +20,22 @@ MGU_moduleGUI {
 		title.align = \center;
 
 		parameter_array.size.do({|i|
-			if((parameter_array[i].type == Integer) || (parameter_array[i].type == Float)) {
-				if(parameter_array[i].name != \inbus) {
-					ui_array = ui_array.add(MGU_slider(window, Rect(20, 100 + (i*30), 150, 20),
-						parameter_array[i]))
-				};
-			};
+			var parameter = parameter_array[i];
+			var type = parameter_array[i].type;
+			var pname = parameter_array[i].name;
+			var range = parameter_array[i].range;
+			var y_offset = 100 + (i*30);
+
+			case
+
+			{ type == Integer } {
+				if(range == [0, 1]) { ui_array = ui_array.add(MGU_toggle(window,
+					Rect(20, y_offset, 17, 17), parameter)) }
+				{ if(pname != \inbus) { ui_array = ui_array.add(MGU_slider(window,
+					Rect(20, y_offset, 150, 20), parameter)) }}}
+			{ type == Float } {
+				ui_array = ui_array.add(MGU_slider(window,
+					Rect(20, y_offset, 150, 20), parameter))};
 		});
 
 		// when closing window, unbind parameters from ui elements

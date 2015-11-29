@@ -12,7 +12,7 @@ PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 		loop = MGU_parameter(container, \loop, Integer, [0, 1], 1, true);
 		playstop = MGU_parameter(container, \startstop, Symbol, nil, \stop, true);
 		gain = MGU_parameter(container, \gain, Float, [0.0, 4.0], 1.0, true);
-		startPos = MGU_parameter(container, \startPos, Integer, [0, inf], 0, true);
+		startPos = MGU_parameter(container, \startPos, Integer, [0, inf], 0, true, \ms, \samps);
 		playstop.parentAccess = this;
 
 	}
@@ -25,8 +25,8 @@ PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 		);
 	}
 
-	sendDef { // separated from this.initParameters, must read soundFile first
-
+	bufferLoaded { // separated from this.initParameters, must read soundFile first
+		startPos.sr = sampleRate; //
 		def = SynthDef(name, {
 			var bufrd;
 			bufrd = PlayBuf.ar(numChannels, buffer.bufnum, 1, 1, startPos.kr, loop.kr, 2);
