@@ -14,41 +14,15 @@ j = PO_sfPlayer(0, s);
 w = Window("basic", Rect(0, 0, 640, 480));
 w.background = Color.white;
 
-b = MGU_slider(w, Rect(20, 20, 150, 20), j.loop);
+b = MGU_slider(w, Rect(20, 20, 150, 20), j.gain);
 w.front;
 
 )
 
-j.gain.val;
 
 p = PO_sfPlayer(0, s);
-p.gain;
-p.gain.val;
-p.startPos;
+p.generateUI;
+w = MGU_moduleGUI("test");
 
-
-p.gain = 4;
-p.gain;
-p.gain.address.class;
-p.readFile();
-p.sendSynth;
-p.gain.val = 0.5;
-
-"3".interpret.class == Integer;
-
-"4".isInteger;
-
-Char
-
-
-
-
-
-
-
-
-
-
-
-
-
+o = PO_chorusSTS(0, s);
+o.generateUI;

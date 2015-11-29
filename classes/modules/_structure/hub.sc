@@ -8,6 +8,7 @@ MGU_container {
 	var <paramAccesses, <paramAddresses;
 	var <contAccesses, <contAddresses;
 	var <oscPort;
+	var moduleGUI;
 
 	*new { |address, parentContainer, node, oscPort, module|
 		^this.newCopyArgs(address, parentContainer, node, oscPort, module).init
@@ -101,14 +102,8 @@ MGU_container {
 
 	generateUI {
 
-		paramAccesses.size.do({|i|
-			switch(paramAccesses[i].uiType,
-				\slider, { },
-				\toggle, { },
-				\knob, { },
-				\menu, { }
-			)
-		});
+		moduleGUI = MGU_moduleGUI(address, paramAccesses);
+
 
 	}
 

@@ -50,6 +50,10 @@ MGU_AbstractModule {
 		module.numChannels = numChannels;
 	}
 
+	generateUI {
+		container.generateUI;
+	}
+
 	// PRESET SUPPORT
 
 	saveState { |fileName|
