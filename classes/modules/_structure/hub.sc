@@ -101,10 +101,7 @@ MGU_container {
 	}
 
 	generateUI {
-
 		moduleGUI = MGU_moduleGUI(address, paramAccesses);
-
-
 	}
 
 }

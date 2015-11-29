@@ -4,20 +4,20 @@ MGU_parameter {
 
 	var <container, <name, <type, <range, <default, <>alwaysOnServ;
 	var <>inUnit, <>outUnit, <>sr;
-	var <>uiType;
 	var <>defaultNode;
 	var <val;
 	var <>address, <>defName;
 	var oscFunc, <>oscPort;
 	var <>parentAccess;
 	var listening, netaddr_responder, responder_device;
-	var <>bound_to_ui, <>ui;
+	var <>bound_to_ui, <>ui, ui_type;
+	var <>description;
 
 
 	*new { |container, name, type, range, default, alwaysOnServ = false,
-		inUnit, outUnit, sr = 44100, uiType|
+		inUnit, outUnit, sr = 44100|
 		^this.newCopyArgs(container, name, type, range, default, alwaysOnServ,
-			inUnit, outUnit, sr, uiType).init
+			inUnit, outUnit, sr).init
 	}
 
 	init {
@@ -27,6 +27,7 @@ MGU_parameter {
 
 		bound_to_ui = false;
 		listening = false;
+		description = "no description available";
 
 		// register to parent container
 		container.registerParameter(this);
@@ -94,7 +95,6 @@ MGU_parameter {
 					node[0] ?? { Error("[PARAMETER] /!\ NODE NOT DEFINED" + name).throw };
 					node[i].set(defName, val);
 				});
-
 			});
 
 			// call parent methods
@@ -138,7 +138,6 @@ MGU_parameter {
 		listening = true;
 		netaddr_responder ?? { netaddr_responder = netaddr };
 		responder_device ?? { responder_device = device };
-
 	}
 
 	disableListening {

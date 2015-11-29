@@ -22,7 +22,10 @@ w.front;
 
 p = PO_sfPlayer(0, s);
 p.generateUI;
+p.gain.val = 0.5;
 w = MGU_moduleGUI("test");
 
 o = PO_chorusSTS(0, s);
 o.generateUI;
+
+Server.default.sampleRate;

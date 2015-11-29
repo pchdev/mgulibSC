@@ -30,7 +30,6 @@ MGU_slider {
 		bound_parameter ?? { Error("slider is not linked to any parameter").throw; };
 		this.bind_to_parameter(bound_parameter);
 		this.init_views;
-
 	}
 
 	init_views {
@@ -188,7 +187,7 @@ MGU_slider {
 		type = bound_parameter.type;
 		range = bound_parameter.range;
 		default_value = bound_parameter.default;
-		value = default_value;
+		value = bound_parameter.val;
 		parameter.bound_to_ui = true;
 		parameter.ui = this;
 		this.calculate_graphical_value;

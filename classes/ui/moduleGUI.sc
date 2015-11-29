@@ -21,9 +21,20 @@ MGU_moduleGUI {
 
 		parameter_array.size.do({|i|
 			if((parameter_array[i].type == Integer) || (parameter_array[i].type == Float)) {
-				ui_array = ui_array.add(MGU_slider(window, Rect(20, 100 + (i*30), 150, 20), parameter_array[i]))
+				if(parameter_array[i].name != \inbus) {
+					ui_array = ui_array.add(MGU_slider(window, Rect(20, 100 + (i*30), 150, 20),
+						parameter_array[i]))
+				};
 			};
 		});
+
+		// when closing window, unbind parameters from ui elements
+		window.onClose = {
+			parameter_array.size.do({|i|
+				parameter_array[i].bound_to_ui = false;
+				parameter_array[i].ui = nil;
+			});
+		};
 
 		window.front;
 	}
