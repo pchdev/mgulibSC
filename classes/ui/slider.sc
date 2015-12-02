@@ -164,7 +164,7 @@ MGU_slider {
 
 	refresh_displayed_value {
 		value_display.string = value.round(0.001);
-		if(graphical_value > (range[1] / 2 + (range[1] / 10)), {
+		if((graphical_value * view.bounds.width) > (view.bounds.width / 1.6), {
 			value_display.stringColor = Color.white}, {
 			value_display.stringColor = Color.black
 		});
@@ -186,10 +186,8 @@ MGU_slider {
 
 	calculate_graphical_value {
 		var tmp_value;
-		tmp_value = value/(range[1] - range[0]);
-		curve_factor.postln;
+		tmp_value = value.linlin(range[0], range[1], 0, 1);
 		graphical_value = tmp_value.curvelin(0, 1, 0, 1, curve_factor);
-		graphical_value.postln;
 	}
 
 	bind_to_parameter { |parameter|
