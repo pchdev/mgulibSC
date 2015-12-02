@@ -4,7 +4,7 @@ MGU_slider {
 	var orientation, background_color;
 	var frame_view, view, value_display, parameter_address_display;
 	var type, range, <>value, default_value, <graphical_value;
-	var curve_factor;
+	var <>curve_factor;
 	var has_focus;
 	var keystring;
 
@@ -24,7 +24,7 @@ MGU_slider {
 
 //		background_color = Color.new255(55,90,101);
 		background_color = Color.new255(115,150,171);
-		curve_factor = -6;
+		curve_factor = 0;
 		has_focus = false;
 		keystring = "";
 		bound_parameter ?? { Error("slider is not linked to any parameter").throw; };
@@ -49,7 +49,8 @@ MGU_slider {
 			view.drawFunc = { |slider|
 				Pen.width = 0.5;
 				Pen.fillColor = background_color;
-				Pen.addRect(Rect(0, 0, graphical_value/range[1] * slider.bounds.width,
+				("graph value init" + graphical_value).postln;
+				Pen.addRect(Rect(0, 0, graphical_value * slider.bounds.width,
 					slider.bounds.height));
 				Pen.fillStroke;
 		}}, { // else vertical
@@ -65,8 +66,7 @@ MGU_slider {
 			if(orientation == 0, {
 				x = x.clip(0, view.bounds.width);
 				if((y >= 0) && (y <= view.bounds.height)) {
-					graphical_value = x/view.bounds.width * range[1];
-					if(type == Integer) { graphical_value = graphical_value.round(1) };
+					graphical_value = x/view.bounds.width;
 			}}, { // else vertical
 				y = y.clip(0, view.bounds.height);
 				if((x >= 0) && (x <= view.bounds.width)) {
@@ -75,7 +75,6 @@ MGU_slider {
 			}});
 
 			this.calculate_value;
-
 			view.refresh;
 
 			// update parameter value
@@ -87,6 +86,7 @@ MGU_slider {
 
 		view.mouseDownAction = mouse_actions;
 		view.mouseMoveAction = mouse_actions;
+
 
 		// text display
 		value_display = StaticText(frame_view, Rect(bounds.width/2 - 5, bounds.height/2 - 6,
@@ -124,7 +124,6 @@ MGU_slider {
 					keystring = keystring ++ char.asString;
 					value_display.string = keystring;
 				};
-
 				if(keyc == 36) { this.parse_entered_value(); this.removeFocus() };
 			};
 		};
@@ -142,6 +141,7 @@ MGU_slider {
 	}
 
 	giveFocus {
+
 		has_focus = true;
 		frame_view.drawFunc = {
 			Pen.width = 0.5;
@@ -166,20 +166,31 @@ MGU_slider {
 	}
 
 	refresh_displayed_value {
-		value_display.string = value.round(0.01);
+		value_display.string = value.round(0.001);
 		if(graphical_value > (range[1] / 2 + (range[1] / 10)), {
 			value_display.stringColor = Color.white}, {
 			value_display.stringColor = Color.black
 		});
 	}
 
+	roundValue {
+		var res;
+		if(type == Integer) { res = 1 } { res = 0.001 };
+		^res
+
+	}
+
 	calculate_value {
-		value = graphical_value.curvelin(range[0], range[1], range[0], range[1],
-			curve_factor).round(0.01);
+		var tmp_value;
+		tmp_value = graphical_value * (range[1] - range[0]) + range[0];
+		value = tmp_value.lincurve(range[0], range[1], range[0], range[1],
+			curve_factor).round(this.roundValue());
 	}
 
 	calculate_graphical_value {
-		graphical_value = value.lincurve(range[0], range[1], range[0], range[1], curve_factor);
+		graphical_value = value/(range[1] - range[0]);
+		graphical_value = graphical_value.curvelin(0, 1, 0, 1, curve_factor);
+		graphical_value.postln;
 	}
 
 	bind_to_parameter { |parameter|

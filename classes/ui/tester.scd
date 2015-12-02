@@ -43,6 +43,9 @@ t = MGU_toggle(w, nil, p.loop);
 w.front;
 )
 
+z = PO_zita(0, s);
+z.generateUI;
+
 p.loop.val;
 
 t.toggle_display_off;
