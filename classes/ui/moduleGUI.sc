@@ -36,7 +36,7 @@ MGU_moduleGUI {
 			{ type == Float } {
 				ui_array =
 				if(pname == \gain) { ui_array.add(MGU_slider(window,
-					Rect(20, y_offset, 150, 20), parameter).curve_factor_(5)) } {
+					Rect(20, y_offset, 150, 20), parameter, 5)) } {
 					ui_array.add(MGU_slider(window, Rect(20, y_offset, 150, 20), parameter))};
 			};
 		});

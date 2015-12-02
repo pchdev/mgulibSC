@@ -1,15 +1,14 @@
 MGU_slider {
 
-	var parent, bounds, bound_parameter;
+	var parent, bounds, bound_parameter, <>curve_factor;
 	var orientation, background_color;
 	var frame_view, view, value_display, parameter_address_display;
 	var type, range, <>value, default_value, <graphical_value;
-	var <>curve_factor;
 	var has_focus;
 	var keystring;
 
-	*new { |parent, bounds, bound_parameter|
-		^this.newCopyArgs(parent, bounds, bound_parameter).init
+	*new { |parent, bounds, bound_parameter, curve_factor = 0|
+		^this.newCopyArgs(parent, bounds, bound_parameter, curve_factor).init
 	}
 
 	init {
@@ -24,7 +23,6 @@ MGU_slider {
 
 //		background_color = Color.new255(55,90,101);
 		background_color = Color.new255(115,150,171);
-		curve_factor = 0;
 		has_focus = false;
 		keystring = "";
 		bound_parameter ?? { Error("slider is not linked to any parameter").throw; };
@@ -49,7 +47,6 @@ MGU_slider {
 			view.drawFunc = { |slider|
 				Pen.width = 0.5;
 				Pen.fillColor = background_color;
-				("graph value init" + graphical_value).postln;
 				Pen.addRect(Rect(0, 0, graphical_value * slider.bounds.width,
 					slider.bounds.height));
 				Pen.fillStroke;
@@ -188,8 +185,10 @@ MGU_slider {
 	}
 
 	calculate_graphical_value {
-		graphical_value = value/(range[1] - range[0]);
-		graphical_value = graphical_value.curvelin(0, 1, 0, 1, curve_factor);
+		var tmp_value;
+		tmp_value = value/(range[1] - range[0]);
+		curve_factor.postln;
+		graphical_value = tmp_value.curvelin(0, 1, 0, 1, curve_factor);
 		graphical_value.postln;
 	}
 
@@ -201,7 +200,7 @@ MGU_slider {
 		value = bound_parameter.val;
 		parameter.bound_to_ui = true;
 		parameter.ui = this;
-		this.calculate_graphical_value;
+		this.calculate_graphical_value; // 1st call to method
 	}
 
 	value_from_parameter { |v|
