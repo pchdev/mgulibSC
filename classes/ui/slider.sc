@@ -121,6 +121,7 @@ MGU_slider {
 					keystring = keystring ++ char.asString;
 					value_display.string = keystring;
 				};
+				if(keyc == 51) { keystring = keystring.drop(-1); value_display.string = keystring; };
 				if(keyc == 36) { this.parse_entered_value(); this.removeFocus() };
 			};
 		};

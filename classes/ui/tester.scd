@@ -17,5 +17,9 @@ z.generateUI;
 
 
 
+a = "jose";
+a.drop(-1);
+a;
+
 
 
