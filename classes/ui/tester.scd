@@ -29,7 +29,7 @@ m = MGU_minuitInterface("superColl", 3127);
 r.registerToMinuit(m);
 
 n = NetAddr("127.0.0.1", 3127);
-n.sendMsg("/moduleRack_2/sfPlayer_1/gain", 1);
+n.sendMsg("/moduleRack_2/sfPlayer_1/gain", 2);
 p.gain.val;
 
 p.generateUI;

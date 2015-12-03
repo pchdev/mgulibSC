@@ -204,9 +204,12 @@ MGU_slider {
 
 	value_from_parameter { |v|
 		value = v;
-		this.calculate_graphical_value();
-		//view.refresh;
-		this.refresh_displayed_value();
+
+		AppClock.sched(0, {
+			this.calculate_graphical_value();
+			view.refresh;
+			this.refresh_displayed_value();
+		});
 	}
 
 
