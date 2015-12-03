@@ -38,12 +38,13 @@ MGU_container {
 		branchNb = address.split($/).size;
 
 		contAddresses.size.do({|i|
-			if(contAddresses[i].split($/).size == (branchNb + 1), {
-				children = children.add(contAccesses[i].name)})});
+			if(contAccesses[i].address.split($/).size == (branchNb + 1), {
+				contAddresses[i].postln;
+				children = children.add(contAccesses[i].name.postln;)})});
 
 		paramAddresses.size.do({|i|
-				if(paramAddresses[i].split($/).size == (branchNb + 1), {
-					children = children.add(paramAccesses[i].name)})});
+				if(paramAccesses[i].address.split($/).size == (branchNb + 1), {
+					children = children.add(paramAccesses[i].name.postln)})});
 		^children
 	}
 
@@ -69,6 +70,11 @@ MGU_container {
 		container.address = address ++ container.address;
 		container.oscPort = oscPort;
 		container.node = node;
+		container.paramAccesses.size.do({|i|
+			var target = container.paramAccesses[i];
+			target.address = address ++ target.address;
+			target.initOSC();
+		});
 
 		// merging accesses & addresses
 		this.addContainer(container);
@@ -99,6 +105,8 @@ MGU_container {
 		^synthArray
 
 	}
+
+	// CONTROL
 
 	generateUI {
 		moduleGUI = MGU_moduleGUI(address, paramAccesses);

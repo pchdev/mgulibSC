@@ -33,12 +33,16 @@ MGU_parameter {
 		container.registerParameter(this);
 		this.val_(default, onServ: false);
 
-		// init OSC Function
+		this.initOSC();
+
+	}
+
+	initOSC {
 		oscFunc = OSCFunc({|msg, time, addr, recvPort|
 			msg.postln;
 			this.val_(msg[1])}, address, nil, oscPort);
-
 	}
+
 
 	unitCheck { |value|
 

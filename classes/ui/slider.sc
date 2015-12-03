@@ -35,7 +35,7 @@ MGU_slider {
 		var mouse_actions;
 
 		frame_view = UserView(parent, bounds);
-		view = UserView(frame_view, Rect(1, 1, bounds.width - 1, bounds.height - 1));
+		view = UserView(frame_view, Rect(0, 0, bounds.width, bounds.height));
 
 		frame_view.drawFunc = {
 			Pen.width = 0.5;
@@ -205,7 +205,7 @@ MGU_slider {
 	value_from_parameter { |v|
 		value = v;
 		this.calculate_graphical_value();
-		view.refresh;
+		//view.refresh;
 		this.refresh_displayed_value();
 	}
 

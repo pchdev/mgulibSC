@@ -73,14 +73,14 @@ MGU_minuitInterface {
 	queryNode { |node|
 		var nodeAccess, nodeType, subNodes = [], attributes = [];
 		node = node.asString;
-		contAddresses.size.do({|i| // node is container ?
-			if(node == contAddresses[i], {
+		contAccesses.size.do({|i| // node is container ?
+			if(node == contAccesses[i].address, {
 				nodeAccess = contAccesses[i]});
 		});
 
 		nodeAccess ?? {
-			paramAddresses.size.do({|i| // then node is parameter
-				if(node == paramAddresses[i], {
+			paramAccesses.size.do({|i| // then node is parameter
+				if(node == paramAccesses[i].address, {
 					nodeAccess = paramAccesses[i]});
 			});
 		};
@@ -122,7 +122,7 @@ MGU_minuitInterface {
 			if(node == contAddresses[i], { nodeAccess = contAccesses[i] })});
 		nodeAccess ?? {
 			paramAddresses.size.do({|i|
-				if(node == paramAddresses[i], {
+				if(node == paramAccesses[i].address, {
 					nodeAccess = paramAccesses[i]});
 			});
 		};
@@ -167,7 +167,7 @@ MGU_minuitInterface {
 		response = node ++ ":value";
 
 		paramAddresses.size.do({|i|
-				if(node == paramAddresses[i], {
+				if(node == paramAccesses[i].address, {
 					nodeAccess = paramAccesses[i]});
 		});
 
