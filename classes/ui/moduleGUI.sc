@@ -12,7 +12,7 @@ MGU_moduleGUI {
 	init {
 
 		window_bounds = Rect(0, 0, 640, 480);
-		window = Window(name, window_bounds, false);
+		window = Window(name, window_bounds, false, scroll: true);
 		window.background = Color.white;
 		title = StaticText(window, Rect(0, 0, 640, 50));
 		title.font = Font("Arial", 18, false);

@@ -1,29 +1,29 @@
 TITLE:: MGU_AbstractModule
 summary:: Abstract class for all MGU modules
-categories:: Libraries/MGU
-related:: MGU_AbstractBufferModule, MGU_AbstractFilterModule, MGU_AbstractWavetableModule
+categories:: Libraries>MGU>AbstractModules
+related:: link::Classes/MGU_AbstractBufferModule::, link::Classes/MGU_AbstractFilterModule::, link::Classes/MGU_AbstractWavetableModule::
 
 DESCRIPTION::
-Main class for MGU module implementation. All MGU_module classes should inherit from this.
+Main class for MGU module implementation. All MGU_module classes should directly or indirectly inherit from this.
+See the "Using & Building Modules" reference tutorial in order to get started with MGU_modules
 
 CLASSMETHODS::
 
 METHOD:: new
-(describe method here)
 
 ARGUMENT:: out
-(describe argument here)
+Module's output bus. If code::nil::, the module will create its own private output bus.
 
 ARGUMENT:: server
-(describe argument here)
+Server target. If code::nil::, code::Server.default:: will be automatically chosen.
 
 ARGUMENT:: numChannels
-(describe argument here)
+Number of output channels, designed for Multichannel Expansion.
 
 ARGUMENT:: name
-(describe argument here)
+an Instance of link::Classes/String::. Designed to build OSC addresses for the module and its parameters. If code::nil::, the generated name will be a concatenation of the module's class name with an unique index (e.g.: sfPlayer_1)
 
-returns:: (describe returnvalue here)
+returns:: a link::Classes/MGU_AbstractModule::
 
 
 INSTANCEMETHODS::
@@ -31,44 +31,45 @@ INSTANCEMETHODS::
 private:: nodeArray, nodeGroup, thisInstance, init
 
 METHOD:: container
-See MGU_container for more information. Users should not have to directly access/modify this attribute.
+See link::Classes/MGU_container:: for more information. Users should not have to directly access/modify this attribute.
 
 METHOD:: registerToMinuit
-registers the module for Minuit communication
+registers the module for Minuit communication. See link::Classes/MGU_minuitInterface:: documentation for more information.
 
 ARGUMENT:: minuitInterface
-a MGU_minuitInterface
+a link::Classes/MGU_minuitInterface::
 
 METHOD:: killSynths
-kill all synths related to this module on the server
+kill all synths sent by this module on the server
 
 METHOD:: availablePresets
-(describe method here)
+returns an array containing the name of all previously saved states
 
-returns:: (describe returnvalue here)
+returns:: an link::Classes/Array:: of link::Classes/String::
 
 METHOD:: saveState
 saves the module state
 
 ARGUMENT:: fileName
-(describe argument here)
+an instance of link::Classes/String:: containing the preset's name
 
 METHOD:: recallState
 recalls a previously saved state
 
 ARGUMENT:: fileName
-String containing preset name
+an instance of link::Classes/String:: containing the preset's name (see code::.availablePresets:: method)
 
 ARGUMENT:: interp
 parameter interpolation from current state (not yet implemented)
 
 METHOD:: out
-Module's outbut bus, users should not have to use & access this: see the .connectToModule method instead
+Module's outbut bus, users should not have to use & access this: see the code::.connectToModule:: method instead
+returns:: an instance of link::Classes/Integer:: or link::Classes/Bus::, depending on usage.
 
 METHOD:: inbus
-(describe method here)
+first index of an effect module input bus. Users shouldn't have to access nor modify this parameter, see code::.connectToModule:: method instead.
 
-returns:: (describe returnvalue here)
+returns:: a link::Classes/MGU_parameter::
 
 METHOD:: connectToModule
 (describe method here)
@@ -76,32 +77,32 @@ METHOD:: connectToModule
 ARGUMENT:: module
 (describe argument here)
 
-returns:: (describe returnvalue here)
+returns:: void
 
 METHOD:: sendSynth
-(describe method here)
+instantiate a module synth on the server.
 
-returns:: (describe returnvalue here)
+returns:: A link::Classes/Synth:: on the designated server, based on the module's link::Classes/SynthDef:: and parameter values.
 
 METHOD:: server
-(describe method here)
+link::Classes/Server:: target for sending the module's synths.
 
-returns:: (describe returnvalue here)
+returns:: a link::Classes/Server::
 
 METHOD:: numChannels
 gets/sets the number of channels for the module's output. Note: only works for modules supporting Multichannel expansion (see MGU module reference)
 
-returns:: anInteger
+returns:: an link::Classes/Integer::
 
 METHOD:: name
-(describe method here)
+Designed to build OSC addresses for the module and its parameters
 
-returns:: (describe returnvalue here)
+returns:: a link::Classes/String::
 
 METHOD:: def
-(describe method here)
+returns the module's link::Classes/SynthDef::
 
-returns:: (describe returnvalue here)
+returns:: a link::Classes/SynthDef::
 
 
 EXAMPLES::

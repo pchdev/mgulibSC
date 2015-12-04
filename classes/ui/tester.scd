@@ -21,13 +21,15 @@ z.generateUI;
 
 p = PO_sfPlayer(0, s);
 r = MGU_moduleRack(0, s);
+c = PO_chorusSTS(0, s);
 r.addModule(p);
+r.addModule(c);
 
 )
 
 m = MGU_minuitInterface("superColl", 3127);
 r.registerToMinuit(m);
-
+r.generateUI;
 n = NetAddr("127.0.0.1", 3127);
 n.sendMsg("/moduleRack_2/sfPlayer_1/gain", 2);
 p.gain.val;

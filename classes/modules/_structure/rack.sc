@@ -13,6 +13,9 @@ MGU_moduleRack : MGU_AbstractModule {
 	addModule { |module|
 		module_array = module_array.add(module);
 		container.registerContainer(module_array[module_array.size -1].container);
+		if(module_array.size > 1) {
+			module_array[module_array.size -2].connectToModule(module_array[module_array.size -1]);
+		};
 	}
 
 	removeModule { |slot|
@@ -24,6 +27,14 @@ MGU_moduleRack : MGU_AbstractModule {
 	}
 
 	printRackContents {
+
+	}
+
+	sendSynth {
+
+	}
+
+	killSynths {
 
 	}
 

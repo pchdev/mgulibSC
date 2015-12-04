@@ -5,7 +5,7 @@ PO_zita : MGU_AbstractModule { // faust zita_rev1
 	var <eq2_freq, <eq2_lvl;
 	var <mix, <lvl;
 
-	*new { |out, server, numChannels, name|
+	*new { |out, server, numChannels = 2, name|
 		^super.newCopyArgs(out, server, numChannels, name).init.initParameters
 	}
 
