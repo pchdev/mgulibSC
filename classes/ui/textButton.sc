@@ -1,46 +1,46 @@
 MGU_textButton {
 
-	classvar instanceCount;
+	var parent, bounds, bound_parameter;
+	var view, displayed_text;
 
-	var parent, bounds, string;
-	var font, fontsize;
-	var view, text;
-	var inbounds;
-	var bgcolor, bgclickColor, bgoverColor;
-	var bdcolor, bdclickColor, bdoverColor;
-	var blinkTime;
-	var textcolor, textclickColor, textoverColor;
-
-	*new { |parent, bounds, string|
-		^this.newCopyArgs(parent, bounds, string).init
+	*new {|parent, bounds, bound_parameter|
+		^this.newCopyArgs(parent, bounds, bound_parameter).init
 	}
 
 	init {
 
-		// checking arguments
-		bounds ?? { bounds = Rect(20, 20, 130, 25) };
-		font ?? { font = Font("Arial", 10) };
-		bgcolor ?? { bgcolor = Color.white };
-		bgclickColor ?? { bgclickColor = Color.black };
-		bdcolor ?? { bdcolor = Color.black };
-		bdclickColor ?? { bdclickColor = Color.white };
-		textcolor ?? { textcolor = Color.black };
-		textclickColor ?? { textclickColor = Color.white };
-		textoverColor ?? { textoverColor = Color.black };
-		blinkTime ?? { blinkTime = 0.1 };
-
-		inbounds = Rect(1, 1, bounds.with - 2, bounds.height - 2);
-
 		view = UserView(parent, bounds);
-		view.background = bgcolor;
-		view.drawFunc = { |thisview|
-			Pen.width = 1;
-			Pen.strokeColor = bdcolor;
-			Pen.strokeRect(inbounds);
+
+
+		view.drawFunc = {
+			Pen.width = 0.5;
+			Pen.fillColor = Color.white;
+			Pen.fillRect(bounds);
 		};
 
-		text = StaticText(parent, inbounds);
+		view.mouseDownAction = {
+
+		};
+
+		view.mouseOverAction = {
+
+		};
+
+		displayed_text = StaticText(view, bounds);
+		displayed_text.font = Font("Arial", 11);
+		displayed_text.align = \topLeft;
+		displayed_text.string = "try me";
 
 	}
+
+	setText { |string|
+		displayed_text.string = string;
+	}
+
+
+
+
+
+
 
 }

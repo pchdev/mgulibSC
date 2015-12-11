@@ -1,11 +1,11 @@
 TITLE:: MGU_AbstractModule
 summary:: Abstract class for all MGU modules
 categories:: Libraries>MGU>AbstractModules
-related:: link::Classes/MGU_AbstractBufferModule::, link::Classes/MGU_AbstractFilterModule::, link::Classes/MGU_AbstractWavetableModule::
+related:: Classes/MGU_AbstractBufferModule, Classes/MGU_AbstractWavetableModule, Classes/MGU_AbstractFilterModule
 
 DESCRIPTION::
 Main class for MGU module implementation. All MGU_module classes should directly or indirectly inherit from this.
-See the "Using & Building Modules" reference tutorial in order to get started with MGU_modules
+See the link::Guides/BuildingUsingModules:: reference tutorial in order to get started with MGU_modules
 
 CLASSMETHODS::
 
@@ -28,7 +28,7 @@ returns:: a link::Classes/MGU_AbstractModule::
 
 INSTANCEMETHODS::
 
-private:: nodeArray, nodeGroup, thisInstance, init
+private:: nodeArray, nodeGroup, thisInstance, init, getPresetFilePath
 
 METHOD:: container
 See link::Classes/MGU_container:: for more information. Users should not have to directly access/modify this attribute.
@@ -38,6 +38,11 @@ registers the module for Minuit communication. See link::Classes/MGU_minuitInter
 
 ARGUMENT:: minuitInterface
 a link::Classes/MGU_minuitInterface::
+
+METHOD:: sendSynth
+instantiate a module synth on the server.
+
+returns:: A link::Classes/Synth:: on the designated server, based on the module's link::Classes/SynthDef:: and parameter values.
 
 METHOD:: killSynths
 kill all synths sent by this module on the server
@@ -62,6 +67,9 @@ an instance of link::Classes/String:: containing the preset's name (see code::.a
 ARGUMENT:: interp
 parameter interpolation from current state (not yet implemented)
 
+METHOD:: getPresetFolderPath
+returns:: an instance of link::Classes/String:: containing the folder path used for saving & recalling preset files
+
 METHOD:: out
 Module's outbut bus, users should not have to use & access this: see the code::.connectToModule:: method instead
 returns:: an instance of link::Classes/Integer:: or link::Classes/Bus::, depending on usage.
@@ -78,11 +86,6 @@ ARGUMENT:: module
 (describe argument here)
 
 returns:: void
-
-METHOD:: sendSynth
-instantiate a module synth on the server.
-
-returns:: A link::Classes/Synth:: on the designated server, based on the module's link::Classes/SynthDef:: and parameter values.
 
 METHOD:: server
 link::Classes/Server:: target for sending the module's synths.
@@ -103,6 +106,11 @@ METHOD:: def
 returns the module's link::Classes/SynthDef::
 
 returns:: a link::Classes/SynthDef::
+
+METHOD:: generateUI
+generates and display an UI based on the module's descriptions and parameters.
+
+
 
 
 EXAMPLES::

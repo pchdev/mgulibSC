@@ -15,6 +15,9 @@ z = PO_zita(0, s);
 z.generateUI;
 
 
+Writing Help
+Writing Extensions
+
 // MODULE RACKS
 
 (
@@ -42,6 +45,31 @@ r.module_array[0].gain.address;
 
 r.container.contAccesses[0].address;
 r.container.directHierarchy;
+
+
+// BUTTON
+(
+w = Window("try", Rect(0, 0, 640, 480));
+t = MGU_textButton(w, Rect(100, 100, 200, 100));
+
+w.front;
+)
+
+// tests
+
+p = PO_sfPlayer(nil, s);
+p.readFile("/Users/pierrecochard/Dropbox/_projets-scrime/_demo-iscore/iscore-demo3/media/16. Broken hills.wav");
+d = PO_zita(0, s);
+
+p.generateUI;
+
+p.connectToModule(d);
+
+p.sendSynth;
+d.sendSynth;
+
+d.generateUI;
+
 
 
 

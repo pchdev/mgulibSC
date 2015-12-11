@@ -1,0 +1,8 @@
+title::Building & Using MGU Modules
+summary::getting started with MGU Modules
+categories:: Libraries>MGU>Guides
+related::Classes/MGU_AbstractModule
+
+hello world
+
+section::Introduction - module structure
