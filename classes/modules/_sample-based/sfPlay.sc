@@ -20,7 +20,7 @@ PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 	paramCallBack { |param, value|
 		switch(param,
 			\startstop, { switch(value[0],
-				\start, { this.sendSynth },
+				\play, { this.sendSynth },
 				\stop, { this.killSynths })};
 		);
 	}

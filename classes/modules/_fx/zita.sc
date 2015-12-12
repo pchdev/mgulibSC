@@ -1,4 +1,4 @@
-PO_zita : MGU_AbstractModule { // faust zita_rev1
+PO_zitaSTS : MGU_AbstractModule { // faust zita_rev1
 
 	var <indel, <lfx, <low_rt60, <mid_rt60, <hf_damping;
 	var <eq1_freq, <eq1_lvl;

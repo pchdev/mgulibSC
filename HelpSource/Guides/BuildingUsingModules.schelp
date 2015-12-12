@@ -3,6 +3,175 @@ summary::getting started with MGU Modules
 categories:: Libraries>MGU>Guides
 related::Classes/MGU_AbstractModule
 
-hello world
+The module library implements multiple features:
+numberedlist::
+## strong::OSC:: audio architecture
+## strong::Minuit protocol:: (OSC query & dialogue system) support for communication with intermedia sequencers, such as i-score
+## convenient & high-level strong::connexion system:: between modules
+## several strong::built-in modules::, including filters, effects, buffer and wavetable based generators, such as synthesizers, samplers & granulators
+## strong::GUI generation:: from module parameters and descriptions
+## strong::Bindings and communication:: with various controller surfaces (currently Ableton Push #1), MIDI & OSC learn...
+::
 
-section::Introduction - module structure
+section::Anatomy of a module
+
+Modules are designed to work similarly to their hardware counterparts, or to VST/AU (and VSTi / AUi) plugins. They basically consists in:
+list::
+## a single or several strong::inputs:: (audio/OSC/MIDI)
+## a signal processing strong::graph:: (generators/processors)
+## a single or several user-accessible strong::parameters::, which can be modulated or automated
+## an strong::user interface:: (UI), allowing for direct user manipulation of theses parameters
+## a single or several strong::outputs:: (audio/OSC/MIDI)
+::
+
+In SuperCollider, the client-server architecture and the bus systems allow such modularity. Thus, the aim of this library is to implement higher-level user-accesses to these possibilities, by gathering and connecting all the great built-in features into sets of tools and classes.
+
+subsection::Within superCollider
+A MGU_module is concretely an link::Classes/Object:: in SuperCollider, which model is described in a link::Classes/Class::. Each class is composed of a set of strong::attributes:: (parameters), strong::functions:: (methods) and a signal processing/generator strong::graph:: (link::Classes/SynthDef::). See the Module-class description section for detailed information, and the Building Modules section in order to get you started building your own modules.
+
+section::Basic instantiation & usage
+A module is instantiated and manipulated like a classic superCollider object:
+code::
+p = PO_sfPlayer(0, s); // simple sound-file player
+::
+
+The link::Classes/PO_sfPlayer:: module can now be accessed and used through the strong::p:: environment variable. The arguments passed code::(0, s):: will be explained further down.
+
+Now that the module is instantiated, what can we do with it?
+
+There are actually two ways of getting to know the module's functionnalities:
+list::
+## Through the module's strong::documentation::, which will explain each user-accessible (public) functionnalities (methods), but also list and describe all of the module's parameters
+## Through the generated strong::user-interface::, which can be directly called from the object, with the code::.generateUI:: generic method.
+::
+
+subsection::Manipulating modules
+
+Let's try both methods, starting with the first one. The strong::documentation:: tells us that we should first load an audio file into the module's buffer, in order to get some sound going. This can be done with the code::.readFile():: method:
+code::
+p = PO_sfPlayer(0, s);
+p.readFile();
+::
+A dialog window should now open, asking us to chose a specific sound file (only .wav & .aif are currently supported within superCollider's link::Classes/Buffer::). Once the sound file is chosen, the post window should confirm us that the sound file has been succesfully loaded (or not).
+)
+
+	The module has now a soundfile loaded into its link::Classes/Buffer:: and is ready to play it. But we first want to verify the value of certain parameters. The modules's documentation lists the following : code::.loop::, code::.playstop::, code::.gain::, code::.startPos::. We will now access the parameters individually to check their default value:
+code::
+p.loop;
+p.playstop;
+::
+
+Let's stop right there for a minute. Notice something? The post-window returns no interesting value to us, just emphasis::"a MGU_parameter".::
+
+Ok, it seems that some explaining needs to be done at this point. A parameter in the MGU_module system is actually an link::Classes/Object:: in itself, containing multiple attributes and methods, such as code::.address::, code::.range::, code::.default::, code::.range::, code::.inUnit::, code::.outUnit::, etc. So in this context, the emphasis::value:: attribute that we want to check is called through the code::.val:: accesser (getter method). Let's try it again with the correct method:
+code::
+p.loop.val; // returns 1
+p.playstop.val; // returns \stop
+p.gain.val; // returns 1
+p.startPos.val; // returns 1
+::
+
+That's fine, but how do we change the value of these parameters? In this case, the correct answer is the simplest one, which you may have intuitively guessed: with the code::.val =:: method (or more accurately the code::.val_():: method). Let's try it with the gain parameter:
+code::
+p.gain.val = 10;
+p.gain.val; // checking value
+::
+
+emphasis::Wait.. something's seems to be wrong, I've entered:: code::10:: emphasis::as a gain value, and the post-window displays:: code::4::
+
+That's right, its time to talk about some of the other parameter's basic methods. I mentioned earlier on the code::range:: attribute of link::Classes/MGU_parameter:: objects. Parameters have automatic clipping functionnalities when the values are higher or lower than the defined range. You can check it by yourself:
+code::
+p.gain.range; // posts [0, 4]
+p.startPos.range; // posts [0, inf]
+p.loop.range; // posts [0, 1]
+p.playstop.range; // posts [\play, \stop]
+::
+
+For symbol-based parameters, the code::.range():: getter method posts the accepted symbol values.
+
+You can also see the Parameter's strong::type:: with the code::.type():: getter method, which can be useful when entering new values:
+code::
+p.gain.type; // posts "Float"
+p.loop.type; // posts "Integer", will round to the lowest integer value
+p.playstop.range; // posts "Symbol"
+::
+
+That's it about parameters for now. Let's tweak the parameters a little bit and make some sound:
+code::
+
+s.boot; // In most cases, the server needs to be booted BEFORE any module declaration and definition
+
+p = PO_sfPlayer(0, s);
+p.readFile();
+p.gain.val = 0.5;
+p.loop.val = 0;
+p.startPos.val = 0;
+
+p.playstop.val = \play;
+p.playstop.val = \stop;
+
+p.startPos.val = 300; // change the start position to 300 milliseconds
+p.playstop.val = \play;
+
+p.gain.val = 0.1;
+
+p.playstop.val = \stop;
+::
+
+subsection::Connecting Modules
+
+Now that we know how to instantiate and manipulate modules, the next step is to assemble them in order to create "instrument-rack" like systems. Again, there are multiple ways to do this:
+list::
+## Manually, using the code::.connectToModule():: method
+## Through the instantiation of a link::Classes/MGU_moduleRack::
+## With help from the user interface
+::
+
+We will go through the three of them, starting with the code::.connectToModule():: method.
+
+Let's pick up our previous example again, and add an effect to it, for example: a reverb. And we'll take a strong::Faust-generated:: reverb rather than the good old freeverb for the occasion:
+code::
+
+p = PO_sfPlayer();
+z = PO_zitaSTS(0); // zita_rev1 stereo reverb compiled from Faust
+
+::
+
+At this point, you might have noticed some subtle changes in comparison to the first example. Remember when we said that we would talk about the modules' strong::instantiation arguments:: a little bit later? Now seems the right time to do it.
+
+If you're using the SuperCollider IDE, when typing the argument section of the module, the emphasis::auto-completion:: system should have indicated you 4 possible arguments: code::out::, code::server::, code::numChannels:: and code::name::.
+
+Right now, only one really interests us: code::out::. The other ones can be left empty (the server argument will chose code::Server.default:: if no argument is passed).
+
+What about code::out:: then? This argument, as its name indicates, represents the module's strong::output(s) channels::, which can be of two sorts:
+list::
+## a "private" instance of link::Classes/Bus::
+## a "physical" output, directly communicating with the computer's audio interface.
+::
+
+In this example, the link::Classes/PO_sfPlayer:: module will not directly communicate with the computer's audio-interface, because its signal will be first processed by the link::Classes/PO_zitaSTS:: module. That's why the code::out:: argument is in this case left blank (code::nil::). To be more precise, link::Classes/PO_sfPlayer:: will create its own private output bus, which can be accessed by other modules, but not directly by the audio-output.
+
+Let's connect the modules now:
+
+code::
+
+p = PO_sfPlayer(nil); // PO_sfPlayer creates its own private output bus.
+z = PO_zitaSTS(0); // ... and zita is connected to the audio-output
+
+p.connectToModule(z);
+::
+
+It is that simple. Yet, under the wheel, the connexion is actually "reversed". Indeed, when calling the code::.connectToModule(z):: method on the link::Classes/PO_sfPlayer:: module instance, it is in fact link::Classes/PO_zitaSTS:: which connects its input bus to the link::Classes/PO_sfPlayer:: module's output bus.
+
+WARNING:: This has some consequences that are important to know, and will allow us to make a short parenthesis on strong::Multichannel support::.
+::
+
+You might have noticed beforehand the code::numChannels:: instantiation argument. Just as in DAWs, each module (or plugin) have generally a fixed number of input and output channels. strong::The Waves VST bundle:: for example indicates this information by adding a emphasis::(m):: or emphasis::(s):: mention in each of its plugins' name.
+
+Within the strong::MGU_module:: extension, these types of connexions are generally made dynamically, thanks to SuperCollider's strong::Multichannel Expansion:: system, but can still be the cause of several problems whenever modules have their own spatial-processing particularities.
+
+In our current example, the link::Classes/PO_sfPlayer:: module manages multichannel dynamically. The loaded soundfile will indeed set the code::numChannels:: attribute automatically. On the other hand, the link::Classes/PO_zitaSTS:: module does not: strong::it is supposed to process stereo signals::. In this particular case, it will not cause a major impact on the audio result, because the two signals are mixed and dispatched equally in the left and right channels. Yet, the drawback is that processing would still be active for the missing channel, if a mono input only was to be connected to the module. In other words, zita would make twice the calculations than it should normally do for a mono signal.
+
+This is why these particular modules have a strong::"MTM":: (emphasis::mono to mono::) strong::"MTS":: (emphasis::mono to stereo::) or strong::"STS":: (emphasis::stereo to stereo::) mention attached to their name (this is for instance the case for the strong::MGU delay-based modules::, such as emphasis::sdelays:: and emphasis::choruses::).
+
+Now, when connecting modules that both support strong::Multichannel Expansion::, the processing is done automatically and efficiently. For example, connecting a link::Classes/PO_sfPlayer:: module playing a stereo sound file to a link::Classes/PO_lpf:: (low-pass filter) will result in the lpf module's duplication. In this case, changing for example the cutoff frequency parameter value will affect both channels.

@@ -47,11 +47,6 @@ returns:: A link::Classes/Synth:: on the designated server, based on the module'
 METHOD:: killSynths
 kill all synths sent by this module on the server
 
-METHOD:: availablePresets
-returns an array containing the name of all previously saved states
-
-returns:: an link::Classes/Array:: of link::Classes/String::
-
 METHOD:: saveState
 saves the module state
 
@@ -60,6 +55,11 @@ an instance of link::Classes/String:: containing the preset's name
 
 METHOD:: recallState
 recalls a previously saved state
+
+METHOD:: availablePresets
+returns an array containing the name of all previously saved states
+
+returns:: an link::Classes/Array:: of link::Classes/String::
 
 ARGUMENT:: fileName
 an instance of link::Classes/String:: containing the preset's name (see code::.availablePresets:: method)
