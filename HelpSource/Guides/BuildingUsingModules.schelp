@@ -96,7 +96,7 @@ p.loop.type; // posts "Integer", will round to the lowest integer value
 p.playstop.range; // posts "Symbol"
 ::
 
-That's it about parameters for now. Let's tweak the parameters a little bit and make some sound:
+That's it about parameters for now. Let's tweak them a little bit and make some sound:
 code::
 
 s.boot; // In most cases, the server needs to be booted BEFORE any module declaration and definition
@@ -161,9 +161,9 @@ z = PO_zitaSTS(0); // ... and zita is connected to the audio-output
 p.connectToModule(z);
 ::
 
-It is that simple. Yet, under the wheel, the connexion is actually "reversed". Indeed, when calling the code::.connectToModule(z):: method on the link::Classes/PO_sfPlayer:: module instance, it is in fact link::Classes/PO_zitaSTS:: which connects its input bus to the link::Classes/PO_sfPlayer:: module's output bus.
+It is that simple. Yet, under the wheel, the connexion is actually "reversed". Indeed, when calling the code::.connectToModule(z):: method on the link::Classes/PO_sfPlayer:: module instance, it is in fact link::Classes/PO_zitaSTS:: that connects its input bus to the link::Classes/PO_sfPlayer:: module's output bus.
 
-WARNING:: This has some consequences that are important to know, and will allow us to make a short parenthesis on strong::Multichannel support::.
+NOTE:: This has some consequences that are important to know, and will allow us to make a short parenthesis on strong::Multichannel support::.
 ::
 
 You might have noticed beforehand the code::numChannels:: instantiation argument. Just as in DAWs, each module (or plugin) have generally a fixed number of input and output channels. strong::The Waves VST bundle:: for example indicates this information by adding a emphasis::(m):: or emphasis::(s):: mention in each of its plugins' name.
@@ -174,4 +174,61 @@ In our current example, the link::Classes/PO_sfPlayer:: module manages multichan
 
 This is why these particular modules have a strong::"MTM":: (emphasis::mono to mono::) strong::"MTS":: (emphasis::mono to stereo::) or strong::"STS":: (emphasis::stereo to stereo::) mention attached to their name (this is for instance the case for the strong::MGU delay-based modules::, such as emphasis::sdelays:: and emphasis::choruses::).
 
-Now, when connecting modules that both support strong::Multichannel Expansion::, the processing is done automatically and efficiently. For example, connecting a link::Classes/PO_sfPlayer:: module playing a stereo sound file to a link::Classes/PO_lpf:: (low-pass filter) will result in the lpf module's duplication. In this case, changing for example the cutoff frequency parameter value will affect both channels.
+Now, when connecting modules that both support strong::Multichannel Expansion::, the processing is done automatically and efficiently. For example, connecting a link::Classes/PO_sfPlayer:: module playing a stereo sound file to a link::Classes/PO_lpf:: (low-pass filter) will result in the lpf module's duplication. In this case, changing for example the emphasis::filter cutoff frequency:: parameter value will affect both channels.
+
+Heading back to our strong::connexion example::, and this time preferably using a stereo sound file for the link::Classes/PO_sfPlayer:: module.
+
+code::
+
+s.boot;
+
+p = PO_sfPlayer(nil); // ideally with a stereo sound file
+p.readFile();
+p.gain.val = 0.75;
+
+z = PO_zitaSTS(0);
+
+p.connectToModule(z);
+
+p.playstop.val = \play;
+p.playstop.val = \stop;
+
+::
+
+There is a problem with that piece of code. You can see that the server seems to be processing something, but cannot hear anything coming out of the speakers. This is because the link::Classes/PO_zitaSTS:: has been instantiated on the SuperCollider environment, but not on the server. This is done by calling the code::.sendSynth():: method on zita. Let's correct this right away:
+
+code::
+
+s.boot;
+
+p = PO_sfPlayer(nil); // ideally with a stereo sound file
+p.readFile();
+p.gain.val = 0.75;
+
+z = PO_zitaSTS(0);
+
+p.connectToModule(z);
+
+z.sendSynth(); // instantiating zita BEFORE sfPlayer on the Server
+
+p.playstop.val = \play;
+p.playstop.val = \stop;
+
+::
+
+You may have asked yourself several questions when trying that. First of all, why didn't we call the code::.sendSynth():: method on link::Classes/PO_sfPlayer:: as well?
+
+Well, it's because the code::.playstop.val_():: setter method is actually another way to call this method, and has the following advantage: it can be called by OSC, and consequently by any other piece of software that has also implemented this protocol. This will be explained in further chapters.
+
+The second question that this piece of code raises is the question of the strong::modules' instantiation order::. As you may know, SuperCollider strong::Nodes:: are to be placed in a very specific order on the link::Classes/Server:: for them to work properly. Yet, this is not something you should worry about here, for the good reason that the code::.connectToModule():: method takes care of this for you.
+
+NOTE:: strong::Still::, if the link::Classes/PO_sfPlayer:: module was to be played (instantiated) before zita, it would result in a truncated audio result, because in this configuration, zita's the one communicating with the audio-output. Thus, if the audio output is only active when zita is instantiated, it means that the first frames of sfPlayer's audio wouldn't go through the speakers at all.
+
+Consequently, it is really preferable to "strong::climb up the ladder::" when instantiating modules, starting with the one linked to the audio output, and climbing up progressively to the emphasis::generator::.
+::
+
+
+
+
+
+
