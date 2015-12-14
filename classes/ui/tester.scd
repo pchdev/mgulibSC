@@ -70,6 +70,8 @@ d.sendSynth;
 
 d.generateUI;
 
+o = MGU_cycle(0, s);
+
 
 
 

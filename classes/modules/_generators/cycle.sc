@@ -1,6 +1,6 @@
 MGU_cycle : MGU_AbstractWavetableModule {
 
-	var freq, gain;
+	var <freq, <gain;
 
 	*new { |out, server, numChannels, name|
 		^super.newCopyArgs(out, server, numChannels, name).init.initWavetable.initParameters
