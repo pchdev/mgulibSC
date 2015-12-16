@@ -25,7 +25,7 @@ MGU_AbstractBufferModule : MGU_AbstractModule {
 
 		("[] File:" + path + "succesfully loaded.").postln;
 		out ?? { out = Bus.audio(server, numChannels) };
-		read !? { this.sendSynth };
+		//read !? { this.sendSynth };
 	}
 
 	readFile { |filePath = nil, read = false|

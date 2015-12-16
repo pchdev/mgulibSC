@@ -1,0 +1,38 @@
+TITLE:: MGU_container
+summary:: node container for MGU library modules
+categories:: Libraries>MGU>Structure
+related:: MGU_parameter, MGU_minuitInterface, MGU_AbstractModule
+
+DESCRIPTION::
+link::Classes/MGU_container:: is the central node of MGU library modules. Its role is to manage all the parameters defined within the modules in order to create convenience functions for sending synths and modifying its values in real time on the server. When registered to a link::Classes/MGU_minuitInterface::, link::Classes/MGU_container:: gathers all the information about the module's OSC structure and parameter attributes.
+This class is closely linked to link::Classes/MGU_AbstractModule::, and thus should not be accessed nor modified by users.
+
+CLASSMETHODS::
+
+METHOD:: new
+
+ARGUMENT:: address
+OSC address of the module (linked to link::Classes/MGU_AbstractModule::'s name)
+
+ARGUMENT:: parentContainer
+If this container dwells within another, it should be defined here from the start
+
+ARGUMENT:: node
+	All the module's synths are sent to a default code::nodeGroup::, users shouldn't have to access this
+
+ARGUMENT:: oscPort
+	the osc port of the module is defined as follows : code::MGU_minuitInterface -> MGU_container -> MGU_parameter:: Users shouldn't have to access this
+
+returns:: a link::Classes/MGU_container::
+
+
+INSTANCEMETHODS::
+
+	private:: address, directHierarchy, registerContainer, contAddresses, contAccesses, paramAccesses, name, node, makeSynthArray, addContainer, paramAddresses, oscPort, addParameter, registerParameter, generateUI, controlWithPush, parentContainer
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::

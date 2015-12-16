@@ -57,9 +57,9 @@ w.front;
 
 // tests
 
-p = PO_sfPlayer(nil, s);
+p = PO_sfPlayer(0, s);
 p.readFile("/Users/pierrecochard/Dropbox/_projets-scrime/_demo-iscore/iscore-demo3/media/16. Broken hills.wav");
-d = PO_zita(0, s);
+d = PO_zitaSTS(0, s);
 
 p.generateUI;
 
@@ -72,6 +72,32 @@ d.generateUI;
 
 o = MGU_cycle(0, s);
 
+m = MGU_minuitInterface
+c = MGU_container
 
 
+p = MGU_cycle(0);
+c = PO_chorusSTS();
+z = PO_zitaSTS(nil);
+r = MGU_moduleRack(0);
+r.addModule(p);
+r.addModule(z);
+r.addModules(p,c,z);
+r.module_array;
+r.sendSynth;
+p.sendSynth
+
+p.out;
+z.inbus.val;
+z.out;
+
+p.generateUI;
+
+p.waveform.val = \sine;
+
+r.module(1).name;
+r.module(0).out;
+r.module(1).inbus.val;
+
+r.module(0).name;
 

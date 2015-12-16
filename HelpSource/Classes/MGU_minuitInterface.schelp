@@ -1,0 +1,35 @@
+TITLE:: MGU_minuitInterface
+summary:: interface between mgu library modules & minuit-driven softwares, like i-score
+categories:: MGU library
+related:: MGU_parameter, MGU_container, MGU_AbstractModule
+
+DESCRIPTION::
+Implementation of the Minuit protocol for superCollider MGU modules. Each module should have a .registerToMinuit method (inherited from MGU_AbstractModule). MinuitInterface is the highest Minuit Node from which all MGU modules should be registered
+
+CLASSMETHODS::
+
+METHOD:: new
+
+ARGUMENT:: address
+OSC path / default = superColl
+
+ARGUMENT:: port
+OSC reception port / default = 3127
+
+returns:: a MGU_minuitInterface
+
+INSTANCEMETHODS::
+private::addContainer, addParameter, applicationNodes, contAccesses, contAddresses, getQuery, listenQuery, paramAccesses, paramAddresses, parseDiscovery, parseGet, parseListen, queryNode, queryTreeRoot, respAddr, sendResponse
+
+EXAMPLES::
+
+code::
+s.boot;
+
+m = MGU_minuitInterface("superColl", 3127);
+p = PO_sfPlayer(0, s);
+p.readFile();
+
+p.registerToMinuit(m);
+
+::

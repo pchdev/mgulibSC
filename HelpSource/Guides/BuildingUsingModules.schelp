@@ -227,6 +227,53 @@ NOTE:: strong::Still::, if the link::Classes/PO_sfPlayer:: module was to be play
 Consequently, it is really preferable to "strong::climb up the ladder::" when instantiating modules, starting with the one linked to the audio output, and climbing up progressively to the emphasis::generator::.
 ::
 
+subsection::Module racks
+
+The second method is an emphasis::auto-pilot:: one. strong::Module racks:: are designed to take care of (almost) everything for you. Its usage is really simple, you just stack up modules into the rack with the code::.addModule:: method:
+code::
+
+// the modules need to be instantiated first:
+
+s.boot;
+
+p = PO_sfPlayer();
+c = PO_chorusSTS();
+z = PO_zitaSTS();
+
+r = MGU_moduleRack(0, s);
+
+r.addModule(p);
+r.addModule(c);
+r.addModule(z);
+
+// or
+
+r.addModules(p,c,z);
+
+// you can still access modules directly from environment variables
+
+p.name = "mySfPlayer";
+r.module(0).name; // prints "mySfPlayer
+::
+
+Then, you have to call the instantiation just once on the rack:
+
+code::
+r.sendSynth();
+::
+
+If you now dump the node tree (cmd+T), you should have an instance of chorus and one of zita. The rack didn't send a sfPlayer synth because the module is registered as a generator. Consequently, generators' synths logically need to be sent manually or with an external method.
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -26,6 +26,7 @@ PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 	}
 
 	bufferLoaded { // separated from this.initParameters, must read soundFile first
+
 		startPos.sr = sampleRate; //
 		def = SynthDef(name, {
 			var bufrd;
@@ -34,8 +35,6 @@ PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 		}).add;
 
 	}
-
-
 }
 
 		

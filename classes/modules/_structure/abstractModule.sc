@@ -2,7 +2,7 @@ MGU_AbstractModule {
 
 	classvar instanceCount;
 
-	var <>out, <>server, <>numChannels, <>name;
+	var <out, <>server, <>numChannels, <>name;
 	var <def, <container, <nodeGroup, <nodeArray;
 	var <inbus;
 	var <thisInstance;
@@ -48,6 +48,11 @@ MGU_AbstractModule {
 		if(out.class == Bus, { module.inbus.val = out.index }, {
 			module.inbus.val = out });
 		module.numChannels = numChannels;
+	}
+
+	out_ { |numOut|
+		numOut !? { out = numOut };
+		numOut ?? { out = Bus.audio(server, numChannels) };
 	}
 
 	generateUI {
