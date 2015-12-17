@@ -5,7 +5,7 @@ MGU_parameter {
 	var <container, <name, <type, <range, <default, <>alwaysOnServ;
 	var <>inUnit, <>outUnit, <>sr;
 	var <>defaultNode;
-	var <val;
+	var val, absolute_val;
 	var <>address, <>defName;
 	var oscFunc, <>oscPort;
 	var <>parentAccess;
@@ -62,6 +62,13 @@ MGU_parameter {
 
 	}
 
+	val { |beforeConversion = false|
+		var res;
+		if(beforeConversion) { res = absolute_val } { res = val };
+		^res
+
+	}
+
 	val_ { |value, node, interp = false, duration = 2000, curve = \lin, onServ,
 		absolute_unit = false, report_to_ui = true|
 
@@ -73,10 +80,10 @@ MGU_parameter {
 					value.put(i, value[i].asInteger)});
 
 				if((value[i].isKindOf(Integer)) && (type == Float), {
-					value.put(i, value[i].asFloat)});
+					value[i] = value[i].asFloat});
 
 				if((value[i].isKindOf(Float)) && (type == Integer), {
-					value.put(i, value[i].asInteger)});
+					value[i] = value[i].asInteger});
 
 				if((value[i].isKindOf(type) == false) && (type != Array), {
 					Error("[PARAMETER] /!\ WRONG TYPE:" + name).throw });
@@ -86,7 +93,9 @@ MGU_parameter {
 					value[i] = value[i].clip(range[0], range[1]);
 				});
 
-				if(type == Array, { val = value }, { val = value[i] });
+				if(type == Array){ val = value } { val = value[i] };
+
+				absolute_val = val;
 
 				// unit conversion
 				if((inUnit.notNil) && (outUnit.notNil) && (absolute_unit == false), {

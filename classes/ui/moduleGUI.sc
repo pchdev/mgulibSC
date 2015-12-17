@@ -51,4 +51,4 @@ MGU_moduleGUI {
 		window.front;
 	}
 
-} MGU_container
+}

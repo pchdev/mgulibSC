@@ -196,13 +196,14 @@ MGU_slider {
 		type = bound_parameter.type;
 		range = bound_parameter.range;
 		default_value = bound_parameter.default;
-		value = bound_parameter.val;
+		value = bound_parameter.val(true);
 		parameter.bound_to_ui = true;
 		parameter.ui = this;
 		this.calculate_graphical_value; // 1st call to method
 	}
 
 	value_from_parameter { |v|
+
 		value = v;
 
 		AppClock.sched(0, {
