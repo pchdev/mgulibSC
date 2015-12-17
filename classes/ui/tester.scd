@@ -101,3 +101,8 @@ r.module(1).inbus.val;
 
 r.module(0).name;
 
+m = MGU_minuitInterface("superColl", 3127)
+o = MGU_simpleSine(0, s);
+o.registerToMinuit(m);
+o.sendSynth();
+o.level.val = -24;

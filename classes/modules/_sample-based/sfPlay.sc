@@ -1,6 +1,6 @@
 PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 
-	var <gain, <startPos;
+	var <startPos;
 	var <loop, <playstop;
 
 	*new { |out, server, numChannels, name|
@@ -9,9 +9,10 @@ PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 
 	initParameters {
 
+		type = \generator;
+
 		loop = MGU_parameter(container, \loop, Integer, [0, 1], 1, true);
-		playstop = MGU_parameter(container, \startstop, Symbol, nil, \stop, true);
-		gain = MGU_parameter(container, \gain, Float, [0.0, 4.0], 1.0, true);
+		playstop = MGU_parameter(container, \playStop, Symbol, nil, \stop, true);
 		startPos = MGU_parameter(container, \startPos, Integer, [0, inf], 0, true, \ms, \samps);
 		playstop.parentAccess = this;
 
@@ -19,7 +20,7 @@ PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 
 	paramCallBack { |param, value|
 		switch(param,
-			\startstop, { switch(value[0],
+			\playStop, { switch(value[0],
 				\play, { this.sendSynth },
 				\stop, { this.killSynths })};
 		);
@@ -31,7 +32,7 @@ PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 		def = SynthDef(name, {
 			var bufrd;
 			bufrd = PlayBuf.ar(numChannels, buffer.bufnum, 1, 1, startPos.kr, loop.kr, 2);
-			Out.ar(out, bufrd * gain.kr);
+			Out.ar(master_internal, bufrd);
 		}).add;
 
 	}

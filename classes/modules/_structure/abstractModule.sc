@@ -2,9 +2,10 @@ MGU_AbstractModule {
 
 	classvar instanceCount;
 
-	var <out, <>server, <>numChannels, <>name;
-	var <def, <container, <nodeGroup, <nodeArray;
-	var <inbus;
+	var <out, <>server, <>numChannels, <>name, <>type;
+	var <def, <container, <nodeGroup, <nodeArray, <nodeArray_master;
+	var <inbus, <level, <mix;
+	var <master_internal, <master_def;
 	var <thisInstance;
 
 	*new { |out = 0, server, numChannels = 1, name|
@@ -22,8 +23,33 @@ MGU_AbstractModule {
 		name ?? { name = this.class.asCompileString.split($_)[1] ++ "_" ++ thisInstance };
 
 		nodeGroup = Group(1, 'addToTail');
+		nodeArray = [];
+		nodeArray_master = [];
+		master_internal = Bus.audio(server, numChannels);
+
 		container = MGU_container(name, nil, nodeGroup, 3127, this);
 		inbus = MGU_parameter(container, \inbus, Integer, [0, inf], inf, true);
+		level = MGU_parameter(container, \level, Float, [-96, 12], 0, true, \dB, \amp);
+		mix = MGU_parameter(container, \mix, Float, [0, 1], 0.5, true);
+
+	}
+
+	initMasterOut {
+
+		switch(type,
+			\generator, {
+				master_def = SynthDef(name ++ "_master", {
+					var in = In.ar(master_internal.index, numChannels);
+					var process = in * level.kr;
+					Out.ar(out, process);
+			}).add },
+			\effect, {
+				master_def = SynthDef(name ++ "_master", {
+					var in_dry = In.ar(inbus.kr, numChannels);
+					var in_wet = In.ar(master_internal.index, numChannels);
+					var process = FaustDrywet.ar(in_dry, in_wet, mix.kr);
+					Out.ar(out, process);
+		}).add });
 
 	}
 
@@ -33,11 +59,19 @@ MGU_AbstractModule {
 	}
 
 	sendSynth {
+		nodeArray_master = nodeArray_master.add(
+			Synth(name ++ "_master", [name ++ "_level", level.val, name ++ "_mix", mix.val],
+				nodeGroup, 'addToTail'));
 		nodeArray = nodeArray.add(
-			Synth(name, container.makeSynthArray.asOSCArgArray, nodeGroup, 'addToTail'));
+			Synth(name, container.makeSynthArray.asOSCArgArray, nodeGroup, 'addToHead'));
 	}
 
-	killSynths {
+	killSynth { |index|
+		nodeArray[index].free;
+		nodeArray.removeat(index);
+	}
+
+	killAllSynths {
 		nodeArray.size.do({|i|
 			nodeArray[0].free;
 			nodeArray.removeAt(0);

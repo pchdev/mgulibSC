@@ -240,7 +240,7 @@ p = PO_sfPlayer();
 c = PO_chorusSTS();
 z = PO_zitaSTS();
 
-r = MGU_moduleRack(0, s);
+r = MGU_moduleRack(0, s)
 
 r.addModule(p);
 r.addModule(c);
@@ -254,6 +254,8 @@ r.addModules(p,c,z);
 
 p.name = "mySfPlayer";
 r.module(0).name; // prints "mySfPlayer
+p.readFile();
+
 ::
 
 Then, you have to call the instantiation just once on the rack:
@@ -262,7 +264,24 @@ code::
 r.sendSynth();
 ::
 
-If you now dump the node tree (cmd+T), you should have an instance of chorus and one of zita. The rack didn't send a sfPlayer synth because the module is registered as a generator. Consequently, generators' synths logically need to be sent manually or with an external method.
+If you now dump the node tree (with emphasis::cmd+T::), you should have an instance of chorus and one of zita. The rack didn't send a sfPlayer synth because the module is registered strong::as a generator::. Generator synths need to be sent manually or with an external method.
+
+Consequently, if you need to design a "pure" effect-rack (like an auxiliary track on a mixer), you just have to connect your generators to the rack through the usual code::.connectToModule:: method.
+code::
+
+o = MGU_cycle();
+p = PO_sfPlayer();
+
+r = MGU_moduleRack(0);
+
+o.connectToModule(r);
+p.connectToModule(r);
+
+// the module rack will now process both "cycle" & "sfPlayer" generators
+::
+
+
+o = MGU_cycle()
 
 
 

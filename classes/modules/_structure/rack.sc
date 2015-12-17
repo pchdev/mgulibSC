@@ -1,9 +1,10 @@
 MGU_moduleRack : MGU_AbstractModule {
 
+	var hasGenerator;
 	var <module_array;
 
-	*new { |out = 0, server, numChannels, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters
+	*new { |out = 0, server, numChannels, name, hasGenerator = true|
+		^super.newCopyArgs(out, server, numChannels, name, hasGenerator).init.initParameters
 	}
 
 	initParameters {
@@ -41,6 +42,8 @@ MGU_moduleRack : MGU_AbstractModule {
 	}
 
 	sendSynth {
+		var gen;
+		if(hasGenerator) { gen = 1 } { gen = 0 };
 		(module_array.size - 1).do({|i|
 			var j = module_array.size - (i+1);
 			module_array[j].sendSynth()
