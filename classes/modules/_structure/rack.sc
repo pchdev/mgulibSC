@@ -1,24 +1,21 @@
 MGU_moduleRack : MGU_AbstractModule {
 
-	var hasGenerator;
 	var <module_array;
 
-	*new { |out = 0, server, numChannels, name, hasGenerator = true|
-		^super.newCopyArgs(out, server, numChannels, name, hasGenerator).init.initParameters
+	*new { |out = 0, server, numChannels, name|
+		^super.newCopyArgs(out, server, numChannels,name).type_(\effect)
+		.init.initRack.initMasterOut;
 	}
 
-	initParameters {
+	initRack {
 		module_array = [];
 	}
 
 	addModule { |module|
 		module_array = module_array.add(module);
 		container.registerContainer(module_array[module_array.size -1].container);
+		module_array[module_array.size -1].out = master_internal;
 		if(module_array.size > 1) {
-			module_array[module_array.size -1].out = out;
-			(module_array.size -1).do({|i|
-				module_array[i].out = nil;
-			});
 			module_array[module_array.size -2].connectToModule(module_array[module_array.size -1]);
 		};
 	}
@@ -41,16 +38,18 @@ MGU_moduleRack : MGU_AbstractModule {
 
 	}
 
+	sendRack { this.sendSynth } // alias, clearer on the code like that
+
 	sendSynth {
 		var gen;
-		if(hasGenerator) { gen = 1 } { gen = 0 };
+		if(module_array[0].type == \generator) { gen = 1 } { gen = 0 };
 		(module_array.size - gen).do({|i|
 			var j = module_array.size - (i+1);
 			module_array[j].sendSynth()
 		});
 	}
 
-	killSynths {
+	killAllSynths {
 
 	}
 

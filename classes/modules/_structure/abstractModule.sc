@@ -39,6 +39,11 @@ MGU_AbstractModule {
 
 	}
 
+	registerToMinuit { |minuitInterface|
+		minuitInterface.addContainer(container);
+		container.parentContainer = minuitInterface;
+	}
+
 	initMasterOut {
 
 		switch(type,
@@ -58,11 +63,6 @@ MGU_AbstractModule {
 
 	}
 
-	registerToMinuit { |minuitInterface|
-		minuitInterface.addContainer(container);
-		container.parentContainer = minuitInterface;
-	}
-
 	sendSynth {
 
 		switch(type,
@@ -73,14 +73,16 @@ MGU_AbstractModule {
 						nodeGroup, 'addToTail'))},
 			\generator, {
 				nodeArray_master = nodeArray_master.add(
-					Synth(name ++ "_master", [name ++ "_level", level.val], nodeGroup, 'addToTail'))});
+					Synth(name ++ "_master", [name ++ "_level", level.val],
+						nodeGroup, 'addToTail'))});
 
 		nodeArray = nodeArray.add(
 			Synth(name, container.makeSynthArray.asOSCArgArray, nodeGroup, 'addToHead'));
+
 		sendArray !? {
 			sendArray.size.do({|i|
 				nodeArray_send = nodeArray_send.add(
-					Synth(name ++ "_send" ++ (i+1), ["snd_" ++ sendArray[i].name,
+					Synth(name ++ "_send" ++ (i+1), [name ++ "_snd_" ++ sendArray[i].name,
 						sendLevelArray[i].val], nodeGroup, 'addToTail'))
 			})
 		}
@@ -95,14 +97,27 @@ MGU_AbstractModule {
 	}
 
 	killAllSynths {
+
 		nodeArray.size.do({|i|
 			nodeArray[0].free;
 			nodeArray.removeAt(0);
 		});
+
+		nodeArray_master.size.do({|i|
+			nodeArray_master[0].free;
+			nodeArray_master.removeAt(0);
+		});
+
+		nodeArray_send.size.do({|i|
+			nodeArray_send[0].free;
+			nodeArray_send.removeAt(0);
+		});
+
 	}
 
 	connectToModule { |module|
 		out = module.inbus;
+		this.initMasterOut();
 	}
 
 	addNewSend { |target|
@@ -137,7 +152,7 @@ MGU_AbstractModule {
 		inbus = Bus.audio(server, numChannels);
 	}
 
-	generateUI {
+	generateUI { // shortcut
 		container.generateUI;
 	}
 

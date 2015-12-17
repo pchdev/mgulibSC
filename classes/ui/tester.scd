@@ -147,5 +147,52 @@ p.sendSynth();
 p.generateUI;
 z.generateUI;
 
+// EXAMPLES
+
+// 1 - simple
+
+p = PO_sfPlayer();
+p.readFile("/Users/meegooh/Dropbox/_projets-scrime/_demo-iscore/iscore-demo3/media/16. Broken hills.wav");
+p.sendSynth();
+p.killAllSynths();
+p.generateUI; // works okay
+
+// 2 - with connectToModule
+
+p = PO_sfPlayer();
+p.readFile("/Users/meegooh/Dropbox/_projets-scrime/_demo-iscore/iscore-demo3/media/16. Broken hills.wav");
+z = PO_zitaSTS();
+p.connectToModule(z);
+z.sendSynth()
+p.sendSynth();
+p.generateUI();
+z.generateUI();
+
+p.killAllSynths();
+z.killAllSynths(); // works okay
+
+// 3 - with sends
+
+p = PO_sfPlayer();
+p.readFile("/Users/meegooh/Dropbox/_projets-scrime/_demo-iscore/iscore-demo3/media/16. Broken hills.wav");
+z = PO_zitaSTS();
+p.addNewSend(z);
+z.sendSynth();
+p.sendSynth();
+p.generateUI();
+z.generateUI();
+
+p.killAllSynths();
+z.killAllSynths();s // works okay
+
+// 4 - with instrument rack (witout sends)
+
+// 5 - with effect rack (sends)
+
+
+
+
+
+
 
 

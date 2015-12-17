@@ -5,8 +5,9 @@ PO_zitaSTS : MGU_AbstractModule { // faust zita_rev1
 	var <eq2_freq, <eq2_lvl;
 	var <mix, <lvl;
 
-	*new { |out, server, numChannels = 2, name|
-		^super.newCopyArgs(out, server, numChannels, name).type_(\effect).init.initModule.initMasterOut
+	*new { |out = 0, server, numChannels = 2, name|
+		^super.newCopyArgs(out, server, numChannels, name).type_(\effect)
+		.init.initModule.initMasterOut
 	}
 
 	initModule {
@@ -30,8 +31,6 @@ PO_zitaSTS : MGU_AbstractModule { // faust zita_rev1
 				eq2_freq.kr, eq2_lvl.kr, 0.0, -20);
 			Out.ar(master_internal, verb);
 		}).add;
-
-		//this.initMasterOut();
 
 	}
 
