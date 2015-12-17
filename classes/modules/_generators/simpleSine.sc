@@ -1,22 +1,22 @@
 MGU_simpleSine : MGU_AbstractModule {
 
-	var freq;
+	var <freq;
 
 	*new { |out, server, numChannels, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters
+		^super.newCopyArgs(out, server, numChannels, name).type_(\generator)
+		.init.initModule.initMasterOut;
 	}
 
-	initParameters {
+	initModule {
 
-		type = \generator;
-
+		// init parameters first
 		freq = MGU_parameter(container, \freq, Float, [20, 20000], 440, true);
 
+		// then init synthdef, with .add method
 		def = SynthDef(name, {
 			var process = SinOsc.ar(freq.kr);
 			Out.ar(master_internal, process);
 		}).add;
 
-		this.initMasterOut();
 	}
 }

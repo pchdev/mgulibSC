@@ -6,10 +6,10 @@ PO_zitaSTS : MGU_AbstractModule { // faust zita_rev1
 	var <mix, <lvl;
 
 	*new { |out, server, numChannels = 2, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters
+		^super.newCopyArgs(out, server, numChannels, name).type_(\effect).init.initModule.initMasterOut
 	}
 
-	initParameters {
+	initModule {
 
 		indel = MGU_parameter(container, \indel, Integer, [20, 100], 60, true);
 		lfx = MGU_parameter(container, \lfx, Integer, [50, 1000], 200, true);
@@ -20,19 +20,18 @@ PO_zitaSTS : MGU_AbstractModule { // faust zita_rev1
 		eq1_lvl = MGU_parameter(container, \eq1_lvl, Float, [-15, 15], 0.0, true);
 		eq2_freq = MGU_parameter(container, \eq2_freq, Integer, [40, 2500], 315, true);
 		eq2_lvl = MGU_parameter(container, \eq2_lvl, Float, [-15, 15], 0.0, true);
-		mix = MGU_parameter(container, \mix, Float, [-1.0, 1.0], 0.0, true);
-		lvl = MGU_parameter(container, \level, Float, [-70, 40], -20.0, true);
 
 		def = SynthDef(name, {
-			var inleft, inright, verb, process;
-			inleft = In.ar(inbus.kr);
-			inright = In.ar(inbus.kr + 1);
-			verb = FaustZitaRev1.ar(inleft, inright, indel.kr, lfx.kr,
+			var in, verb, process;
+			in = In.ar(inbus, 2);
+			verb = FaustZitaRev1.ar(in[0], in[1], indel.kr, lfx.kr,
 				low_rt60.kr, mid_rt60.kr, hf_damping.kr, eq1_freq.kr,
 				eq1_lvl.kr,
-				eq2_freq.kr, eq2_lvl.kr, mix.kr, lvl.kr);
-			Out.ar(out, verb);
+				eq2_freq.kr, eq2_lvl.kr, 0.0, -20);
+			Out.ar(master_internal, verb);
 		}).add;
+
+		//this.initMasterOut();
 
 	}
 

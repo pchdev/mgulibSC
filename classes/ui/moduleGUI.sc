@@ -34,9 +34,8 @@ MGU_moduleGUI {
 				{ if(pname != \inbus) { ui_array = ui_array.add(MGU_slider(window,
 					Rect(20, y_offset, 150, 20), parameter)) }}}
 			{ type == Float } {
-				ui_array =
-				if(pname == \gain) { ui_array.add(MGU_slider(window,
-					Rect(20, y_offset, 150, 20), parameter, 5)) } {
+				if(pname == \freq) { ui_array.add(MGU_slider(window,
+					Rect(20, y_offset, 150, 20), parameter, 7)) } {
 					ui_array.add(MGU_slider(window, Rect(20, y_offset, 150, 20), parameter))};
 			};
 		});
@@ -52,4 +51,4 @@ MGU_moduleGUI {
 		window.front;
 	}
 
-}
+} MGU_container

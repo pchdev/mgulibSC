@@ -2,11 +2,13 @@ MGU_AbstractModule {
 
 	classvar instanceCount;
 
-	var <out, <>server, <>numChannels, <>name, <>type;
-	var <def, <container, <nodeGroup, <nodeArray, <nodeArray_master;
+	var <out, <>server, <numChannels, <>name, <>type;
+	var <def, <container, <nodeGroup, <nodeArray, <nodeArray_master, <nodeArray_send;
 	var <inbus, <level, <mix;
 	var <master_internal, <master_def;
 	var <thisInstance;
+
+	var <sendArray, <sendDefArray, <sendLevelArray;
 
 	*new { |out = 0, server, numChannels = 1, name|
 		^this.newCopyArgs(out, server, numChannels, name)
@@ -18,19 +20,22 @@ MGU_AbstractModule {
 		instanceCount ?? { instanceCount = 1 };
 		thisInstance = instanceCount;
 		numChannels ?? { numChannels = 1 };
-		out ?? { out = Bus.audio(server, numChannels) };
 		server ?? { server = Server.default };
 		name ?? { name = this.class.asCompileString.split($_)[1] ++ "_" ++ thisInstance };
 
 		nodeGroup = Group(1, 'addToTail');
 		nodeArray = [];
 		nodeArray_master = [];
+		nodeArray_send = [];
 		master_internal = Bus.audio(server, numChannels);
 
 		container = MGU_container(name, nil, nodeGroup, 3127, this);
-		inbus = MGU_parameter(container, \inbus, Integer, [0, inf], inf, true);
 		level = MGU_parameter(container, \level, Float, [-96, 12], 0, true, \dB, \amp);
-		mix = MGU_parameter(container, \mix, Float, [0, 1], 0.5, true);
+
+		if(type == \effect) {
+			inbus = Bus.audio(server, numChannels);
+			mix = MGU_parameter(container, \mix, Float, [0, 1], 0.5, true);
+		};
 
 	}
 
@@ -39,15 +44,15 @@ MGU_AbstractModule {
 		switch(type,
 			\generator, {
 				master_def = SynthDef(name ++ "_master", {
-					var in = In.ar(master_internal.index, numChannels);
+					var in = In.ar(master_internal, numChannels);
 					var process = in * level.kr;
 					Out.ar(out, process);
 			}).add },
 			\effect, {
 				master_def = SynthDef(name ++ "_master", {
-					var in_dry = In.ar(inbus.kr, numChannels);
-					var in_wet = In.ar(master_internal.index, numChannels);
-					var process = FaustDrywet.ar(in_dry, in_wet, mix.kr);
+					var in_dry = In.ar(inbus, numChannels);
+					var in_wet = In.ar(master_internal, numChannels);
+					var process = FaustDrywet.ar(in_dry, in_wet, mix.kr) * level.kr;
 					Out.ar(out, process);
 		}).add });
 
@@ -59,16 +64,34 @@ MGU_AbstractModule {
 	}
 
 	sendSynth {
-		nodeArray_master = nodeArray_master.add(
-			Synth(name ++ "_master", [name ++ "_level", level.val, name ++ "_mix", mix.val],
-				nodeGroup, 'addToTail'));
+
+		switch(type,
+
+			\effect, {
+				nodeArray_master = nodeArray_master.add(
+					Synth(name ++ "_master", [name ++ "_level", level.val, name ++ "_mix", mix.val],
+						nodeGroup, 'addToTail'))},
+			\generator, {
+				nodeArray_master = nodeArray_master.add(
+					Synth(name ++ "_master", [name ++ "_level", level.val], nodeGroup, 'addToTail'))});
+
 		nodeArray = nodeArray.add(
 			Synth(name, container.makeSynthArray.asOSCArgArray, nodeGroup, 'addToHead'));
+		sendArray !? {
+			sendArray.size.do({|i|
+				nodeArray_send = nodeArray_send.add(
+					Synth(name ++ "_send" ++ (i+1), ["snd_" ++ sendArray[i].name,
+						sendLevelArray[i].val], nodeGroup, 'addToTail'))
+			})
+		}
+
 	}
 
 	killSynth { |index|
+		nodeArray_master[index].free;
+		nodeArray_master.removeAt(index);
 		nodeArray[index].free;
-		nodeArray.removeat(index);
+		nodeArray.removeAt(index);
 	}
 
 	killAllSynths {
@@ -79,14 +102,39 @@ MGU_AbstractModule {
 	}
 
 	connectToModule { |module|
-		if(out.class == Bus, { module.inbus.val = out.index }, {
-			module.inbus.val = out });
-		module.numChannels = numChannels;
+		out = module.inbus;
 	}
 
-	out_ { |numOut|
-		numOut !? { out = numOut };
-		numOut ?? { out = Bus.audio(server, numChannels) };
+	addNewSend { |target|
+
+		var outArray = [];
+
+		target.inbus.numChannels.do({|i|
+			outArray = outArray.add(target.inbus.index + i)
+		});
+
+		sendArray ?? { sendArray = [] };
+		sendLevelArray ?? { sendLevelArray = [] };
+		sendDefArray ?? { sendDefArray = [] };
+
+		sendArray = sendArray.add(target);
+
+		sendLevelArray = sendLevelArray.add(
+			MGU_parameter(container, "snd_" ++ target.name,
+				Float, [-96, 12], 0, true, \dB, \amp));
+
+		sendDefArray = sendDefArray.add(
+			SynthDef(name ++ "_send" ++ sendArray.size, {
+				var in = In.ar(master_internal, numChannels);
+				var process = in * sendLevelArray[sendLevelArray.size -1].kr;
+				Out.ar(outArray, process);
+			}).add;
+		);
+	}
+
+	numChannels_ { |value|
+		inbus !? { inbus.free };
+		inbus = Bus.audio(server, numChannels);
 	}
 
 	generateUI {

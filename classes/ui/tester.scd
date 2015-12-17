@@ -54,6 +54,7 @@ t = MGU_textButton(w, Rect(100, 100, 200, 100));
 
 w.front;
 )
+MGU_moduleGUI
 
 // tests
 
@@ -106,3 +107,30 @@ o = MGU_simpleSine(0, s);
 o.registerToMinuit(m);
 o.sendSynth();
 o.level.val = -24;
+
+// out test
+
+fork ({
+	inf.do({|i|
+		g.freq.val = 50.rrand(2000);
+		0.5.wait;
+	})
+});
+
+g = MGU_simpleSine([0, 1]);
+z = PO_zitaSTS(0, s);
+g.addNewSend(z);
+z.sendSynth;
+g.sendSynth;
+
+z.inbus.scope();
+g.generateUI;
+z.generateUI;
+
+g.out;
+z.inbus;
+z.inbus.scope;
+
+z.inbus.numChannels;
+
+s.scope;
