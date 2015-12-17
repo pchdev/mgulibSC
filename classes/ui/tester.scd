@@ -113,7 +113,7 @@ o.level.val = -24;
 fork ({
 	inf.do({|i|
 		g.freq.val = 50.rrand(2000);
-		0.5.wait;
+		0.02.wait;
 	})
 });
 
@@ -134,3 +134,18 @@ z.inbus.scope;
 z.inbus.numChannels;
 
 s.scope;
+
+p = PO_sfPlayer([0, 1]);
+z = PO_zitaSTS(0, s);
+p.addNewSend(z);
+z.sendSynth();
+
+p.readFile("/Users/pierrecochard/Dropbox/_projets-scrime/_demo-iscore/iscore-demo3/media/16. Broken hills.wav");
+
+p.sendSynth();
+
+p.generateUI;
+z.generateUI;
+
+
+

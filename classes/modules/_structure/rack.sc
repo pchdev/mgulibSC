@@ -44,7 +44,7 @@ MGU_moduleRack : MGU_AbstractModule {
 	sendSynth {
 		var gen;
 		if(hasGenerator) { gen = 1 } { gen = 0 };
-		(module_array.size - 1).do({|i|
+		(module_array.size - gen).do({|i|
 			var j = module_array.size - (i+1);
 			module_array[j].sendSynth()
 		});

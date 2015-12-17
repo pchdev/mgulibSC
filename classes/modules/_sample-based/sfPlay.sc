@@ -3,13 +3,12 @@ PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 	var <startPos;
 	var <loop, <playstop;
 
-	*new { |out, server, numChannels, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters;
+	*new { |out, server, numChannels = 2, name|
+		^super.newCopyArgs(out, server, numChannels, name).type_(\generator)
+		.init.initModule.initMasterOut;
 	}
 
-	initParameters {
-
-		type = \generator;
+	initModule {
 
 		loop = MGU_parameter(container, \loop, Integer, [0, 1], 1, true);
 		playstop = MGU_parameter(container, \playStop, Symbol, nil, \stop, true);
