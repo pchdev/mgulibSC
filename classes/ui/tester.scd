@@ -183,11 +183,48 @@ p.generateUI();
 z.generateUI();
 
 p.killAllSynths();
-z.killAllSynths();s // works okay
+z.killAllSynths(); // works okay
 
-// 4 - with instrument rack (witout sends)
+// 4 - with instrument rack (witout sends) TO BE TESTED
+
+p = PO_sfPlayer();
+p.readFile("/Users/meegooh/Dropbox/_projets-scrime/_demo-iscore/iscore-demo3/media/16. Broken hills.wav");
+
+c = PO_chorusSTS();
+z = PO_zitaSTS();
+
+r = MGU_moduleRack();
+
+r.addModules(p,c,z);
+
+r.sendRack();
+
+p.sendSynth();
+r.generateUI();
+
+p.killAllSynths();
+r.killAllSynths();
 
 // 5 - with effect rack (sends)
+
+p = PO_sfPlayer();
+p.readFile("/Users/meegooh/Dropbox/_projets-scrime/_demo-iscore/iscore-demo3/media/16. Broken hills.wav");
+
+c = PO_chorusSTS();
+z = PO_zitaSTS();
+
+r = MGU_moduleRack();
+
+r.addModules(c,z);
+p.addNewSend(r);
+
+r.sendRack();
+
+p.sendSynth();
+r.generateUI();
+
+p.killAllSynths();
+r.killAllSynths();
 
 
 
