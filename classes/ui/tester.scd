@@ -208,7 +208,7 @@ r.killAllSynths();
 // 5 - with effect rack (sends)
 
 p = PO_sfPlayer();
-p.readFile("/Users/meegooh/Dropbox/_projets-scrime/_demo-iscore/iscore-demo3/media/16. Broken hills.wav");
+p.readFile("/Users/pierrecochard/Dropbox/_projets-scrime/_demo-iscore/iscore-demo3/media/16. Broken hills.wav");
 
 c = PO_chorusSTS();
 z = PO_zitaSTS();
@@ -220,13 +220,17 @@ p.addNewSend(r);
 
 r.sendRack();
 
-p.sendSynth();
+p.sendSynth()
+p.generateUI;
 r.generateUI();
 
 p.killAllSynths();
 r.killAllSynths();
 
+c.inbus.scope;
+p.out;
 
+r.inbus.scope
 
 
 

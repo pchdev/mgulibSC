@@ -2,7 +2,7 @@ MGU_moduleRack : MGU_AbstractModule {
 
 	var <module_array;
 
-	*new { |out = 0, server, numChannels, name|
+	*new { |out = 0, server, numChannels = 2, name|
 		^super.newCopyArgs(out, server, numChannels,name).type_(\effect)
 		.init.initRack.initMasterOut;
 	}
@@ -17,7 +17,8 @@ MGU_moduleRack : MGU_AbstractModule {
 		module_array[module_array.size -1].out = master_internal;
 		if(module_array.size > 1) {
 			module_array[module_array.size -2].connectToModule(module_array[module_array.size -1]);
-		};
+		} /* else */ {
+			module_array[0].inbus = inbus };
 	}
 
 	addModules { |...moduleArray|

@@ -1,47 +1,52 @@
 MGU_AbstractModule {
 
-	classvar instanceCount;
+	classvar c_instanceCount;
 
-	var <out, <>server, <numChannels, <>name, <>type;
-	var <def, <container, <nodeGroup, <nodeArray, <nodeArray_master, <nodeArray_send;
-	var <inbus, <level, <mix;
-	var <master_internal, <master_def;
-	var <thisInstance;
+	var <m_out, <>r_server, <m_numInputs, <m_numOutputs, <>m_name;
+	var <m_container;
+	var b_in, b_internal;
+	var d_core, d_master
+	var g_node, a_node, a_masterNode, a_sendNode;
+	var a_send, a_defSend, a_levelSend;
+	var <p_level, <p_mix;
+	var <m_thisInstance;
 
-	var <sendArray, <sendDefArray, <sendLevelArray;
 
-	*new { |out = 0, server, numChannels = 1, name|
-		^this.newCopyArgs(out, server, numChannels, name)
+	*new { |out = 0, server, numInputs = 1, numOutputs = 1, name|
+		^this.newCopyArgs(m_out, r_server, m_numInputs, m_numOutputs, m_name)
 	}
 
 	init {
 
-		instanceCount !? { instanceCount = instanceCount + 1 };
-		instanceCount ?? { instanceCount = 1 };
-		thisInstance = instanceCount;
-		numChannels ?? { numChannels = 1 };
-		server ?? { server = Server.default };
-		name ?? { name = this.class.asCompileString.split($_)[1] ++ "_" ++ thisInstance };
+		// count
+		c_instanceCount !? { c_instanceCount = c_instanceCount + 1 };
+		c_instanceCount ?? { c_instanceCount = 1 };
+		m_thisInstance = c_instanceCount;
 
-		nodeGroup = Group(1, 'addToTail');
-		nodeArray = [];
-		nodeArray_master = [];
-		nodeArray_send = [];
-		master_internal = Bus.audio(server, numChannels);
+		// defaults
+		r_server ?? { r_server = Server.default };
+		m_name ?? {m_name = this.class.asCompileString.split($_)[1] ++ "_" ++ m_thisInstance };
 
-		container = MGU_container(name, nil, nodeGroup, 3127, this);
-		level = MGU_parameter(container, \level, Float, [-96, 12], 0, true, \dB, \amp);
+		// node arrays
+		g_node = Group(1, 'addToTail');
+		a_node = [];
+		a_sendNode = [];
+		a_sendNode = [];
 
-		if(type == \effect) {
-			inbus = Bus.audio(server, numChannels);
-			mix = MGU_parameter(container, \mix, Float, [0, 1], 0.5, true);
+		m_container = MGU_container(m_name, nil, g_node, 3127, this);
+		p_level = MGU_parameter(m_container, \level, Float, [-96, 12], 0, true, \dB, \amp);
+		p_out = MGU_parameter(m_container, \out, Integer, [0, inf], 0, false);
+
+		if(numInputs > 0) {
+			b_in = Bus.audio(r_server, m_numInputs);
+			p_mix = MGU_parameter(m_container, \mix, Float, [0, 1], 0.5, true);
 		};
 
 	}
 
-	registerToMinuit { |minuitInterface|
-		minuitInterface.addContainer(container);
-		container.parentContainer = minuitInterface;
+	registerToMinuit { |r_minuitInterface|
+		r_minuitInterface.addContainer(m_container);
+		m_container.parentContainer = r_minuitInterface;
 	}
 
 	initMasterOut {
