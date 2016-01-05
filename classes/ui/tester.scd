@@ -147,6 +147,8 @@ p.sendSynth();
 p.generateUI;
 z.generateUI;
 
+r = PO_rmod(0, s);
+
 // EXAMPLES
 
 // 1 - simple
@@ -157,12 +159,14 @@ p.sendSynth();
 p.killAllSynths();
 p.generateUI; // works okay
 
+
 // 2 - with connectToModule
 
 p = PO_sfPlayer();
 p.readFile("/Users/meegooh/Dropbox/_projets-scrime/_demo-iscore/iscore-demo3/media/16. Broken hills.wav");
 z = PO_zitaSTS();
 p.connectToModule(z);
+
 z.sendSynth()
 p.sendSynth();
 p.generateUI();
@@ -230,10 +234,7 @@ r.killAllSynths();
 c.inbus.scope;
 p.out;
 
-r.inbus.scope
-
-
-
+r.inbus.scope;
 
 
 

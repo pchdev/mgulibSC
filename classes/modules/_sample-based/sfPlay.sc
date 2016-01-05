@@ -3,8 +3,8 @@ PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 	var <startPos;
 	var <loop, <playstop;
 
-	*new { |out = 0, server, numChannels = 2, name|
-		^super.newCopyArgs(out, server, numChannels, name).type_(\generator)
+	*new { |out = 0, server, numInputs = 0, numOutputs = 2, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\generator)
 		.init.initModule.initMasterOut;
 	}
 
@@ -30,9 +30,10 @@ PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 		startPos.sr = sampleRate; //
 		def = SynthDef(name, {
 			var bufrd;
-			bufrd = PlayBuf.ar(numChannels, buffer.bufnum, 1, 1, startPos.kr, loop.kr, 2);
+			bufrd = PlayBuf.ar(numOutputs, buffer.bufnum, 1, 1, startPos.kr, loop.kr, 2);
 			Out.ar(master_internal, bufrd);
 		}).add;
+		this.initMasterOut();
 
 	}
 }

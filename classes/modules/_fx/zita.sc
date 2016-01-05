@@ -5,8 +5,8 @@ PO_zitaSTS : MGU_AbstractModule { // faust zita_rev1
 	var <eq2_freq, <eq2_lvl;
 	var <mix, <lvl;
 
-	*new { |out = 0, server, numChannels = 2, name|
-		^super.newCopyArgs(out, server, numChannels, name).type_(\effect)
+	*new { |out = 0, server, numInputs = 2, numOutputs = 2, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
 		.init.initModule.initMasterOut
 	}
 
@@ -24,7 +24,7 @@ PO_zitaSTS : MGU_AbstractModule { // faust zita_rev1
 
 		def = SynthDef(name, {
 			var in, verb, process;
-			in = In.ar(inbus, 2);
+			in = In.ar(inbus, numInputs);
 			verb = FaustZitaRev1.ar(in[0], in[1], indel.kr, lfx.kr,
 				low_rt60.kr, mid_rt60.kr, hf_damping.kr, eq1_freq.kr,
 				eq1_lvl.kr,

@@ -6,7 +6,7 @@ MGU_AbstractBufferModule : MGU_AbstractModule {
 		var soundFile;
 		soundFile = SoundFile.openRead(path);
 		numFrames = soundFile.numFrames;
-		numChannels = soundFile.numChannels;
+		numOutputs = soundFile.numChannels;
 		sampleRate = soundFile.sampleRate;
 		buffer !? {
 			var temp;
@@ -21,10 +21,10 @@ MGU_AbstractBufferModule : MGU_AbstractModule {
 			})
 		};
 
-		buffer ?? { buffer = Buffer.read(server, path, action: { this.bufferLoaded })};
+		buffer ?? { buffer = Buffer.read(server, path, action: { this.bufferLoaded() })};
 
 		("[] File:" + path + "succesfully loaded.").postln;
-		out ?? { out = Bus.audio(server, numChannels) };
+		//out ?? { out = Bus.audio(server, numChannels) };
 		//read !? { this.sendSynth };
 	}
 

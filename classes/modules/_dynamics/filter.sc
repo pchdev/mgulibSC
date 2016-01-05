@@ -13,15 +13,15 @@ MGU_AbstractFilterModule : MGU_AbstractModule {
 
 PO_moogVCF : MGU_AbstractFilterModule {
 
-	*new { |out, server, numChannels = 1, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters.initDef
+	*new { |out, server, numInputs = 1, numOutputs = 2, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters.initDef
 	}
 
 	initDef {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.kr, numChannels);
+			in = In.ar(inbus.kr, numInputs);
 			process = MoogFF.ar(in, freq.kr, gain.kr, 0)
 		}).add
 	}
@@ -29,15 +29,15 @@ PO_moogVCF : MGU_AbstractFilterModule {
 
 PO_lpf : MGU_AbstractFilterModule {
 
-	*new { |out, server, numChannels = 1, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters.initDef
+	*new { |out, server, numInputs = 1, numOutputs = 2, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters.initDef
 	}
 
 	initDef {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.kr, numChannels);
+			in = In.ar(inbus.kr, numInputs);
 			process = BLowPass.ar(in, freq.kr, q.kr, gain.kr);
 			Out.ar(out, process);
 		}).add
@@ -46,15 +46,15 @@ PO_lpf : MGU_AbstractFilterModule {
 
 PO_hpf : MGU_AbstractFilterModule {
 
-	*new { |out, server, numChannels = 1, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters.initDef
+	*new { |out, server, numInputs = 1, numOutputs = 2, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters.initDef
 	}
 
 	initDef {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.kr, numChannels);
+			in = In.ar(inbus.kr, numInputs);
 			process = BHiPass.ar(in, freq.kr, q.kr, gain.kr);
 			Out.ar(out, process);
 		}).add
@@ -64,15 +64,15 @@ PO_hpf : MGU_AbstractFilterModule {
 
 PO_bpf : MGU_AbstractFilterModule {
 
-	*new { |out, server, numChannels = 1, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters.initDef
+	*new { |out, server, numInputs = 1, numOutputs = 2, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters.initDef
 	}
 
 	initDef {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.kr, numChannels);
+			in = In.ar(inbus.kr, numInputs);
 			process = BBandPass.ar(in, freq.kr, q.kr, gain.kr);
 			Out.ar(out, process);
 		}).add
@@ -82,15 +82,15 @@ PO_bpf : MGU_AbstractFilterModule {
 
 PO_brf : MGU_AbstractFilterModule {
 
-	*new { |out, server, numChannels = 1, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters.initDef
+	*new { |out, server, numInputs = 1, numOutputs = 2, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters.initDef
 	}
 
 	initDef {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.kr, numChannels);
+			in = In.ar(inbus.kr, numInputs);
 			process = BBandStop.ar(in, freq.kr, q.kr, gain.kr);
 			Out.ar(out, process);
 		}).add
@@ -100,8 +100,8 @@ PO_brf : MGU_AbstractFilterModule {
 
 PO_lsf : MGU_AbstractFilterModule {
 
-	*new { |out, server, numChannels = 1, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters.initDef
+	*new { |out, server, numInputs = 1, numOutputs = 2, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters.initDef
 	}
 
 	initDef {
@@ -110,7 +110,7 @@ PO_lsf : MGU_AbstractFilterModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.kr, numChannels);
+			in = In.ar(inbus.kr, numInputs);
 			process = BLowShelf.ar(in, freq.kr, q.kr, gain.kr);
 			Out.ar(out, process);
 		}).add
@@ -120,8 +120,8 @@ PO_lsf : MGU_AbstractFilterModule {
 
 PO_hsf : MGU_AbstractFilterModule {
 
-	*new { |out, server, numChannels = 1, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters.initDef
+	*new { |out, server, numInputs = 1, numOutputs = 2, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters.initDef
 	}
 
 	initDef {
@@ -130,7 +130,7 @@ PO_hsf : MGU_AbstractFilterModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.kr, numChannels);
+			in = In.ar(inbus.kr, numInputs);
 			process = BHiShelf.ar(in, freq.kr, q.kr, gain.kr);
 			Out.ar(out, process);
 		}).add
@@ -140,15 +140,15 @@ PO_hsf : MGU_AbstractFilterModule {
 
 PO_apf : MGU_AbstractFilterModule {
 
-	*new { |out, server, numChannels = 1, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters.initDef
+	*new { |out, server, numInputs = 1, numOutputs = 2, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters.initDef
 	}
 
 	initDef {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.kr, numChannels);
+			in = In.ar(inbus.kr, numInputs);
 			process = BAllPass.ar(in, freq.kr, q.kr, gain.kr);
 			Out.ar(out, process);
 		}).add
@@ -158,8 +158,8 @@ PO_apf : MGU_AbstractFilterModule {
 
 PO_midEQ : MGU_AbstractFilterModule {
 
-	*new { |out, server, numChannels = 1, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters.initDef
+	*new { |out, server, numInputs = 1, numOutputs = 2, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters.initDef
 	}
 
 	initDef {
@@ -168,7 +168,7 @@ PO_midEQ : MGU_AbstractFilterModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.kr, numChannels);
+			in = In.ar(inbus.kr, numInputs);
 			process = BPeakEQ.ar.ar(in, freq.kr, q.kr, gain.kr);
 			Out.ar(out, process);
 		}).add
@@ -189,8 +189,8 @@ PO_multiEQ : MGU_AbstractModule { // TBC
 
 	var <band;
 
-	*new { |out, server, numChannels = 1, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initBand
+	*new { |out, server, numInputs = 1, numOutputs = 1, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initBand
 	}
 
 
@@ -211,7 +211,7 @@ PO_multiEQ : MGU_AbstractModule { // TBC
 			// if more than one band, create a new output bus for the
 			// previous band and connect the next one
 
-			band[band.size -2].out = Bus.audio(server, numChannels);
+			band[band.size -2].out = Bus.audio(server, numInputs);
 			band[band.size -2].connectToModule(band[band.size -1]);
 
 		};

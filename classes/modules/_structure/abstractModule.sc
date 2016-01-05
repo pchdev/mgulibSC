@@ -1,69 +1,79 @@
 MGU_AbstractModule {
 
-	classvar c_instanceCount;
+	classvar instanceCount;
 
-	var <m_out, <>r_server, <m_numInputs, <m_numOutputs, <>m_name;
-	var <m_container;
-	var b_in, b_internal;
-	var d_core, d_master
-	var g_node, a_node, a_masterNode, a_sendNode;
-	var a_send, a_defSend, a_levelSend;
-	var <p_level, <p_mix;
-	var <m_thisInstance;
+	var <out, <>server, <numInputs, <numOutputs, <>name;
+	var <container, type, <master_internal;
+	var <inbus;
+	var def;
+	var <level, <mix;
+	var <thisInstance;
+	var sendDefArray, sendLevelArray, sendArray;
+	var nodeArray_send, nodeArray_master, nodeArray;
+	var nodeGroup;
+	var <master_def;
+	var <type;
 
 
-	*new { |out = 0, server, numInputs = 1, numOutputs = 1, name|
-		^this.newCopyArgs(m_out, r_server, m_numInputs, m_numOutputs, m_name)
+	*new { |out = 0, server, numInputs, numOutputs, name|
+		^this.newCopyArgs(out, server, numInputs, numOutputs, name)
 	}
 
 	init {
 
+		type.postln();
+
 		// count
-		c_instanceCount !? { c_instanceCount = c_instanceCount + 1 };
-		c_instanceCount ?? { c_instanceCount = 1 };
-		m_thisInstance = c_instanceCount;
+		instanceCount !? { instanceCount = instanceCount + 1 };
+		instanceCount ?? { instanceCount = 1 };
+		thisInstance = instanceCount;
 
 		// defaults
-		r_server ?? { r_server = Server.default };
-		m_name ?? {m_name = this.class.asCompileString.split($_)[1] ++ "_" ++ m_thisInstance };
+		server ?? { server = Server.default };
+		name ?? {name = this.class.asCompileString.split($_)[1] ++ "_" ++ thisInstance };
 
 		// node arrays
-		g_node = Group(1, 'addToTail');
-		a_node = [];
-		a_sendNode = [];
-		a_sendNode = [];
+		nodeGroup = Group(1, 'addToTail');
+		nodeArray = [];
+		nodeArray_send = [];
+		nodeArray_master = [];
 
-		m_container = MGU_container(m_name, nil, g_node, 3127, this);
-		p_level = MGU_parameter(m_container, \level, Float, [-96, 12], 0, true, \dB, \amp);
-		p_out = MGU_parameter(m_container, \out, Integer, [0, inf], 0, false);
+		container = MGU_container(name, nil, nodeGroup, 3127, this);
+		level = MGU_parameter(container, \level, Float, [-96, 12], 0, true, \dB, \amp);
+		out = MGU_parameter(container, \out, Integer, [0, inf], 0, false);
+		master_internal = Bus.audio(server, numOutputs);
 
-		if(numInputs > 0) {
-			b_in = Bus.audio(r_server, m_numInputs);
-			p_mix = MGU_parameter(m_container, \mix, Float, [0, 1], 0.5, true);
+		if(type == \effect) {
+			inbus = Bus.audio(server, numInputs);
+			mix = MGU_parameter(container, \mix, Float, [0, 1], 0.5, true);
 		};
 
 	}
 
-	registerToMinuit { |r_minuitInterface|
-		r_minuitInterface.addContainer(m_container);
-		m_container.parentContainer = r_minuitInterface;
+	type_ { |val| // weird but auto setter doesn't seem to work when initing types directly after constructor
+		type = val;
+	}
+
+	registerToMinuit { |minuitInterface|
+		minuitInterface.addContainer(container);
+		container.parentContainer = minuitInterface;
 	}
 
 	initMasterOut {
 
 		switch(type,
-			\generator, {
+			\generator, { "generator".postln;
 				master_def = SynthDef(name ++ "_master", {
-					var in = In.ar(master_internal, numChannels);
+					var in = In.ar(master_internal, numOutputs);
 					var process = in * level.kr;
-					Out.ar(out, process);
+					Out.ar(out.kr, process);
 			}).add },
 			\effect, {
 				master_def = SynthDef(name ++ "_master", {
-					var in_dry = In.ar(inbus, numChannels);
-					var in_wet = In.ar(master_internal, numChannels);
+					var in_dry = In.ar(inbus, numInputs);
+					var in_wet = In.ar(master_internal, numOutputs);
 					var process = FaustDrywet.ar(in_dry, in_wet, mix.kr) * level.kr;
-					Out.ar(out, process);
+					Out.ar(out.kr, process);
 		}).add });
 
 	}
@@ -121,8 +131,7 @@ MGU_AbstractModule {
 	}
 
 	connectToModule { |module|
-		out = module.inbus;
-		this.initMasterOut();
+		out.val = module.inbus.index;
 	}
 
 	addNewSend { |target|
@@ -145,16 +154,11 @@ MGU_AbstractModule {
 
 		sendDefArray = sendDefArray.add(
 			SynthDef(name ++ "_send" ++ sendArray.size, {
-				var in = In.ar(master_internal, numChannels);
+				var in = In.ar(master_internal, numOutputs);
 				var process = in * sendLevelArray[sendLevelArray.size -1].kr;
 				Out.ar(outArray, process);
 			}).add;
 		);
-	}
-
-	numChannels_ { |value|
-		inbus !? { inbus.free };
-		inbus = Bus.audio(server, numChannels);
 	}
 
 	generateUI { // shortcut

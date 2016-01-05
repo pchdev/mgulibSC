@@ -2,8 +2,8 @@ MGU_compressor : MGU_AbstractModule {
 
 	var <attack, <ratio, <release, <threshold;
 
-	*new { |out, server, numChannels, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters
+	*new { |out, server, numInputs = 1, numOutputs = 1, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters
 	}
 
 	initParameters {
@@ -15,9 +15,9 @@ MGU_compressor : MGU_AbstractModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.kr, numChannels);
+			in = In.ar(inbus.kr, numInputs);
 			process = FaustComp.ar(in, attack.kr, ratio.kr, release.kr, threshold.kr);
-			Out.ar(out, process)
+			Out.ar(out.kr, process)
 		}).add;
 
 	}
