@@ -166,6 +166,7 @@ p = PO_sfPlayer();
 p.readFile("/Users/meegooh/Dropbox/_projets-scrime/_demo-iscore/iscore-demo3/media/16. Broken hills.wav");
 z = PO_zitaSTS();
 p.connectToModule(z);
+p.out.val;
 
 z.sendSynth()
 p.sendSynth();

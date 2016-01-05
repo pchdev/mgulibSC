@@ -33,7 +33,6 @@ PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 			bufrd = PlayBuf.ar(numOutputs, buffer.bufnum, 1, 1, startPos.kr, loop.kr, 2);
 			Out.ar(master_internal, bufrd);
 		}).add;
-		this.initMasterOut();
 
 	}
 }

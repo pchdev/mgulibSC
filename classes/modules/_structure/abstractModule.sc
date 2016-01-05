@@ -50,7 +50,8 @@ MGU_AbstractModule {
 
 	}
 
-	type_ { |val| // weird but auto setter doesn't seem to work when initing types directly after constructor
+	type_ { |val| // weird but auto setter
+		// doesn't seem to work when initing types directly after constructor
 		type = val;
 	}
 
@@ -84,11 +85,12 @@ MGU_AbstractModule {
 
 			\effect, {
 				nodeArray_master = nodeArray_master.add(
-					Synth(name ++ "_master", [name ++ "_level", level.val, name ++ "_mix", mix.val],
+					Synth(name ++ "_master", [name ++ "_level", level.val, name ++ "_mix", mix.val,
+						name ++ "_out", out.val],
 						nodeGroup, 'addToTail'))},
 			\generator, {
 				nodeArray_master = nodeArray_master.add(
-					Synth(name ++ "_master", [name ++ "_level", level.val],
+					Synth(name ++ "_master", [name ++ "_level", level.val, name ++ "_out", out.val],
 						nodeGroup, 'addToTail'))});
 
 		nodeArray = nodeArray.add(
