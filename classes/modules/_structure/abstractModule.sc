@@ -21,6 +21,8 @@ MGU_AbstractModule {
 
 	init {
 
+		var temp_out = out;
+
 		type.postln();
 
 		// count
@@ -40,7 +42,7 @@ MGU_AbstractModule {
 
 		container = MGU_container(name, nil, nodeGroup, 3127, this);
 		level = MGU_parameter(container, \level, Float, [-96, 12], 0, true, \dB, \amp);
-		out = MGU_parameter(container, \out, Integer, [0, inf], 0, false);
+		out = MGU_parameter(container, \out, Integer, [0, inf], temp_out, false);
 		master_internal = Bus.audio(server, numOutputs);
 
 		if(type == \effect) {

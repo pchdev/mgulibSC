@@ -198,11 +198,16 @@ p.readFile("/Users/meegooh/Dropbox/_projets-scrime/_demo-iscore/iscore-demo3/med
 c = PO_chorusSTS();
 z = PO_zitaSTS();
 
-r = MGU_moduleRack();
+z.inbus.scope
 
-r.addModules(p,c,z);
+r = MGU_moduleRack();
+r.out.val
+r.master_internal;
+
+r.addModules(p,z);
 
 r.sendRack();
+
 
 p.sendSynth();
 r.generateUI();
