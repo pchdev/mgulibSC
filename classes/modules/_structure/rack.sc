@@ -2,9 +2,9 @@ MGU_moduleRack : MGU_AbstractModule {
 
 	var <module_array;
 
-	*new { |out = 0, server, numInputs = 1, numOutputs = 1, name|
-		^super.newCopyArgs(out, server, numInputs = 1, numOutputs = 2, name).type_(\effect)
-		.init.initRack.initMasterOut;
+	*new { |out = 0, server, numInputs = 2, numOutputs = 2, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+		.init.initRack.initMasterDef;
 	}
 
 	initRack {
@@ -14,10 +14,17 @@ MGU_moduleRack : MGU_AbstractModule {
 	addModule { |module|
 		module_array = module_array.add(module);
 		container.registerContainer(module_array[module_array.size -1].container);
-		module_array[module_array.size -1].out.val = master_internal.index;
+
+		if(module_array[0].type == \effect) { // rack input = first effect input
+			this.inbus = module_array[0].inbus;
+		};
+
 		if(module_array.size > 1) {
 			module_array[module_array.size -2].connectToModule(module_array[module_array.size -1]);
 		};
+
+		module_array[module_array.size -1].out = master_internal.index;
+
 	}
 
 	addModules { |...moduleArray|
@@ -49,14 +56,15 @@ MGU_moduleRack : MGU_AbstractModule {
 		});
 
 		nodeArray_master = nodeArray_master.add(
-					Synth(name ++ "_master", [name ++ "_level", level.val, name ++ "_mix", mix.val,
-						name ++ "_out", out.val],
-						nodeGroup, 'addToTail'))
+					Synth(name ++ "_master", [name ++ "_level", level.val, name ++ "_mix",
+				mix.val], nodeGroup, 'addToTail'))
 	}
 
 	killAllSynths {
 
 	}
+
+	connectToModule {}
 
 	module { |index|
 		^module_array[index];

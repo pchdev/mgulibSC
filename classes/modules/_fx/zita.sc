@@ -7,7 +7,7 @@ PO_zitaSTS : MGU_AbstractModule { // faust zita_rev1
 
 	*new { |out = 0, server, numInputs = 2, numOutputs = 2, name|
 		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
-		.init.initModule.initMasterOut
+		.init.initModule.initMasterDef
 	}
 
 	initModule {
@@ -28,7 +28,7 @@ PO_zitaSTS : MGU_AbstractModule { // faust zita_rev1
 			verb = FaustZitaRev1.ar(in[0], in[1], indel.kr, lfx.kr,
 				low_rt60.kr, mid_rt60.kr, hf_damping.kr, eq1_freq.kr,
 				eq1_lvl.kr,
-				eq2_freq.kr, eq2_lvl.kr, 0.0, -20);
+				eq2_freq.kr, eq2_lvl.kr, 0, -20);
 			Out.ar(master_internal, verb);
 		}).add;
 

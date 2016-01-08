@@ -31,7 +31,7 @@ MGU_moduleGUI {
 			{ type == Integer } {
 				if(range == [0, 1]) { ui_array = ui_array.add(MGU_toggle(window,
 					Rect(20, y_offset, 17, 17), parameter)) }
-				{ if(pname != \inbus) { ui_array = ui_array.add(MGU_slider(window,
+				{ if(pname != \inbuser) { ui_array = ui_array.add(MGU_slider(window,
 					Rect(20, y_offset, 150, 20), parameter)) }}}
 			{ type == Float } {
 				if(pname == \freq) { ui_array.add(MGU_slider(window,

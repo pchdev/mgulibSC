@@ -3,16 +3,16 @@ MGU_AbstractModule {
 	classvar instanceCount;
 
 	var <out, <>server, <numInputs, <numOutputs, <>name;
+	var <type;
 	var <container, type, <master_internal;
-	var <inbus;
+	var <inbus, <inbus_index;
 	var def;
 	var <level, <mix;
 	var <thisInstance;
-	var sendDefArray, sendLevelArray, sendArray;
+	var sendDefArray, sendLevelArray, <sendArray;
 	var nodeArray_send, nodeArray_master, nodeArray;
 	var nodeGroup;
 	var <master_def;
-	var <type;
 
 
 	*new { |out = 0, server, numInputs, numOutputs, name|
@@ -20,10 +20,6 @@ MGU_AbstractModule {
 	}
 
 	init {
-
-		var temp_out = out;
-
-		type.postln();
 
 		// count
 		instanceCount !? { instanceCount = instanceCount + 1 };
@@ -42,7 +38,6 @@ MGU_AbstractModule {
 
 		container = MGU_container(name, nil, nodeGroup, 3127, this);
 		level = MGU_parameter(container, \level, Float, [-96, 12], 0, true, \dB, \amp);
-		out = MGU_parameter(container, \out, Integer, [0, inf], temp_out, false);
 		master_internal = Bus.audio(server, numOutputs);
 
 		if(type == \effect) {
@@ -62,23 +57,35 @@ MGU_AbstractModule {
 		container.parentContainer = minuitInterface;
 	}
 
-	initMasterOut {
+	inbus_{ |newbus|
+		inbus.free();
+		inbus = newbus;
+		this.initMasterDef();
+	}
+
+	initMasterDef {
 
 		switch(type,
-			\generator, { "generator".postln;
+			\generator, {
 				master_def = SynthDef(name ++ "_master", {
 					var in = In.ar(master_internal, numOutputs);
 					var process = in * level.kr;
-					Out.ar(out.kr, process);
+					Out.ar(out, process);
 			}).add },
 			\effect, {
 				master_def = SynthDef(name ++ "_master", {
-					var in_dry = In.ar(inbus, numInputs);
-					var in_wet = In.ar(master_internal, numOutputs);
+					var in_wet = In.ar(master_internal, 2);
+					var in_dry = In.ar(inbus, 2);
 					var process = FaustDrywet.ar(in_dry, in_wet, mix.kr) * level.kr;
-					Out.ar(out.kr, process);
+					Out.ar(out, process);
 		}).add });
 
+	}
+
+	refreshMasterInternal {
+		master_internal.free();
+		master_internal = Bus.audio(server, numOutputs);
+		this.initMasterDef();
 	}
 
 	sendSynth {
@@ -87,12 +94,11 @@ MGU_AbstractModule {
 
 			\effect, {
 				nodeArray_master = nodeArray_master.add(
-					Synth(name ++ "_master", [name ++ "_level", level.val, name ++ "_mix", mix.val,
-						name ++ "_out", out.val],
+					Synth(name ++ "_master", [name ++ "_level", level.val, name ++ "_mix", mix.val],
 						nodeGroup, 'addToTail'))},
 			\generator, {
 				nodeArray_master = nodeArray_master.add(
-					Synth(name ++ "_master", [name ++ "_level", level.val, name ++ "_out", out.val],
+					Synth(name ++ "_master", [name ++ "_level", level.val],
 						nodeGroup, 'addToTail'))});
 
 		nodeArray = nodeArray.add(
@@ -135,16 +141,15 @@ MGU_AbstractModule {
 	}
 
 	connectToModule { |module|
-		out.val = module.inbus.index;
+		out = module.inbus.index;
+	}
+
+	out_ { |newOut|
+		out = newOut;
+		this.initMasterDef()
 	}
 
 	addNewSend { |target|
-
-		var outArray = [];
-
-		target.inbus.numChannels.do({|i|
-			outArray = outArray.add(target.inbus.index + i)
-		});
 
 		sendArray ?? { sendArray = [] };
 		sendLevelArray ?? { sendLevelArray = [] };
@@ -160,7 +165,7 @@ MGU_AbstractModule {
 			SynthDef(name ++ "_send" ++ sendArray.size, {
 				var in = In.ar(master_internal, numOutputs);
 				var process = in * sendLevelArray[sendLevelArray.size -1].kr;
-				Out.ar(outArray, process);
+				Out.ar(target.inbus, process);
 			}).add;
 		);
 	}

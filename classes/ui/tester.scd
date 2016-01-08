@@ -206,7 +206,7 @@ r.master_internal;
 
 r.addModules(p,z);
 
-r.sendRack();
+r.sendSynth();
 
 
 p.sendSynth();
@@ -218,29 +218,36 @@ r.killAllSynths();
 // 5 - with effect rack (sends)
 
 p = PO_sfPlayer();
-p.readFile("/Users/pierrecochard/Dropbox/_projets-scrime/_demo-iscore/iscore-demo3/media/16. Broken hills.wav");
+p.readFile("/Users/meegooh/Dropbox/_projets-scrime/_demo-iscore/iscore-demo3/media/16. Broken hills.wav");
 
 c = PO_chorusSTS();
 z = PO_zitaSTS();
 
 r = MGU_moduleRack();
 
-r.addModules(c,z);
+r.addModules(z);
 p.addNewSend(r);
 
 r.sendRack();
-
 p.sendSynth()
+
 p.generateUI;
 r.generateUI();
+z.generateUI;
 
 p.killAllSynths();
 r.killAllSynths();
 
-c.inbus.scope;
-p.out;
+// tests
 
-r.inbus.scope;
+r.inbus;
+z.inbus;
+z.out();
 
+s.scope();
+z.master_internal;
+z.master_internal.scope();
+r.master_internal;
+r.master_internal.scope();
 
 

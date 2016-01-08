@@ -5,7 +5,7 @@ PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 
 	*new { |out = 0, server, numInputs = 0, numOutputs = 2, name|
 		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\generator)
-		.init.initModule.initMasterOut;
+		.init.initModule.initMasterDef;
 	}
 
 	initModule {
