@@ -21,7 +21,6 @@ MGU_slider {
 				bounds = Rect(0, 0, 30, 100)}
 			)};
 
-//		background_color = Color.new255(55,90,101);
 		background_color = Color.new255(115,150,171);
 		has_focus = false;
 		keystring = "";
@@ -54,7 +53,8 @@ MGU_slider {
 			view.drawFunc = { |slider|
 				Pen.width = 0.5;
 				Pen.fillColor = background_color;
-				Pen.fillRect(Rect(0, ((range[1] - graphical_value) / range[1]) * view.bounds.height,
+				Pen.fillRect(Rect(0, ((range[1] - graphical_value) / range[1])
+					* view.bounds.height,
 					view.bounds.width, (value / range[1]) * view.bounds.height));
 		}});
 
@@ -97,7 +97,8 @@ MGU_slider {
 
 		// parameter address display
 		parameter_address_display = StaticText(parent, Rect(bounds.left + bounds.width + 15,
-			bounds.top + (frame_view.bounds.height/4) - 1, bound_parameter.address.size * 11, 12));
+			bounds.top + (frame_view.bounds.height/4) - 1,
+			bound_parameter.address.size * 11, 12));
 		parameter_address_display.font = Font("Arial", 11);
 		parameter_address_display.align = \topLeft;
 		parameter_address_display.string = bound_parameter.address;
@@ -107,9 +108,10 @@ MGU_slider {
 
 			if(has_focus) { this.removeFocus } { this.giveFocus };
 
-			if(cc == 2) { value = default_value;
+			if(cc == 2) { // dbl click
+				value = default_value;
 				this.calculate_graphical_value;
-				bound_parameter.val = value;
+				bound_parameter.val_(value, report_to_ui: false);
 				view.refresh;
 				this.refresh_displayed_value();
 			};
@@ -121,7 +123,8 @@ MGU_slider {
 					keystring = keystring ++ char.asString;
 					value_display.string = keystring;
 				};
-				if(keyc == 51) { keystring = keystring.drop(-1); value_display.string = keystring; };
+				if(keyc == 51) { keystring = keystring.drop(-1);
+					value_display.string = keystring; };
 				if(keyc == 36) { this.parse_entered_value(); this.removeFocus() };
 			};
 		};
@@ -139,7 +142,6 @@ MGU_slider {
 	}
 
 	giveFocus {
-
 		has_focus = true;
 		frame_view.drawFunc = {
 			Pen.width = 0.5;
@@ -164,6 +166,7 @@ MGU_slider {
 	}
 
 	refresh_displayed_value {
+		value.postln;
 		value_display.string = value.round(0.001);
 		if((graphical_value * view.bounds.width) > (view.bounds.width / 1.6), {
 			value_display.stringColor = Color.white}, {
@@ -175,7 +178,6 @@ MGU_slider {
 		var res;
 		if(type == Integer) { res = 1 } { res = 0.001 };
 		^res
-
 	}
 
 	calculate_value {
@@ -203,9 +205,7 @@ MGU_slider {
 	}
 
 	value_from_parameter { |v|
-
 		value = v;
-
 		AppClock.sched(0, {
 			this.calculate_graphical_value();
 			view.refresh;

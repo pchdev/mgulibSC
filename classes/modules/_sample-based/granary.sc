@@ -1,43 +1,28 @@
-/*PO_granary : MGU_AbstractModule { // granular delay module
+PO_granaryMTS : MGU_AbstractModule { // granular delay, mono to stereo -> ParOral
 
-	var <>numFrames, <>numChannels;
-	var <grainSize, <grainPitch,<grainPhase, <randCoeff, <randFreq, startPos;
-	var buffer, numGrains;
+	var buffer_length;
+	var buffer;
+	var numFrames;
 
-	*new {|name, out, server, numFrames = 44100, numChannels = 1|
-		^super.newCopyArgs(name, out, server, numFrames, numChannels).init.initParameters
+	*new { |out = 0, server, numInputs = 1, numOutputs = 2, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+		.init.initModule.initMasterDef
 	}
 
-	initParameters {
+	initModule {
 
-		numGrains = 16;
-
-		grainSize = MGU_parameter(container, \grainSize, Integer, [-inf, inf], 50, true,
-			\ms, \samps)
-		//grainPitch = MGU_parameter(container, \grainPitch, Float, [-12, 12],
-			//Array.fill(numGrains, { 0.0 }), true);
-		grainPhase = MGU_parameter(container, \grainPhase, Float, [0, 1],
-			Array.fill(numGrains, {|i| numGrains.reciprocal * i}), true);
-		randCoeff = MGU_parameter(container, \randCoeff, Integer, [-inf, inf], 20, true);
-		randFreq = MGU_parameter(container, \randFreq, Float, [0, inf], 0.05, true);
-
-		buffer = Buffer.alloc(server, numFrames, numChannels);
-
+		buffer_length = 1; // sec
+		numFrames = 44100 * buffer_length;
+		buffer = Buffer.alloc(server, numFrames, numInputs);
 
 		def = SynthDef(name, {
-
-			var randoffset, bufwr, mainphase;
-			var graincount2 = -1;
-			randoffset = LFNoise1.ar(randFreq.smbKr) * randCoeff.smbKr;
-			bufwr = BufWr.ar(inbus.smbKr, buffer.bufnum, Phasor.ar(0,
-				BufRateScale.kr(buffer.bufnum), 0, BufFrames.kr(buffer.bufnum)), 1);
-			graincount = Impulse.ar((grainSize.smbKr / SampleRate.ir).reciprocal) * grainSize;
-			graincount2 = graincount
-
-
-
-		}).add;
+			var in = In.ar(inbus, numInputs);
+			var phasor = Phasor.ar(0, 1, 0, 1);
+			var bufrd = BufRd.ar(numOutputs, buffer.bufnum, phasor * numFrames, 1, 2);
+		});
 
 	}
 
-}*/
+}
+
+	

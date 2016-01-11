@@ -5,13 +5,12 @@ PO_inProcess : MGU_AbstractModule { // mic + comp + eq
 	var <eq1_freq, <eq1_q, <eq1_db;
 	var <eq2_freq, <eq2_q, <eq2_db;
 
-	*new { |out, server, numChannels, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters
+	*new { |out, server, numInputs = 1, numOutputs = 1, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+		.init.initModule.initMasterDef
 	}
 
-	initParameters {
-
-		inbus.val = 0;
+	initModule {
 
 		comp_threshold = MGU_parameter(container, \threshold, Float, [-100.0, 0.0], -40, true);
 		comp_ratio = MGU_parameter(container, \ratio, Integer, [0, 10], 3, true);
@@ -29,13 +28,13 @@ PO_inProcess : MGU_AbstractModule { // mic + comp + eq
 
 		def = SynthDef(name, {
 			var in, eq1, eq2, lowcut, comp, process;
-			in = SoundIn.ar(inbus.kr);
+			in = In.ar(inbus);
 			lowcut = HPF.ar(in, lowcut_freq.kr);
 			eq1 = BPeakEQ.ar(lowcut, eq1_freq.kr);
 			eq2 = BPeakEQ.ar(eq1, eq2_freq.kr);
 			comp = FaustComp.ar(eq2, 0.01, comp_ratio.kr, 0.01, comp_threshold.kr);
 			process = comp * comp_makeup.kr;
-			Out.ar(out, process)
+			Out.ar(master_internal, process)
 		}).add;
 
 

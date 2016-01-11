@@ -1,18 +1,17 @@
 MGU_inModule : MGU_AbstractModule {
 
-	var <gain;
-
-	*new { |out, server, numChannels, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters
+	*new { |out, server, numInputs = 1, numOutputs = 1, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\generator)
+		.init.initModule.initMasterDef
 	}
 
-	initParameters {
+	initModule {
 
-		gain = MGU_parameter(container, \gain, Float, [-96, 12], 0, true, \dB, \amp);
+		inbus = 1;
 
 		def = SynthDef(name, {
-			var in = SoundIn.ar(inbus.kr, gain.kr);
-			Out.ar(out, in);
+			var in = SoundIn.ar(0);
+			Out.ar(master_internal, in);
 		}).add
 
 	}

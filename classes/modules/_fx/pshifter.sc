@@ -1,9 +1,10 @@
 PO_pShifter : MGU_AbstractModule { // pitch-shifting module (doesn't work with faust..)
 
-	var <shift, <mix;
+	var <shift;
 
 	*new { |out, server, numInputs = 1, numOutputs = 1, name|
-		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+		.init.initModule.initMasterDef
 	}
 
 	initParameters {
@@ -13,7 +14,7 @@ PO_pShifter : MGU_AbstractModule { // pitch-shifting module (doesn't work with f
 
 		def = SynthDef(name, {
 			var in, shifter, process;
-			in = In.ar(inbus.kr, numInputs);
+			in = In.ar(inbus, numInputs);
 			shifter = PitchShift.ar(in, 0.2, shift.kr);
 			Out.ar(master_internal, shifter);
 		}).add;

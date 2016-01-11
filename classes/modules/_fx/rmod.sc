@@ -1,9 +1,10 @@
 PO_rmod : MGU_AbstractWavetableModule {
 
-	var <freq, <mix;
+	var <freq;
 
 	*new { |out, server, numInputs = 1, numOutputs = 1, name|
-		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect).init.initParameters
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+		.init.initModule.initMasterDef
 	}
 
 	initParameters {

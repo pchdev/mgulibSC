@@ -30,7 +30,7 @@ PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 		startPos.sr = sampleRate; //
 		def = SynthDef(name, {
 			var bufrd;
-			bufrd = PlayBuf.ar(numOutputs, buffer.bufnum, 1, 1, startPos.kr, loop.kr, 2);
+			bufrd = PlayBuf.ar(numOutputs, buffer.bufnum, 1, 1, startPos.kr, loop.kr, 4);
 			Out.ar(master_internal, bufrd);
 		}).add;
 

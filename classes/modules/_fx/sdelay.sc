@@ -4,10 +4,10 @@ PO_sdelaySTS : MGU_AbstractModule { // faust smooth delay
 
 	var <dtime_left, <dtime_right;
 	var <fbk_left, <fbk_right;
-	var <mix;
 
-	*new { |out, server, numChannels, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters
+	*new { |out, server, numInputs = 2, numOutputs = 2, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type(\effect)
+		.init.initModule.initMasterDef
 	}
 
 	initParameters {
@@ -16,16 +16,14 @@ PO_sdelaySTS : MGU_AbstractModule { // faust smooth delay
 		dtime_right = MGU_parameter(container, \dtime_right, Float, [0.01, 2.0], 0.5, true);
 		fbk_left = MGU_parameter(container, \fbk_left, Float, [0, 100], 50, true);
 		fbk_right = MGU_parameter(container, \fbk_right, Float, [0, 100], 50, true);
-		mix = MGU_parameter(container, \mix, Float, [0, 1], 0.5, true);
 
 		def = SynthDef(name, {
-			var inleft, inright, dl_left, dl_right, process;
-			inleft = In.ar(inbus.kr, 1);
-			inright = In.ar(inbus.kr + 1, 1);
-			dl_left = FaustMguSdelay.ar(inleft, dtime_left.kr, fbk_left.kr);
-			dl_right = FaustMguSdelay.ar(inright, dtime_right.kr, fbk_right.kr);
-			process = [FaustDrywet.ar(inleft, dl_left, mix.kr), FaustDrywet.ar(inright, dl_right, mix.kr)];
-			Out.ar(out, process);
+			var in, dl_left, dl_right, process;
+			in = In.ar(inbus, 2);
+			dl_left = FaustMguSdelay.ar(in[0], dtime_left.kr, fbk_left.kr);
+			dl_right = FaustMguSdelay.ar(in[1], dtime_right.kr, fbk_right.kr);
+			process = [dl_left, dl_right];
+			Out.ar(master_internal, process);
 		}).add;
 	}
 
@@ -37,10 +35,10 @@ PO_sdelayMTS : MGU_AbstractModule {
 
 	var <dtime_left, <dtime_right;
 	var <fbk_left, <fbk_right;
-	var <mix;
 
-	*new { |out, server, numChannels, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters
+	*new { |out, server, numInputs = 1, numOutputs = 2, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+		.init.initModule.initMasterDef
 	}
 
 	initParameters {
@@ -49,15 +47,14 @@ PO_sdelayMTS : MGU_AbstractModule {
 		dtime_right = MGU_parameter(container, \dtime_right, Float, [0.01, 2.0], 0.5, true);
 		fbk_left = MGU_parameter(container, \fbk_left, Float, [0, 100], 50, true);
 		fbk_right = MGU_parameter(container, \fbk_right, Float, [0, 100], 50, true);
-		mix = MGU_parameter(container, \mix, Float, [0, 1], 0.5, true);
 
 		def = SynthDef(name, {
 			var in, dl_left, dl_right, process;
-			in = In.ar(inbus.smbKr, 1);
+			in = In.ar(inbus, 1);
 			dl_left = FaustMguSdelay.ar(in, dtime_left.kr, fbk_left.kr);
 			dl_right = FaustMguSdelay.ar(in, dtime_right.kr, fbk_right.kr);
-			process = [FaustDrywet.ar(in, dl_left, mix.kr), FaustDrywet.ar(in, dl_right, mix.kr)];
-			Out.ar(out, process);
+			process = [dl_left, dl_right];
+			Out.ar(master_internal, process);
 		}).add;
 
 	}
@@ -70,24 +67,22 @@ PO_sdelayMTM : MGU_AbstractModule {
 
 	var <dtime;
 	var <fbk;
-	var <mix;
 
-	*new { |out, server, numChannels, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters
+	*new { |out, server, numInputs = 1, numOutputs = 1, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+		.init.initModule.initMasterDef
 	}
 
 	initParameters {
 
 		dtime = MGU_parameter(container, \dtime_left, Float, [0.01, 2], 0.5, true);
 		fbk = MGU_parameter(container, \fbk_left, Float, [0, 100], 50, true);
-		mix = MGU_parameter(container, \mix, Float, [0, 1], 0.5, true);
 
 		def = SynthDef(name, {
-			var in, delay, process;
-			in = In.ar(inbus.kr, 1);
+			var in, delay;
+			in = In.ar(inbus, 1);
 			delay = FaustMguSdelay.ar(in, dtime.kr, fbk.kr);
-			process = FaustDrywet.ar(in, delay, mix.kr);
-			Out.ar(out, process);
+			Out.ar(master_internal, delay);
 		}).add;
 
 

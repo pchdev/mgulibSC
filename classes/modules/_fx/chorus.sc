@@ -7,9 +7,9 @@ PO_chorusMTS : MGU_AbstractModule {
 	var <freq;
 	var <depth;
 
-	*new { |out = 0, server, numChannels = 2, name|
-		^super.newCopyArgs(out, server, numChannels, name).type_(\effect)
-		.init.initModule.initMasterOut;
+	*new { |out = 0, server, numInputs = 1, numOutputs = 2, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+		.init.initModule.initMasterDef;
 	}
 
 	initModule {
@@ -20,7 +20,6 @@ PO_chorusMTS : MGU_AbstractModule {
 		fbk_right = MGU_parameter(container, \fbk_right, Float, [0, 100], 50, true);
 		freq = MGU_parameter(container, \freq, Float, [0, 100], 0.2, true);
 		depth = MGU_parameter(container, \depth, Float, [0, 100], 50, true);
-		mix = MGU_parameter(container, \drywet, Float, [0.0, 1.0], 0.5, true);
 
 		def = SynthDef(name, {
 			var chorusL, chorusR, process, in;
@@ -40,9 +39,9 @@ PO_chorusMTM : MGU_AbstractModule {
 
 	var <dtime, <fbk, <freq, <depth;
 
-	*new { |out = 0, server, numChannels = 2, name|
-		^super.newCopyArgs(out, server, numChannels, name).type_(\effect)
-		.init.initModule.initMasterOut;
+	*new { |out = 0, server, numInputs = 1, numOutputs = 1, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+		.init.initModule.initMasterDef;
 	}
 
 	initModule {
@@ -54,7 +53,7 @@ PO_chorusMTM : MGU_AbstractModule {
 
 		def = SynthDef(name, {
 			var in, chorus, process;
-			in = In.ar(inbus);
+			in = In.ar(inbus, 1);
 			chorus = ChoruserSC.ar(in, freq.kr, depth.kr, dtime.kr, fbk.kr);
 			process = chorus;
 			Out.ar(master_internal, process);
@@ -67,9 +66,9 @@ PO_chorusSTS : MGU_AbstractModule {
 
 	var <dtime_left, <dtime_right, <fbk_left, <fbk_right, <freq, <depth;
 
-	*new { |out = 0, server, numChannels = 2, name|
-		^super.newCopyArgs(out, server, numChannels, name).type_(\effect)
-		.init.initModule.initMasterOut;
+	*new { |out = 0, server, numInputs = 2, numOutputs = 2, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+		.init.initModule.initMasterDef;
 	}
 
 	initModule {

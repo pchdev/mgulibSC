@@ -94,8 +94,8 @@ MGU_AbstractModule {
 
 			\effect, {
 				nodeArray_master = nodeArray_master.add(
-					Synth(name ++ "_master", [name ++ "_level", level.val, name ++ "_mix", mix.val],
-						nodeGroup, 'addToTail'))},
+					Synth(name ++ "_master", [name ++ "_level", level.val,
+						name ++ "_mix", mix.val], nodeGroup, 'addToTail'))},
 			\generator, {
 				nodeArray_master = nodeArray_master.add(
 					Synth(name ++ "_master", [name ++ "_level", level.val],

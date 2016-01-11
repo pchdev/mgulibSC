@@ -153,15 +153,22 @@ r = PO_rmod(0, s);
 
 // 1 - simple
 
+(
+
 p = PO_sfPlayer();
 p.readFile("/Users/meegooh/Dropbox/_projets-scrime/_demo-iscore/iscore-demo3/media/16. Broken hills.wav");
 p.sendSynth();
+
+)
+
 p.killAllSynths();
 p.generateUI; // works okay
+p.sendSynth();
 
 
 // 2 - with connectToModule
 
+p.level.val;
 p = PO_sfPlayer();
 p.readFile("/Users/meegooh/Dropbox/_projets-scrime/_demo-iscore/iscore-demo3/media/16. Broken hills.wav");
 z = PO_zitaSTS();
@@ -190,7 +197,7 @@ z.generateUI();
 p.killAllSynths();
 z.killAllSynths(); // works okay
 
-// 4 - with instrument rack (witout sends) TO BE TESTED
+// 4 - with instrument rack (witout sends)
 
 p = PO_sfPlayer();
 p.readFile("/Users/meegooh/Dropbox/_projets-scrime/_demo-iscore/iscore-demo3/media/16. Broken hills.wav");
@@ -216,6 +223,8 @@ p.killAllSynths();
 r.killAllSynths();
 
 // 5 - with effect rack (sends)
+
+m = MGU_minuitInterface("superColl", 3127);
 
 p = PO_sfPlayer();
 p.readFile("/Users/meegooh/Dropbox/_projets-scrime/_demo-iscore/iscore-demo3/media/16. Broken hills.wav");
@@ -250,4 +259,9 @@ z.master_internal.scope();
 r.master_internal;
 r.master_internal.scope();
 
+// minuit
+
+p.registerToMinuit(m);
+r.registerToMinuit(m);
+z.registerToMinuit(m);
 
