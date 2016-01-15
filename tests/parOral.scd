@@ -1,3 +1,11 @@
+// left to do
+
+// main interface + vu meters
+// limiter ?
+// master eq + multi-band compressor ?
+// granary + grip
+
+
 // inputs
 
 ~entree_micro = MGU_inModule(name: "entree_mic");
@@ -30,6 +38,8 @@
 ~rack2 = MGU_moduleRack(0);
 ~filter2 = PO_lpf(name: "lpf2");
 ~vrb = PO_zitaSTS(name: "vrb");
+
+~rack2.addModules(~filter2, ~vrb);
 
 ///////////////////////////////////
 

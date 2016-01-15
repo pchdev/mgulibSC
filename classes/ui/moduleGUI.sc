@@ -1,12 +1,12 @@
 MGU_moduleGUI {
 
-	var name, parameter_array;
+	var name, parameter_array, alwaysOnTop;
 	var window, window_bounds;
 	var ui_array;
 	var title;
 
-	*new {|name, parameter_array|
-		^this.newCopyArgs(name, parameter_array).init
+	*new {|name, parameter_array, alwaysOnTop|
+		^this.newCopyArgs(name, parameter_array, alwaysOnTop).init
 	}
 
 	init {
@@ -14,6 +14,8 @@ MGU_moduleGUI {
 		window_bounds = Rect(0, 0, 640, 480);
 		window = Window(name, window_bounds, false, scroll: true);
 		window.background = Color.white;
+		if(alwaysOnTop) {window.alwaysOnTop = true};
+
 		title = StaticText(window, Rect(0, 0, 640, 50));
 		title.font = Font("Arial", 18, false);
 		title.string = name + "module";

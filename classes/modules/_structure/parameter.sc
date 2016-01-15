@@ -5,7 +5,7 @@ MGU_parameter {
 	var <container, <name, <type, <range, <default, <>alwaysOnServ;
 	var <>inUnit, <>outUnit, <>sr;
 	var <>defaultNode;
-	var val, absolute_val;
+	var val, <absolute_val;
 	var <>address, <>defName;
 	var oscFunc, <>oscPort;
 	var <>parentAccess;
@@ -116,7 +116,7 @@ MGU_parameter {
 			// reply to minuit listening
 			if(listening,
 				{ netaddr_responder.sendBundle(nil, [responder_device ++ ":listen",
-					address ++ ":value", val].postln)});
+					address ++ ":value", absolute_val].postln)});
 
 			// reply to gui element
 			if((bound_to_ui) && (report_to_ui)) { ui.value_from_parameter(val) };

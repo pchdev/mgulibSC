@@ -108,8 +108,8 @@ MGU_container {
 
 	// CONTROL
 
-	generateUI {
-		moduleGUI = MGU_moduleGUI(address, paramAccesses);
+	generateUI { |alwaysOnTop = false|
+		moduleGUI = MGU_moduleGUI(address, paramAccesses, alwaysOnTop);
 	}
 
 	controlWithPush {

@@ -7,7 +7,7 @@ PO_rmod : MGU_AbstractWavetableModule {
 		.init.initModule.initMasterDef
 	}
 
-	initParameters {
+	initModule {
 
 		freq = MGU_parameter(container, \freq, Float, [0, 20000], 6, true);
 

@@ -134,7 +134,7 @@ MGU_minuitInterface {
 			"rangeBounds", { attributeVal = nodeAccess.range },
 			"service", { if(nodeAccess.isKindOf(MGU_container),
 				{ attributeVal = ["model"]}, { attributeVal = ["parameter"] })},
-			"value", { attributeVal = [nodeAccess.val]},
+			"value", { attributeVal = [nodeAccess.absolute_val]},
 			"priority", { attributeVal = [0] },
 			"type", { switch(nodeAccess.type,
 				Float, { attributeVal = [\decimal] },
@@ -175,7 +175,7 @@ MGU_minuitInterface {
 		if(state == "enable", { nodeAccess.enableListening(respAddr, address) }, {
 			nodeAccess.disableListening});
 
-		this.sendResponse("listen", response, values: [nodeAccess.val]);
+		this.sendResponse("listen", response, values: [nodeAccess.absolute_val]);
 	}
 
 	sendResponse { |msgType, subjectNode, nodeType, nodes, values, attributes|

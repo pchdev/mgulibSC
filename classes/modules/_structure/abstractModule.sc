@@ -74,8 +74,8 @@ MGU_AbstractModule {
 			}).add },
 			\effect, {
 				master_def = SynthDef(name ++ "_master", {
-					var in_wet = In.ar(master_internal, 2);
-					var in_dry = In.ar(inbus, 2);
+					var in_wet = In.ar(master_internal, numOutputs);
+					var in_dry = In.ar(inbus, numInputs);
 					var process = FaustDrywet.ar(in_dry, in_wet, mix.kr) * level.kr;
 					Out.ar(out, process);
 		}).add });
@@ -140,8 +140,9 @@ MGU_AbstractModule {
 
 	}
 
-	connectToModule { |module|
-		out = module.inbus.index;
+	connectToModule { |module, replace = false| // replace argument tbi
+		this.out_(module.inbus.index);
+		this.initMasterDef();
 	}
 
 	out_ { |newOut|

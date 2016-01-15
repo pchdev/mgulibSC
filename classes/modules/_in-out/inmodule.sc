@@ -7,8 +7,6 @@ MGU_inModule : MGU_AbstractModule {
 
 	initModule {
 
-		inbus = 1;
-
 		def = SynthDef(name, {
 			var in = SoundIn.ar(0);
 			Out.ar(master_internal, in);

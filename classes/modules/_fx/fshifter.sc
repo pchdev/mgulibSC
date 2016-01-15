@@ -1,17 +1,22 @@
 PO_fShifter : MGU_AbstractModule { // frequency shifter module -- TBC
 
-	var freq;
-	var negpos;
+	var <freq;
 
-	*new { |out, server, numChannels = 1, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters
+	*new { |out = 0, server, numInputs = 1, numOutputs = 1, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+		.init.initModule.initMasterDef
 	}
 
-	initParameters {
+	initModule {
 
 		freq = MGU_parameter(container, \freq, Float, [-20000, 20000], 50, true);
-		inbus = 0;
 
+		def = SynthDef(name, {
+			var in, shift;
+			in = In.ar(inbus, numInputs);
+			shift = FreqShift.ar(in, freq.kr);
+			Out.ar(master_internal, shift);
+		}).add;
 
 	}
 

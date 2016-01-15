@@ -166,7 +166,6 @@ MGU_slider {
 	}
 
 	refresh_displayed_value {
-		value.postln;
 		value_display.string = value.round(0.001);
 		if((graphical_value * view.bounds.width) > (view.bounds.width / 1.6), {
 			value_display.stringColor = Color.white}, {

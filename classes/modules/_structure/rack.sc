@@ -16,8 +16,11 @@ MGU_moduleRack : MGU_AbstractModule {
 		container.registerContainer(module_array[module_array.size -1].container);
 
 		if(module_array[0].type == \effect) { // rack input = first effect input
+			"is effect".postln;
 			this.inbus = module_array[0].inbus;
 		};
+
+		"before error".postln;
 
 		if(module_array.size > 1) {
 			module_array[module_array.size -2].connectToModule(module_array[module_array.size -1]);
