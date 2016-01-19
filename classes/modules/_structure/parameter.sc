@@ -12,6 +12,7 @@ MGU_parameter {
 	var listening, netaddr_responder, responder_device;
 	var <>bound_to_ui, <>ui, ui_type;
 	var <>description;
+	var <kbus;
 
 
 	*new { |container, name, type, range, default, alwaysOnServ = false,
@@ -43,22 +44,36 @@ MGU_parameter {
 			this.val_(msg[1])}, address, nil, oscPort);
 	}
 
+	enableModulation { |server|
+		kbus ?? { kbus = Bus.control(server, 1) }
+	}
+
+	disableModulation {
+		kbus !? {
+			kbus.free;
+			kbus = nil;
+		}
+	}
 
 	unitCheck { |value|
 
-		switch(inUnit,
+		case
 
-			\s, { switch(outUnit,
-				\ms, { val = value * 1000 },
-				\samps, { val = value * sr })},
-			\ms, { switch(outUnit,
-				\s, { val = value / 1000 },
-				\samps, { val = (value / 1000) * sr})},
-			\samps, { switch(outUnit,
-				\s, { val = value / sr },
-				\ms, { val = (value / sr) * 1000 })},
-			\dB, {if(outUnit == \amp, { val = value.dbamp })},
-			\amp, {if(outUnit == \dB, { val = value.ampdb })});
+		{ (inUnit == \dB) && (outUnit == \amp) } { val = value.dbamp }
+		{ (inUnit == \amp) && (outUnit == \dB) } { val = value.ampdb }
+		{ (inUnit == \s) && (outUnit == \ms) } { val = value * 1000 }
+		{ (inUnit == \s) && (outUnit == \samps) } { val = value * sr }
+		{ (inUnit == \ms) && (outUnit == \s) } { val = value/100 }
+		{ (inUnit == \ms) && (outUnit == \samps) } { val = (value/1000) * sr }
+		{ (inUnit == \samps) && (outUnit == \s) } { val = value/sr }
+		{ (inUnit == \samps) && (outUnit == \ms) } { val = (value/sr) * 1000 }
+
+		{ (inUnit == \semitones) && (outUnit == \ratio)}
+		{ val = MGU_conversionLib.st_ratio(value)}
+		{ (inUnit == \ratio) && (outUnit == \semitones)}
+		{ val = MGU_conversionLib.ratio_st(value)}
+		{ (inUnit == \midi) && (outUnit == \freq) } { val = value.midicps }
+		{ (inUnit == \freq) && (outUnit == \midi) } { val = value.cpsmidi }
 
 	}
 
@@ -114,9 +129,9 @@ MGU_parameter {
 			parentAccess !? { parentAccess.paramCallBack(name, value)};
 
 			// reply to minuit listening
-			if(listening,
+			if(listening)
 				{ netaddr_responder.sendBundle(nil, [responder_device ++ ":listen",
-					address ++ ":value", absolute_val].postln)});
+					address ++ ":value", absolute_val].postln)};
 
 			// reply to gui element
 			if((bound_to_ui) && (report_to_ui)) { ui.value_from_parameter(val) };
@@ -124,10 +139,10 @@ MGU_parameter {
 		};
 
 		// STARTS HERE
-		onServ ?? { if(alwaysOnServ, { onServ = true }, { onServ = false })};
+		onServ ?? { if(alwaysOnServ) { onServ = true } { onServ = false }};
 
 		// node & value always as array
-		if(node.isArray == false, { node = [node] });
+		if(node.isArray == false) { node = [node] };
 
 		// if value is a function
 		if(value.isFunction, {

@@ -57,6 +57,10 @@ MGU_AbstractModule {
 		container.parentContainer = minuitInterface;
 	}
 
+	includeIn { |parent|
+		container.parentContainer = parent;
+	}
+
 	inbus_{ |newbus|
 		inbus.free();
 		inbus = newbus;
@@ -143,6 +147,11 @@ MGU_AbstractModule {
 	connectToModule { |module, replace = false| // replace argument tbi
 		this.out_(module.inbus.index);
 		this.initMasterDef();
+	}
+
+	connectToParameter { |parameter, replace = false|
+		parameter.enableModulation();
+		this.out_(parameter.kbus)
 	}
 
 	out_ { |newOut|
