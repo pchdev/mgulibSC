@@ -215,7 +215,7 @@ MGU_AbstractModule {
 		this.instVarSize.do({|i|
 			if(this.instVarAt(i).class == MGU_parameter, {
 				this.instVarAt(i).val.postln;
-				stateArray = stateArray.add(this.instVarAt(i).val);
+				stateArray = stateArray.add(this.instVarAt(i).val(true));
 			});
 		});
 
