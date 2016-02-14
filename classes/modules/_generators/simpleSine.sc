@@ -2,9 +2,9 @@ MGU_simpleSine : MGU_AbstractModule {
 
 	var <freq;
 
-	*new { |out, server, numChannels, name|
-		^super.newCopyArgs(out, server, numChannels, name).type_(\generator)
-		.init.initModule.initMasterOut;
+	*new { |out, server, numInputs = 1, numOutputs = 1, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\generator)
+		.init.initModule.initMasterDef;
 	}
 
 	initModule {
