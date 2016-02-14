@@ -11,7 +11,7 @@ MGU_AbstractModule {
 	var <thisInstance;
 	var sendDefArray, sendLevelArray, <sendArray;
 	var nodeArray_send, nodeArray_master, nodeArray;
-	var nodeGroup;
+	var <>nodeGroup;
 	var <master_def;
 
 
@@ -58,7 +58,9 @@ MGU_AbstractModule {
 	}
 
 	includeIn { |parent|
-		container.parentContainer = parent;
+		parent.container.registerContainer(this.container);
+		this.nodeGroup.free;
+		this.nodeGroup = parent.nodeGroup;
 	}
 
 	inbus_{ |newbus|
@@ -86,16 +88,13 @@ MGU_AbstractModule {
 
 	}
 
-	refreshMasterInternal {
-		master_internal.free();
-		master_internal = Bus.audio(server, numOutputs);
-		this.initMasterDef();
-	}
-
 	sendSynth {
 
-		switch(type,
+		// if module includes other modules, send them first.
 
+		// and then send this
+
+		switch(type,
 			\effect, {
 				nodeArray_master = nodeArray_master.add(
 					Synth(name ++ "_master", [name ++ "_level", level.val,
@@ -114,7 +113,13 @@ MGU_AbstractModule {
 					Synth(name ++ "_send" ++ (i+1), [name ++ "_snd_" ++ sendArray[i].name,
 						sendLevelArray[i].val], nodeGroup, 'addToTail'))
 			})
-		}
+		};
+
+		this.instVarSize.do({|i|
+			if(this.instVarAt(i).class.superclass == MGU_AbstractModule)
+			{ this.instVarAt(i).sendSynth() }
+		});
+
 
 	}
 
@@ -151,7 +156,8 @@ MGU_AbstractModule {
 
 	connectToParameter { |parameter, replace = false|
 		parameter.enableModulation();
-		this.out_(parameter.kbus)
+		this.out_(parameter.kbus);
+		def.add;
 	}
 
 	out_ { |newOut|

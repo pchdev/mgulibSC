@@ -4,7 +4,7 @@ PO_sampler : MGU_AbstractBufferModule { // simple soundFile player
 	var <loop, <playstop;
 	var <pitch;
 	var <attack, <decay, <sustain, <release;
-	var env;
+	var <env;
 
 	*new { |out = 0, server, numInputs = 0, numOutputs = 2, name|
 		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\generator)
@@ -16,11 +16,12 @@ PO_sampler : MGU_AbstractBufferModule { // simple soundFile player
 		loop = MGU_parameter(container, \loop, Integer, [0, 1], 1, true);
 		playstop = MGU_parameter(container, \playStop, Symbol, nil, \stop, true);
 		startPos = MGU_parameter(container, \startPos, Integer, [0, inf], 0, true, \ms, \samps);
-		length = MGU_parameter(container, \endPos, Integer, [1, inf], 1000, true, \ms, \samps);
+		length = MGU_parameter(container, \length, Integer, [1, inf], 1000, true, \ms, \samps);
 		pitch = MGU_parameter(container, \pitch, Float, [-24, 24], 0, true, \semitones, \ratio);
 		playstop.parentAccess = this; // allows access to this for parameter call back;
 
 		env = MGU_kEnvADSR();
+		env.includeIn(this);
 		env.connectToParameter(level);
 
 	}
@@ -28,21 +29,25 @@ PO_sampler : MGU_AbstractBufferModule { // simple soundFile player
 	paramCallBack { |param, value|
 		switch(param,
 			\playStop, { switch(value[0],
-				\play, { this.sendSynth },
-				\stop, { this.killAllSynths })};
+				\play, { this.sendSynth() },
+				\stop, { this.killAllSynths() })};
 		);
 	}
 
 	bufferLoaded {
+
 		startPos.range[1] = (numFrames / sampleRate) * 1000;
 		startPos.sr = sampleRate; //
+		length.default = numFrames;
+		length.val = length.default;
+
 		def = SynthDef(name, {
 			var phasor, bufrd, clock;
-			clock = FaustRfshClock.ar(pitch.kr);
-			phasor = Phasor.ar(clock, BufRateScale.kr(buffer.bufnum));
-			phasor = (phasor * length.kr) + startPos.kr;
+			clock = FaustRfshClock.ar((length.kr/SampleRate.ir).reciprocal);
+			phasor = Phasor.ar(clock, BufRateScale.kr(buffer.bufnum) * pitch.kr,
+				startPos.kr, startPos.kr + length.kr, startPos.kr);
 			bufrd = BufRd.ar(numOutputs, buffer.bufnum, phasor, loop.kr);
-			bufrd = bufrd + In.kr(level.kbus);
+			bufrd = bufrd * In.kr(level.kbus);
 			Out.ar(master_internal, bufrd);
 		}).add;
 

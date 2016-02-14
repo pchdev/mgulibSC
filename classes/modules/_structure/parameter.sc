@@ -2,7 +2,7 @@ MGU_parameter {
 
 	classvar instanceCount;
 
-	var <container, <name, <type, <range, <default, <>alwaysOnServ;
+	var <container, <name, <type, <range, <>default, <>alwaysOnServ;
 	var <>inUnit, <>outUnit, <>sr;
 	var <>defaultNode;
 	var val, <absolute_val;
@@ -42,6 +42,10 @@ MGU_parameter {
 		oscFunc = OSCFunc({|msg, time, addr, recvPort|
 			msg.postln;
 			this.val_(msg[1])}, address, nil, oscPort);
+	}
+
+	midiLearn {
+
 	}
 
 	enableModulation { |server|
@@ -119,7 +123,7 @@ MGU_parameter {
 
 				// sending value on server
 				if(onServ, {
-					node[0] ?? { node = [defaultNode] };
+					node[0] ?? { node = [container.node] };
 					node[0] ?? { Error("[PARAMETER] /!\ NODE NOT DEFINED" + name).throw };
 					node[i].set(defName, val);
 				});
