@@ -5,7 +5,7 @@ PO_sdelaySTS : MGU_AbstractModule { // faust smooth delay
 	var <dtime_left, <dtime_right;
 	var <fbk_left, <fbk_right;
 
-	*new { |out, server, numInputs = 2, numOutputs = 2, name|
+	*new { |out = 0, server, numInputs = 2, numOutputs = 2, name|
 		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type(\effect)
 		.init.initModule.initMasterDef
 	}
@@ -36,7 +36,7 @@ PO_sdelayMTS : MGU_AbstractModule {
 	var <dtime_left, <dtime_right;
 	var <fbk_left, <fbk_right;
 
-	*new { |out, server, numInputs = 1, numOutputs = 2, name|
+	*new { |out = 0, server, numInputs = 1, numOutputs = 2, name|
 		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
 		.init.initModule.initMasterDef
 	}
@@ -68,7 +68,7 @@ PO_sdelayMTM : MGU_AbstractModule {
 	var <dtime;
 	var <fbk;
 
-	*new { |out, server, numInputs = 1, numOutputs = 1, name|
+	*new { |out = 0, server, numInputs = 1, numOutputs = 1, name|
 		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
 		.init.initModule.initMasterDef
 	}
