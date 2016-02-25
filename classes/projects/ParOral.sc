@@ -16,7 +16,8 @@ ParOral {
 
 		"[PARORAL]: building modules...".postln;
 
-		minuitInterface = MGU_minuitInterface("audio", 3127); "[PARORAL] minuitInterface succesfully built".postln;
+		minuitInterface = MGU_minuitInterface("audio", 3127);
+		"[PARORAL] minuitInterface succesfully built".postln;
 
 		mic_in = MGU_inModule(name: "mic_in"); "[PARORAL] inModule succesfully built".postln;
 		rec_test = PO_sfPlayer(name: "rec_test"); "[PARORAL] rec_test succesfully built".postln;
