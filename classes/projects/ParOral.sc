@@ -14,7 +14,7 @@ ParOral {
 
 	init {
 
-		"[PARORAL]: building modules...".postln;
+		"[PARORAL] now building modules...".postln;
 
 		minuitInterface = MGU_minuitInterface("audio", 3127);
 		"[PARORAL] minuitInterface succesfully built".postln;
@@ -87,6 +87,11 @@ ParOral {
 		rack_2.registerToMinuit(minuitInterface);
 
 		"[PARORAL] Minuit registering completed, you may now use i-score.".postln;
+		("[PARORAL] Minuit device" + "\"" ++ minuitInterface.address ++ "\"" + "on port" + minuitInterface.port ++ ".").postln;
+
+		// OTHERS
+
+		rec_test.readFile("../../_max/samples/lecture-enregistree.wav");
 
 
 		// GUI

@@ -1,6 +1,6 @@
 MGU_minuitInterface {
 
-	var address, port;
+	var <address, <port;
 	var <paramAccesses, <paramAddresses;
 	var <contAccesses, <contAddresses;
 	var oscDiscover, oscGet, oscListen, <respAddr;
