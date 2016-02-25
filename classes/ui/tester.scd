@@ -96,3 +96,12 @@ b.bufnum;
 
 Quarks
 
+p = ParOral(true);
+
+f = PO_zitaSTS();
+z = PO_chorusSTS();
+
+r = MGU_moduleRack(0);
+
+r.addModules(f,z);
+

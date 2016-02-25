@@ -6,11 +6,13 @@ PO_sdelaySTS : MGU_AbstractModule { // faust smooth delay
 	var <fbk_left, <fbk_right;
 
 	*new { |out = 0, server, numInputs = 2, numOutputs = 2, name|
-		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type(\effect)
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
 		.init.initModule.initMasterDef
 	}
 
-	initParameters {
+	initModule {
+
+		"ok".postln;
 
 		dtime_left = MGU_parameter(container, \dtime_left, Float, [0.01, 2], 0.5, true);
 		dtime_right = MGU_parameter(container, \dtime_right, Float, [0.01, 2.0], 0.5, true);
@@ -41,7 +43,7 @@ PO_sdelayMTS : MGU_AbstractModule {
 		.init.initModule.initMasterDef
 	}
 
-	initParameters {
+	initModule {
 
 		dtime_left = MGU_parameter(container, \dtime_left, Float, [0.01, 2], 0.5, true);
 		dtime_right = MGU_parameter(container, \dtime_right, Float, [0.01, 2.0], 0.5, true);
@@ -73,7 +75,7 @@ PO_sdelayMTM : MGU_AbstractModule {
 		.init.initModule.initMasterDef
 	}
 
-	initParameters {
+	initModule {
 
 		dtime = MGU_parameter(container, \dtime_left, Float, [0.01, 2], 0.5, true);
 		fbk = MGU_parameter(container, \fbk_left, Float, [0, 100], 50, true);

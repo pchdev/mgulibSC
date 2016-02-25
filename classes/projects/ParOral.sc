@@ -37,7 +37,7 @@ ParOral {
 
 		// others
 
-		graindelay = PO_granaryMTS(name: "graindelay"); "[PARORAL] graindelay succesfully built".postln;
+		//graindelay = PO_granaryMTS(name: "graindelay"); "[PARORAL] graindelay succesfully built".postln;
 		grip = PO_grip(name: "grip"); "[PARORAL] grip succesfully built".postln;
 		//vocoder = PO_vocoder(name: "vocoder");
 
@@ -60,16 +60,16 @@ ParOral {
 		rec_test.connectToModule(pre_process);
 
 		pre_process.addNewSend(rack_1);
-		pre_process.addNewSend(graindelay);
-		pre_process.addNewSend(grip);
+		//pre_process.addNewSend(graindelay);
+		//pre_process.addNewSend(grip);
 		//pre_process.addNewSend(vocoder);
 
-		graindelay.addNewSend(rack_2);
-		grip.addNewSend(rack_2);
+		//graindelay.addNewSend(rack_2);
+		//grip.addNewSend(rack_2);
 		//vocoder.addNewSend(rack_2);
 
-		rack_1.addNewSend(graindelay);
-		rack_1.addNewSend(grip);
+		//rack_1.addNewSend(graindelay);
+		//rack_1.addNewSend(grip);
 
 		"[PARORAL] connexions succesfully established!".postln;
 
@@ -81,7 +81,7 @@ ParOral {
 		rec_test.registerToMinuit(minuitInterface);
 		pre_process.registerToMinuit(minuitInterface);
 		rack_1.registerToMinuit(minuitInterface);
-		graindelay.registerToMinuit(minuitInterface);
+		//graindelay.registerToMinuit(minuitInterface);
 		//grip.registerToMinuit(minuitInterface);
 		//vocoder.registerToMinuit(minuitInterface);
 		rack_2.registerToMinuit(minuitInterface);

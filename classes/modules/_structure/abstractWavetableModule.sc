@@ -20,7 +20,6 @@ MGU_AbstractWavetableModule : MGU_AbstractModule {
 	}
 
 	paramCallBack { |param, value|
-		value.postln;
 		switch(value[0],
 			\sine, { wavetable.sine1(this.buildSine) },
 			\triangle, { wavetable.sine1(this.buildTriangle) },
@@ -51,7 +50,6 @@ MGU_AbstractWavetableModule : MGU_AbstractModule {
 		var sineArray;
 		sineArray = Array.fill(numPartials, { 0 });
 		sineArray = sineArray.put(0, 1);
-		sineArray.postln;
 		^sineArray;
 
 	}

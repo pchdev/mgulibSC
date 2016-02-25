@@ -2,7 +2,7 @@ MGU_AbstractFilterModule : MGU_AbstractModule {
 
 	var <freq, <q, <gain;
 
-	initParameters {
+	initModule {
 
 		freq = MGU_parameter(container, \freq, Float, [0, 20000], 2000, true);
 		q = MGU_parameter(container, \q, Float, [0, 50], 1, true);
@@ -21,7 +21,7 @@ PO_moogVCF : MGU_AbstractFilterModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.kr, numInputs);
+			in = In.ar(inbus, numInputs);
 			process = MoogFF.ar(in, freq.kr, gain.kr, 0)
 		}).add
 	}
@@ -30,16 +30,17 @@ PO_moogVCF : MGU_AbstractFilterModule {
 PO_lpf : MGU_AbstractFilterModule {
 
 	*new { |out = 0, server, numInputs = 1, numOutputs = 2, name|
-		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters.initDef
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+		.init.initModule.initDef.initMasterDef
 	}
 
 	initDef {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.kr, numInputs);
+			in = In.ar(inbus, numInputs);
 			process = BLowPass.ar(in, freq.kr, q.kr, gain.kr);
-			Out.ar(out, process);
+			Out.ar(master_internal, process);
 		}).add
 	}
 }
@@ -54,9 +55,9 @@ PO_hpf : MGU_AbstractFilterModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.kr, numInputs);
+			in = In.ar(inbus, numInputs);
 			process = BHiPass.ar(in, freq.kr, q.kr, gain.kr);
-			Out.ar(out, process);
+			Out.ar(master_internal, process);
 		}).add
 	}
 
@@ -72,9 +73,9 @@ PO_bpf : MGU_AbstractFilterModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.kr, numInputs);
+			in = In.ar(inbus, numInputs);
 			process = BBandPass.ar(in, freq.kr, q.kr, gain.kr);
-			Out.ar(out, process);
+			Out.ar(master_internal, process);
 		}).add
 	}
 
@@ -90,9 +91,9 @@ PO_brf : MGU_AbstractFilterModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.kr, numInputs);
+			in = In.ar(inbus, numInputs);
 			process = BBandStop.ar(in, freq.kr, q.kr, gain.kr);
-			Out.ar(out, process);
+			Out.ar(master_internal, process);
 		}).add
 	}
 
@@ -110,9 +111,9 @@ PO_lsf : MGU_AbstractFilterModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.kr, numInputs);
+			in = In.ar(inbus, numInputs);
 			process = BLowShelf.ar(in, freq.kr, q.kr, gain.kr);
-			Out.ar(out, process);
+			Out.ar(master_internal, process);
 		}).add
 	}
 
@@ -130,9 +131,9 @@ PO_hsf : MGU_AbstractFilterModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.kr, numInputs);
+			in = In.ar(inbus, numInputs);
 			process = BHiShelf.ar(in, freq.kr, q.kr, gain.kr);
-			Out.ar(out, process);
+			Out.ar(master_internal, process);
 		}).add
 	}
 
@@ -148,9 +149,9 @@ PO_apf : MGU_AbstractFilterModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.kr, numInputs);
+			in = In.ar(inbus, numInputs);
 			process = BAllPass.ar(in, freq.kr, q.kr, gain.kr);
-			Out.ar(out, process);
+			Out.ar(master_internal, process);
 		}).add
 	}
 
@@ -168,9 +169,9 @@ PO_midEQ : MGU_AbstractFilterModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus.kr, numInputs);
+			in = In.ar(inbus, numInputs);
 			process = BPeakEQ.ar.ar(in, freq.kr, q.kr, gain.kr);
-			Out.ar(out, process);
+			Out.ar(master_internal, process);
 		}).add
 	}
 
