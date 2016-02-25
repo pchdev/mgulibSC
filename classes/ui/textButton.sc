@@ -40,7 +40,6 @@ MGU_textButton {
 		};
 
 		frame_view.mouseEnterAction = {
-			"mouse over".postln;
 			background_color = Color.new255(115,150,171);
 			displayed_text.stringColor = Color.white;
 			view.refresh();
@@ -48,7 +47,6 @@ MGU_textButton {
 		};
 
 		frame_view.mouseLeaveAction = {
-			"mouse leave".postln;
 			background_color = Color.white;
 			displayed_text.stringColor = Color.black;
 			view.refresh();
