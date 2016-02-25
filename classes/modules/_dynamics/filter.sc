@@ -13,7 +13,7 @@ MGU_AbstractFilterModule : MGU_AbstractModule {
 
 PO_moogVCF : MGU_AbstractFilterModule {
 
-	*new { |out, server, numInputs = 1, numOutputs = 2, name|
+	*new { |out = 0, server, numInputs = 1, numOutputs = 2, name|
 		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters.initDef
 	}
 
@@ -29,7 +29,7 @@ PO_moogVCF : MGU_AbstractFilterModule {
 
 PO_lpf : MGU_AbstractFilterModule {
 
-	*new { |out, server, numInputs = 1, numOutputs = 2, name|
+	*new { |out = 0, server, numInputs = 1, numOutputs = 2, name|
 		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters.initDef
 	}
 
@@ -46,7 +46,7 @@ PO_lpf : MGU_AbstractFilterModule {
 
 PO_hpf : MGU_AbstractFilterModule {
 
-	*new { |out, server, numInputs = 1, numOutputs = 2, name|
+	*new { |out = 0, server, numInputs = 1, numOutputs = 2, name|
 		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters.initDef
 	}
 
@@ -64,7 +64,7 @@ PO_hpf : MGU_AbstractFilterModule {
 
 PO_bpf : MGU_AbstractFilterModule {
 
-	*new { |out, server, numInputs = 1, numOutputs = 2, name|
+	*new { |out = 0, server, numInputs = 1, numOutputs = 2, name|
 		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters.initDef
 	}
 
@@ -82,7 +82,7 @@ PO_bpf : MGU_AbstractFilterModule {
 
 PO_brf : MGU_AbstractFilterModule {
 
-	*new { |out, server, numInputs = 1, numOutputs = 2, name|
+	*new { |out = 0, server, numInputs = 1, numOutputs = 2, name|
 		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters.initDef
 	}
 
@@ -100,7 +100,7 @@ PO_brf : MGU_AbstractFilterModule {
 
 PO_lsf : MGU_AbstractFilterModule {
 
-	*new { |out, server, numInputs = 1, numOutputs = 2, name|
+	*new { |out = 0, server, numInputs = 1, numOutputs = 2, name|
 		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters.initDef
 	}
 
@@ -120,7 +120,7 @@ PO_lsf : MGU_AbstractFilterModule {
 
 PO_hsf : MGU_AbstractFilterModule {
 
-	*new { |out, server, numInputs = 1, numOutputs = 2, name|
+	*new { |out = 0, server, numInputs = 1, numOutputs = 2, name|
 		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters.initDef
 	}
 
@@ -140,7 +140,7 @@ PO_hsf : MGU_AbstractFilterModule {
 
 PO_apf : MGU_AbstractFilterModule {
 
-	*new { |out, server, numInputs = 1, numOutputs = 2, name|
+	*new { |out = 0, server, numInputs = 1, numOutputs = 2, name|
 		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters.initDef
 	}
 
@@ -158,7 +158,7 @@ PO_apf : MGU_AbstractFilterModule {
 
 PO_midEQ : MGU_AbstractFilterModule {
 
-	*new { |out, server, numInputs = 1, numOutputs = 2, name|
+	*new { |out = 0, server, numInputs = 1, numOutputs = 2, name|
 		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initParameters.initDef
 	}
 
@@ -189,7 +189,7 @@ PO_multiEQ : MGU_AbstractModule { // TBC
 
 	var <band;
 
-	*new { |out, server, numInputs = 1, numOutputs = 1, name|
+	*new { |out = 0, server, numInputs = 1, numOutputs = 1, name|
 		^super.newCopyArgs(out, server, numInputs, numOutputs, name).init.initBand
 	}
 
