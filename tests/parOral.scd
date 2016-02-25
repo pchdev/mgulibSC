@@ -27,10 +27,11 @@
 
 ~rack1.addModules(~pshifter, ~rmod, ~chorus, ~dly, ~filter1);
 
-// gran delay
+// gran delay vocoder
 
 ~grn = PO_granary();
 ~grip = PO_grip();
+~voc = PO_vocoder();
 
 
 // rack #2
@@ -55,5 +56,8 @@
 ~pre_process.addNewSend(~grn);
 ~pre_process.addNewSend(~grip);
 
-~grn.connectToModule(~rack2);
-~grip.connectToModule(~rack2);
+~grn.addNewSend(~rack2);
+~grip.addNewSend(~rack2);
+
+
+DynKlank
