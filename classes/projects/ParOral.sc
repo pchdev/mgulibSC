@@ -8,8 +8,6 @@ ParOral {
 	var <minuitInterface;
 
 
-
-
 	*new { |with_gui = true|
 		^this.newCopyArgs(with_gui).init
 	}
@@ -78,14 +76,14 @@ ParOral {
 
 		"[PARORAL] registering modules to Minuit protocol...".postln;
 
-		mic_in.registerToMinuit(m);
-		rec_test.registerToMinuit(m);
-		pre_process.registerToMinuit(m);
-		rack_1.registerToMinuit(m);
-		graindelay.registerToMinuit(m);
-		//grip.registerToMinuit(m);
-		//vocoder.registerToMinuit(m);
-		rack_2.registerToMinuit(m);
+		mic_in.registerToMinuit(minuitInterface);
+		rec_test.registerToMinuit(minuitInterface);
+		pre_process.registerToMinuit(minuitInterface);
+		rack_1.registerToMinuit(minuitInterface);
+		graindelay.registerToMinuit(minuitInterface);
+		//grip.registerToMinuit(minuitInterface);
+		//vocoder.registerToMinuit(minuitInterface);
+		rack_2.registerToMinuit(minuitInterface);
 
 		"[PARORAL] Minuit registering completed, you may now use i-score.".postln;
 
