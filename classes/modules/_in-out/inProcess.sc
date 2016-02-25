@@ -5,7 +5,7 @@ PO_inProcess : MGU_AbstractModule { // mic + comp + eq
 	var <eq1_freq, <eq1_q, <eq1_db;
 	var <eq2_freq, <eq2_q, <eq2_db;
 
-	*new { |out, server, numInputs = 1, numOutputs = 1, name|
+	*new { |out = 0, server, numInputs = 1, numOutputs = 1, name|
 		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
 		.init.initModule.initMasterDef
 	}
