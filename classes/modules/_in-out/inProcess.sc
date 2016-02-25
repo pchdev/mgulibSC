@@ -28,7 +28,7 @@ PO_inProcess : MGU_AbstractModule { // mic + comp + eq
 
 		def = SynthDef(name, {
 			var in, eq1, eq2, lowcut, comp, process;
-			in = In.ar(inbus);
+			in = In.ar(inbus, numInputs);
 			lowcut = HPF.ar(in, lowcut_freq.kr);
 			eq1 = BPeakEQ.ar(lowcut, eq1_freq.kr);
 			eq2 = BPeakEQ.ar(eq1, eq2_freq.kr);
