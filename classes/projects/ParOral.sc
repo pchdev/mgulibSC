@@ -108,6 +108,7 @@ ParOral {
 					"play", {rec_test.sendSynth()});
 				~stopButton = MGU_textButton(~window, Rect(10, 40, 100, 25),
 					"stop", {rec_test.killAllSynths()});
+				~startPos = MGU_slider(~window, Rect(120, 10, 120, 25), rec_test.startPos);
 
 
 			~window.front();
