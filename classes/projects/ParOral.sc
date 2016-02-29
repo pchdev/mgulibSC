@@ -91,7 +91,7 @@ ParOral {
 
 		// OTHERS
 
-		rec_test.readFile("/samples/lecture-enregistree.wav");
+		rec_test.readFile("samples/lecture-enregistree.wav");
 
 
 		// GUI
