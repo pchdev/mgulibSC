@@ -9,7 +9,7 @@ MGU_AbstractModule {
 	var def;
 	var <level, <mix;
 	var <thisInstance;
-	var sendDefArray, sendLevelArray, <sendArray;
+	var sendDefArray, <sendLevelArray, <sendArray;
 	var nodeArray_send, nodeArray_master, nodeArray;
 	var <>nodeGroup;
 	var <master_def;

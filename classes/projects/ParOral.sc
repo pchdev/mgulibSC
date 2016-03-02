@@ -6,6 +6,12 @@ ParOral {
 	var <rack_2, <graindelay, <grip, <vocoder;
 	var <filter_2, <verb;
 	var <minuitInterface;
+	var oscFunc;
+	var window, mic_toggle, test_toggle, init_button;
+	var startPos_slider, initEffects;
+	var pre_process_slider;
+	var send_slider_array;
+	var pre_process_button, rack_1_button, graindelay_button, grip_button, vocoder_button;
 
 
 	*new { |with_gui = true|
@@ -13,6 +19,8 @@ ParOral {
 	}
 
 	init {
+
+		send_slider_array = [];
 
 		"[PARORAL] now building modules...".postln;
 
@@ -91,8 +99,8 @@ ParOral {
 
 		// OTHERS
 
-		rec_test.readFile("samples/lecture-enregistree.wav");
-
+		//rec_test.readFile("samples/lecture-enregistree.wav");
+		rec_test.readFile("/Users/meegooh/Dropbox/ParOral/audio/samples/lecture-enregistree.wav");
 
 		// GUI
 
@@ -101,17 +109,54 @@ ParOral {
 			AppClock.sched(0, {
 
 				"[PARORAL] building user interface...".postln;
-				~oscServ = OSCFunc({|msg| msg.postln}, '/lastIndex', nil, 8889);
-				~window = Window("ParOral tester", Rect(0, 0, 500, 250), false);
-				~window.onClose = { rec_test.killAllSynths() };
-				~startButton = MGU_textButton(~window, Rect(10, 10, 100, 25),
-					"play", {rec_test.sendSynth()});
-				~stopButton = MGU_textButton(~window, Rect(10, 40, 100, 25),
-					"stop", {rec_test.killAllSynths()});
-				~startPos = MGU_slider(~window, Rect(120, 10, 120, 25), rec_test.startPos);
+				oscFunc = OSCFunc({|msg| msg.postln}, '/lastIndex', nil, 8889);
 
+				window = Window("ParOral tester", Rect(0, 0, 500, 375), false);
+				window.onClose = { rec_test.killAllSynths() };
 
-			~window.front();
+				startPos_slider = MGU_slider(window, Rect(120, 10, 120, 25), rec_test.startPos);
+				test_toggle = MGU_textToggle(window, Rect(10, 10, 100, 25), "tester off", "tester on",
+					[{rec_test.killAllSynths()}, {rec_test.sendSynth()}]);
+				mic_toggle = MGU_textToggle(window, Rect(10, 40, 100, 25), "mic off", "mic on",
+					[{mic_in.killAllSynths}, {mic_in.sendSynth()}]);
+
+				initEffects = MGU_textButton(window, Rect(10, 70, 100, 25), "init effects", {
+					rack_1.sendRack();
+					pre_process.sendSynth();
+					rack_2.sendRack();
+				});
+
+				pre_process_slider = MGU_slider(window, Rect(10, 125, 150, 20), pre_process.level, 0);
+
+				pre_process.sendLevelArray.size.do({|i|
+					send_slider_array = send_slider_array.add(
+						MGU_slider(window, Rect(10, 155 + (i*25), 150, 20),
+							pre_process.sendLevelArray[i]));
+				});
+
+				// OPEN BUTTONS
+
+				pre_process_button = MGU_textButton(window, Rect(340, 125, 100, 20), "open pre_process", {
+					pre_process.generateUI();
+				});
+
+				rack_1_button = MGU_textButton(window, Rect(340, 155, 100, 20), "open rack_1", {
+					rack_1.generateUI();
+				});
+
+				graindelay_button = MGU_textButton(window, Rect(340, 185, 100, 20), "open graindelay", {
+					graindelay.generateUI();
+				});
+
+				grip_button = MGU_textButton(window, Rect(340, 215, 100, 20), "open grip", {
+					grip.generateUI();
+				});
+
+				vocoder_button = MGU_textButton(window, Rect(340, 245, 100, 20), "open vocoder", {
+					vocoder.generatEUI();
+				});
+
+				window.front();
 			});
 
 		};

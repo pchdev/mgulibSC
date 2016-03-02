@@ -1,2 +1,1 @@
-p = PO_sfPlayer(0);
-p.generateUI();
+p = ParOral(true);
