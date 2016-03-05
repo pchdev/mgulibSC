@@ -12,9 +12,9 @@ PO_inProcess : MGU_AbstractModule { // mic + comp + eq
 
 	initModule {
 
-		comp_threshold = MGU_parameter(container, \threshold, Float, [-100.0, 0.0], -40, true);
-		comp_ratio = MGU_parameter(container, \ratio, Integer, [0, 10], 3, true);
-		comp_makeup = MGU_parameter(container, \makeup, Float, [0, 24], 4.5, true);
+		comp_threshold = MGU_parameter(container, \comp_threshold, Float, [-100.0, 0.0], -40, true);
+		comp_ratio = MGU_parameter(container, \como_ratio, Integer, [0, 10], 3, true);
+		comp_makeup = MGU_parameter(container, \comp_makeup, Float, [0, 24], 4.5, true);
 
 		lowcut_freq = MGU_parameter(container, \lowcut_freq, Integer, [20, 200], 121, true);
 

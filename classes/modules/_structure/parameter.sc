@@ -6,7 +6,7 @@ MGU_parameter {
 	var <>inUnit, <>outUnit, <>sr;
 	var <>defaultNode;
 	var val, <absolute_val;
-	var <>address, <>defName;
+	var <address, <>defName;
 	var oscFunc, <>oscPort;
 	var <>parentAccess;
 	var listening, netaddr_responder, responder_device;
@@ -36,6 +36,11 @@ MGU_parameter {
 
 		this.initOSC();
 
+	}
+
+	address_{ |newAddress|
+		address = newAddress;
+		this.initOSC();
 	}
 
 	initOSC {
@@ -123,7 +128,7 @@ MGU_parameter {
 
 				// sending value on server
 				if(onServ, {
-					node[0] ?? { node = [container.node] };
+					node[0] ?? { node = [defaultNode] };
 					node[0] ?? { Error("[PARAMETER] /!\ NODE NOT DEFINED" + name).throw };
 					node[i].set(defName, val);
 				});

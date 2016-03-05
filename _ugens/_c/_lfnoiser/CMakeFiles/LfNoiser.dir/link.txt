@@ -1,1 +1,0 @@
-/usr/bin/c++   -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk -bundle -Wl,-headerpad_max_install_names   -o LfNoiser.scx CMakeFiles/LfNoiser.dir/LfNoiser.cpp.o 

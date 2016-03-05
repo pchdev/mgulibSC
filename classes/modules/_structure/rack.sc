@@ -15,7 +15,8 @@ MGU_moduleRack : MGU_AbstractModule {
 		module_array = module_array.add(module);
 		container.registerContainer(module_array[module_array.size -1].container);
 
-		if((module_array.size == 1) && (module_array[0].type == \effect)) { // rack input = first effect input
+		if((module_array.size == 1) && (module_array[0].type == \effect)) {
+			// rack input = first effect input
 			this.inbus = module_array[0].inbus;
 		};
 

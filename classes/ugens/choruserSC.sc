@@ -17,6 +17,3 @@ ChoruserSC {
 		^process;
 	}
 }
-
-
-		

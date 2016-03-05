@@ -30,18 +30,22 @@ ParOral {
 		mic_in = MGU_inModule(name: "mic_in"); "[PARORAL] inModule succesfully built".postln;
 		rec_test = PO_sfPlayer(name: "rec_test"); "[PARORAL] rec_test succesfully built".postln;
 		pre_process = PO_inProcess(0, name: "pre_process"); "[PARORAL] pre_process succesfully built".postln;
+		pre_process.mix.val = 1;
+		pre_process.level.val = -24;
 
 		// rack #1
 
-		rack_1 = MGU_moduleRack(name: "rack_1"); "[PARORAL] rack1 succesfully built".postln;
-
 		pshifter = PO_pShifter(name: "pshifter"); "[PARORAL] pshifter succesfully built".postln;
+		pshifter.mix.val = 1;
+
 		rmod = PO_rmod(name: "rmod"); "[PARORAL] rmod succesfully built".postln;
 		chorus = PO_chorusMTS(name: "chorus"); "[PARORAL] chorus succesfully built".postln;
 		delay = PO_sdelaySTS(name: "delay"); "[PARORAL] delay succesfully built".postln;
-		filter_1 = PO_lpf(name: "filter_1"); "[PARORAL] filter_1 succesfully built".postln;
+		filter_1 = PO_lpf(numInputs: 2, name: "filter_1"); "[PARORAL] filter_1 succesfully built".postln;
 
-		rack_1.addModules(pshifter, rmod, chorus, delay, filter_1);
+		rack_1 = MGU_moduleRack(0, nil, 1, 2, "rack_1"); "[PARORAL] rack1 succesfully built".postln;
+		rack_1.mix.val = 1;
+		rack_1.addModules(pshifter, rmod, chorus, delay, filter_1);//, chorus, delay, filter_1);
 
 		// others
 
@@ -51,11 +55,10 @@ ParOral {
 
 		// rack #2
 
-		rack_2 = MGU_moduleRack(name: "rack_2"); "[PARORAL] rack_2 succesfully built".postln;
-
 		filter_2 = PO_lpf(name: "filter_2"); "[PARORAL] filter_2 succesfully built".postln;
 		verb = PO_zitaSTS(name: "verb"); "[PARORAL] verb succesfully built".postln;
 
+		rack_2 = MGU_moduleRack(name: "rack_2"); "[PARORAL] rack_2 succesfully built".postln;
 		rack_2.addModules(filter_2, verb);
 
 		"[PARORAL] building modules completed!".postln;
@@ -100,7 +103,8 @@ ParOral {
 		// OTHERS
 
 		//rec_test.readFile("samples/lecture-enregistree.wav");
-		rec_test.readFile("/Users/meegooh/Dropbox/ParOral/audio/samples/lecture-enregistree.wav");
+		//rec_test.readFile("/Users/meegooh/Dropbox/ParOral/audio/samples/lecture-enregistree.wav");
+		rec_test.readFile("/Users/meegooh/Desktop/lecture_enregistree-mono.wav");
 
 		// GUI
 

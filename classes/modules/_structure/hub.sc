@@ -73,7 +73,6 @@ MGU_container {
 		container.paramAccesses.size.do({|i|
 			var target = container.paramAccesses[i];
 			target.address = address ++ target.address;
-			target.initOSC();
 		});
 
 		// merging accesses & addresses

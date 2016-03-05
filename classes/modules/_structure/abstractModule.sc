@@ -3,6 +3,7 @@ MGU_AbstractModule {
 	classvar instanceCount;
 
 	var <out, <>server, <numInputs, <numOutputs, <>name;
+
 	var <type;
 	var <container, type, <master_internal;
 	var <inbus, <inbus_index;
@@ -44,6 +45,13 @@ MGU_AbstractModule {
 			inbus = Bus.audio(server, numInputs);
 			mix = MGU_parameter(container, \mix, Float, [0, 1], 0.5, true);
 		};
+
+	}
+
+	numOutputs_ {|v|
+		numOutputs = v;
+		master_internal.free();
+		master_internal = Bus.audio(server, numOutputs);
 
 	}
 

@@ -6,7 +6,7 @@ MGU_AbstractBufferModule : MGU_AbstractModule {
 		var soundFile;
 		soundFile = SoundFile.openRead(path);
 		numFrames = soundFile.numFrames;
-		numOutputs = soundFile.numChannels;
+		this.numOutputs_(soundFile.numChannels);
 		sampleRate = soundFile.sampleRate;
 		buffer !? {
 			var temp;
