@@ -35,7 +35,7 @@ ParOral {
 
 		// rack #1
 
-		pshifter = PO_pShifter(name: "pshifter"); "[PARORAL] pshifter succesfully built".postln;
+		pshifter = PO_pshifter2(name: "pshifter"); "[PARORAL] pshifter succesfully built".postln;
 		pshifter.mix.val = 1;
 
 		rmod = PO_rmod(name: "rmod"); "[PARORAL] rmod succesfully built".postln;

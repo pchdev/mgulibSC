@@ -119,7 +119,7 @@ MGU_slider {
 
 		parameter_address_display.keyDownAction = { |me, char, mod, uni, keyc, key|
 			if(has_focus) {
-				if((char.isDecDigit) || (keyc == 43)) {
+				if((char.isDecDigit) || (keyc == 43) || (uni == 45)) {
 					keystring = keystring ++ char.asString;
 					value_display.string = keystring;
 				};

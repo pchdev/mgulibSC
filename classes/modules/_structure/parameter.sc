@@ -72,10 +72,12 @@ MGU_parameter {
 		{ (inUnit == \amp) && (outUnit == \dB) } { val = value.ampdb }
 		{ (inUnit == \s) && (outUnit == \ms) } { val = value * 1000 }
 		{ (inUnit == \s) && (outUnit == \samps) } { val = value * sr }
-		{ (inUnit == \ms) && (outUnit == \s) } { val = value/100 }
+		{ (inUnit == \ms) && (outUnit == \s) } { val = value/1000 }
+		{ (inUnit == \ms) && (outUnit == \freq) } { val = (value/1000).reciprocal.postln }
 		{ (inUnit == \ms) && (outUnit == \samps) } { val = (value/1000) * sr }
 		{ (inUnit == \samps) && (outUnit == \s) } { val = value/sr }
 		{ (inUnit == \samps) && (outUnit == \ms) } { val = (value/sr) * 1000 }
+
 
 		{ (inUnit == \semitones) && (outUnit == \ratio)}
 		{ val = MGU_conversionLib.st_ratio(value)}
