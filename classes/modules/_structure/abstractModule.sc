@@ -80,10 +80,19 @@ MGU_AbstractModule {
 	initMasterDef {
 
 		switch(type,
+			\mts_generator, {
+				master_def = SynthDef(name ++ "_master", {
+					var in = In.ar(master_internal, numOutputs);
+					var pan = Pan2.ar(in, pan.kr);
+					var process = pan * level.kr;
+					var reply = SendPeakRMS.kr(process, 8, 3, '/' ++ name ++ '/reply');
+					Out.ar(out, process);
+			}).add },
 			\generator, {
 				master_def = SynthDef(name ++ "_master", {
 					var in = In.ar(master_internal, numOutputs);
 					var process = in * level.kr;
+					var reply = SendPeakRMS.kr(process, 8, 3, '/' ++ name ++ '/reply');
 					Out.ar(out, process);
 			}).add },
 			\effect, {
@@ -91,6 +100,7 @@ MGU_AbstractModule {
 					var in_wet = In.ar(master_internal, numOutputs);
 					var in_dry = In.ar(inbus, numInputs);
 					var process = FaustDrywet.ar(in_dry, in_wet, mix.kr) * level.kr;
+					var reply = SendPeakRMS.kr(process, 8, 3, '/' ++ name ++ '/reply');
 					Out.ar(out, process);
 		}).add });
 

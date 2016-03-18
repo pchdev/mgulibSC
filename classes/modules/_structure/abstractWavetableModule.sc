@@ -12,7 +12,7 @@ MGU_AbstractWavetableModule : MGU_AbstractModule {
 	initWavetable {
 
 		numFrames = 16384;
-		numPartials = 10;
+		numPartials = 64;
 		waveform = MGU_parameter(container, \waveform, Symbol, nil, \sine);
 		waveform.parentAccess = this;
 		wavetable = Buffer.alloc(server, numFrames, 1);

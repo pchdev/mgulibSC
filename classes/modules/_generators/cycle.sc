@@ -1,21 +1,23 @@
-MGU_cycle : MGU_AbstractWavetableModule {
+MGU_cycle : MGU_AbstractWavetableModule { // simple wavetable oscillator module
 
-	var <freq, <gain;
+	var <freq;
 
-	*new { |out, server, numChannels, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initWavetable.initParameters
+	*new { |out = 0, server, numInputs = 1, numOutputs = 1, name|
+		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\generator)
+		.init.initWavetable.initModule.initMasterDef
 	}
 
-	initParameters {
+	initModule {
 
 		freq = MGU_parameter(container, \freq, Float, [0, 44100], 440, true);
-		gain = MGU_parameter(container, \gain, Float, [0.0, 10.0], 1.0, true);
+		waveform.val = \sine;
 
 		def = SynthDef(name, {
 			var gen;
-			gen = Osc.ar(wavetable.bufnum, freq.kr, 0, gain.kr);
-			Out.ar(out, gen);
+			gen = Osc.ar(wavetable.bufnum, freq.kr, 0);
+			Out.ar(master_internal, gen);
 		}).add;
+
 	}
 
 }

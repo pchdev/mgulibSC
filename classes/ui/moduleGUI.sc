@@ -3,7 +3,7 @@ MGU_moduleGUI {
 	var name, parameter_array, alwaysOnTop;
 	var window, window_bounds;
 	var ui_array;
-	var title;
+	var title, description, type, sendsynth_button, bypass_button;
 
 	*new {|name, parameter_array, alwaysOnTop|
 		^this.newCopyArgs(name, parameter_array, alwaysOnTop).init
@@ -21,12 +21,31 @@ MGU_moduleGUI {
 		title.string = name + "module";
 		title.align = \center;
 
+		description = StaticText(window, Rect(0, 25, 640, 50));
+		description.font = Font("Arial", 11);
+		description.string = "no description currently available...";
+		description.align = \center;
+
+		sendsynth_button = MGU_textToggle(window, Rect(window_bounds.width/2 - 75, 70, 75, 25),
+			"send synth", "kill synth");
+
+		bypass_button = MGU_textToggle(window, Rect(window_bounds.width/2 -1, 70, 75, 25),
+			"bypass off", "bypass on");
+
+		window.drawFunc_({
+			Pen.width = 0.5;
+			Pen.strokeColor = Color.black;
+			Pen.line(Point(0, 115), Point(640, 115));
+			Pen.stroke;
+		});
+
+
 		parameter_array.size.do({|i|
 			var parameter = parameter_array[i];
 			var type = parameter_array[i].type;
 			var pname = parameter_array[i].name;
 			var range = parameter_array[i].range;
-			var y_offset = 100 + (i*30);
+			var y_offset = 145 + (i*30);
 
 			case
 
