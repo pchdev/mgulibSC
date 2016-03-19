@@ -12,6 +12,8 @@ MGU_AbstractModule {
 	var sendDefArray, <sendLevelArray, <sendArray;
 	var nodeArray_send, nodeArray_master, <nodeArray;
 
+	var gui, <description;
+
 	*new { |out = 0, server, numInputs, numOutputs, name|
 		^this.newCopyArgs(out, server, numInputs, numOutputs, name)
 	}
@@ -39,7 +41,6 @@ MGU_AbstractModule {
 		master_internal = Bus.audio(server, numOutputs);
 
 		// type inits
-
 		switch(type)
 		{\effect} {
 			inbus = Bus.audio(server, numInputs);
@@ -121,6 +122,8 @@ MGU_AbstractModule {
 	}
 
 	sendSynth {
+
+		// to implement : auto differentiation between master node and synth nodes (with include in ?)
 
 		switch(type)
 
@@ -217,7 +220,7 @@ MGU_AbstractModule {
 	// SHORTCUTS
 
 	generateUI { |alwaysOnTop = false|
-		container.generateUI(alwaysOnTop, this);
+		gui = MGU_moduleGUI(this);
 	}
 
 	setDescription { |desc|
@@ -268,7 +271,7 @@ MGU_AbstractModule {
 
 	recallState { |fileName, interp = false, length = 2000, curve = \lin|
 
-		// + preset interpolation to implement
+		// + preset interpolation to implement ?
 		var folder_path = this.getPresetFolderPath();
 		var file_path = this.getPresetFilePath(fileName);
 		var stateFile;

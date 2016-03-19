@@ -15,7 +15,7 @@ MGU_container {
 		^this.newCopyArgs(address, parentContainer, node, oscPort, module).init
 	}
 
-	init {
+	init { // NOTE : remove addresses, no use
 
 		// global
 		instanceCount !? { instanceCount = instanceCount + 1 };
@@ -107,10 +107,6 @@ MGU_container {
 	}
 
 	// CONTROL
-
-	generateUI { |alwaysOnTop = false, parent|
-		moduleGUI = MGU_moduleGUI(address, paramAccesses, alwaysOnTop, description, parent);
-	}
 
 	controlWithPush {
 
