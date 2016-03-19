@@ -4,6 +4,7 @@ MGU_moduleGUI {
 	var window, window_bounds;
 	var ui_array;
 	var title, description_text, type, sendsynth_button, bypass_button;
+	var vu_meter;
 
 	*new {|name, parameter_array, alwaysOnTop, description, parent|
 		^this.newCopyArgs(name, parameter_array, alwaysOnTop, description, parent).init
@@ -40,6 +41,7 @@ MGU_moduleGUI {
 			Pen.stroke;
 		});
 
+		vu_meter = MGU_vuMeter(window, nil, name);
 
 		parameter_array.size.do({|i|
 			var parameter = parameter_array[i];

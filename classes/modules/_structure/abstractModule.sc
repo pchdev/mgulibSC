@@ -3,18 +3,14 @@ MGU_AbstractModule {
 	classvar instanceCount;
 
 	var <out, <>server, <numInputs, <numOutputs, <>name;
+	var <type, <thisInstance;
+	var <inbus, <container, <>nodeGroup, <master_internal;
+	var <level, <mix, <pan;
 
-	var <type;
-	var <container, type, <master_internal;
-	var <inbus, <inbus_index;
-	var def;
-	var <level, <mix;
-	var <thisInstance;
+	var <def, <master_def;
+
 	var sendDefArray, <sendLevelArray, <sendArray;
 	var nodeArray_send, nodeArray_master, <nodeArray;
-	var <>nodeGroup;
-	var <master_def;
-
 
 	*new { |out = 0, server, numInputs, numOutputs, name|
 		^this.newCopyArgs(out, server, numInputs, numOutputs, name)
@@ -37,28 +33,47 @@ MGU_AbstractModule {
 		nodeArray_send = [];
 		nodeArray_master = [];
 
+		// internal master parameters
 		container = MGU_container(name, nil, nodeGroup, 3127, this);
 		level = MGU_parameter(container, \level, Float, [-96, 12], 0, true, \dB, \amp);
 		master_internal = Bus.audio(server, numOutputs);
 
-		if(type == \effect) {
-			inbus = Bus.audio(server, numInputs);
-			mix = MGU_parameter(container, \mix, Float, [0, 1], 0.5, true);
-		};
+		// type inits
 
+		switch(type)
+		{\effect} {
+			inbus = Bus.audio(server, numInputs);
+			mix = MGU_parameter(container, \mix, Float, [0, 1], 0.5, true)}
+		{\mts_generator} {
+			pan = MGU_parameter(container, \pan, Float, [-1, 1], 0, true)};
+
+	}
+
+	// CUSTOM SETTERS
+
+	inbus_{ |newbus|
+		inbus.free();
+		inbus = newbus;
+		this.initMasterDef();
+	}
+
+	out_ { |newOut|
+		out = newOut;
+		this.initMasterDef()
 	}
 
 	numOutputs_ {|v|
 		numOutputs = v;
 		master_internal.free();
 		master_internal = Bus.audio(server, numOutputs);
-
 	}
 
 	type_ { |val| // weird but auto setter
 		// doesn't seem to work when initing types directly after constructor
 		type = val;
 	}
+
+	// OSC MODULE MANAGEMENT
 
 	registerToMinuit { |minuitInterface|
 		minuitInterface.addContainer(container);
@@ -71,59 +86,57 @@ MGU_AbstractModule {
 		this.nodeGroup = parent.nodeGroup;
 	}
 
-	inbus_{ |newbus|
-		inbus.free();
-		inbus = newbus;
-		this.initMasterDef();
-	}
+	// DEFS & SYNTHS
 
 	initMasterDef {
 
-		switch(type,
-			\mts_generator, {
+		switch(type)
+
+		{\mts_generator} { // mono to stereo -> panning implementation
 				master_def = SynthDef(name ++ "_master", {
 					var in = In.ar(master_internal, numOutputs);
 					var pan = Pan2.ar(in, pan.kr);
 					var process = pan * level.kr;
-					var reply = SendPeakRMS.kr(process, 8, 3, '/' ++ name ++ '/reply');
-					Out.ar(out, process);
-			}).add },
-			\generator, {
+					var reply = SendPeakRMS.kr(process, 20, 3, '/' ++ name ++ '/reply');
+					Out.ar(out, process)}).add
+		}
+
+		{\generator} {
 				master_def = SynthDef(name ++ "_master", {
 					var in = In.ar(master_internal, numOutputs);
 					var process = in * level.kr;
-					var reply = SendPeakRMS.kr(process, 8, 3, '/' ++ name ++ '/reply');
-					Out.ar(out, process);
-			}).add },
-			\effect, {
+					var reply = SendPeakRMS.kr(process, 20, 3, '/' ++ name ++ '/reply');
+					Out.ar(out, process)}).add
+		}
+
+		{\effect} {
 				master_def = SynthDef(name ++ "_master", {
 					var in_wet = In.ar(master_internal, numOutputs);
 					var in_dry = In.ar(inbus, numInputs);
 					var process = FaustDrywet.ar(in_dry, in_wet, mix.kr) * level.kr;
-					var reply = SendPeakRMS.kr(process, 8, 3, '/' ++ name ++ '/reply');
-					Out.ar(out, process);
-		}).add });
+					var reply = SendPeakRMS.kr(process, 20, 3, '/' ++ name ++ '/reply');
+					Out.ar(out, process)}).add
+		};
 
 	}
 
 	sendSynth {
 
-		// if module includes other modules, send them first.
+		switch(type)
 
-		// and then send this
+		{\effect} {
+			nodeArray_master = nodeArray_master.add(Synth(name ++ "_master",
+				[name ++ "_level", level.val, name ++ "_mix", mix.val],
+				nodeGroup, 'addToTail'))
+		}
 
-		switch(type,
-			\effect, {
-				nodeArray_master = nodeArray_master.add(
-					Synth(name ++ "_master", [name ++ "_level", level.val,
-						name ++ "_mix", mix.val], nodeGroup, 'addToTail'))},
-			\generator, {
-				nodeArray_master = nodeArray_master.add(
-					Synth(name ++ "_master", [name ++ "_level", level.val],
-						nodeGroup, 'addToTail'))});
+		{\generator} {
+			nodeArray_master = nodeArray_master.add(Synth(name ++ "_master",
+				[name ++ "_level", level.val], nodeGroup, 'addToTail'))
+		};
 
-		nodeArray = nodeArray.add(
-			Synth(name, container.makeSynthArray.asOSCArgArray, nodeGroup, 'addToHead'));
+		nodeArray = nodeArray.add(Synth(name, container.makeSynthArray.asOSCArgArray,
+			nodeGroup, 'addToHead'));
 
 		sendArray !? {
 			sendArray.size.do({|i|
@@ -133,12 +146,12 @@ MGU_AbstractModule {
 			})
 		};
 
+		// send children synths
+
 		this.instVarSize.do({|i|
 			if(this.instVarAt(i).class.superclass == MGU_AbstractModule)
 			{ this.instVarAt(i).sendSynth() }
 		});
-
-
 	}
 
 	killSynth { |index|
@@ -150,40 +163,24 @@ MGU_AbstractModule {
 
 	killAllSynths {
 
-		nodeArray.size.do({|i|
+		nodeArray.size.do({|i| // free synth nodes
 			nodeArray[0].free;
 			nodeArray.removeAt(0);
 		});
 
-		nodeArray_master.size.do({|i|
+		nodeArray_master.size.do({|i| // free master nodes
 			nodeArray_master[0].free;
 			nodeArray_master.removeAt(0);
 		});
 
-		nodeArray_send.size.do({|i|
+		nodeArray_send.size.do({|i| // free send nodes
 			nodeArray_send[0].free;
 			nodeArray_send.removeAt(0);
 		});
 
 	}
 
-	connectToModule { |module, replace = false| // replace argument tbi
-		this.out_(module.inbus.index);
-		this.initMasterDef();
-	}
-
-	connectToParameter { |parameter, replace = false|
-		parameter.enableModulation();
-		this.out_(parameter.kbus);
-		def.add;
-	}
-
-	out_ { |newOut|
-		out = newOut;
-		this.initMasterDef()
-	}
-
-	addNewSend { |target|
+	addNewSend { |target, mode = \prefader| // pre-post fader to be implemented
 
 		sendArray ?? { sendArray = [] };
 		sendLevelArray ?? { sendLevelArray = [] };
@@ -204,13 +201,27 @@ MGU_AbstractModule {
 		);
 	}
 
-	generateUI { |alwaysOnTop = false| // shortcut
+	// MODULE CONNEXIONS
+
+	connectToModule { |module, replace = false| // replace argument tbi
+		this.out_(module.inbus.index);
+		this.initMasterDef();
+	}
+
+	connectToParameter { |parameter, replace = false| // also tbi
+		parameter.enableModulation();
+		this.out_(parameter.kbus);
+		def.add;
+	}
+
+	// SHORTCUTS
+
+	generateUI { |alwaysOnTop = false|
 		container.generateUI(alwaysOnTop, this);
 	}
 
 	setDescription { |desc|
 		this.container.description = desc;
-
 	}
 
 	// PRESET SUPPORT
