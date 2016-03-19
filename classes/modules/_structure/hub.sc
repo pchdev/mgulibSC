@@ -8,7 +8,8 @@ MGU_container {
 	var <paramAccesses, <paramAddresses;
 	var <contAccesses, <contAddresses;
 	var <oscPort;
-	var moduleGUI;
+	var <moduleGUI;
+	var <>description;
 
 	*new { |address, parentContainer, node, oscPort, module|
 		^this.newCopyArgs(address, parentContainer, node, oscPort, module).init
@@ -107,8 +108,8 @@ MGU_container {
 
 	// CONTROL
 
-	generateUI { |alwaysOnTop = false|
-		moduleGUI = MGU_moduleGUI(address, paramAccesses, alwaysOnTop);
+	generateUI { |alwaysOnTop = false, parent|
+		moduleGUI = MGU_moduleGUI(address, paramAccesses, alwaysOnTop, description, parent);
 	}
 
 	controlWithPush {

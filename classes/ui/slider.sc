@@ -46,7 +46,7 @@ MGU_slider {
 			view.drawFunc = { |slider|
 				Pen.width = 0.5;
 				Pen.fillColor = background_color;
-				Pen.addRect(Rect(0, 0, graphical_value * slider.bounds.width,
+				Pen.addRect(Rect(0, 0, (value - range[0])/(range[1]-range[0]) * slider.bounds.width,
 					slider.bounds.height));
 				Pen.fillStroke;
 		}}, { // else vertical

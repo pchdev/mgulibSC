@@ -204,8 +204,13 @@ MGU_AbstractModule {
 		);
 	}
 
-	generateUI { // shortcut
-		container.generateUI;
+	generateUI { |alwaysOnTop = false| // shortcut
+		container.generateUI(alwaysOnTop, this);
+	}
+
+	setDescription { |desc|
+		this.container.description = desc;
+
 	}
 
 	// PRESET SUPPORT

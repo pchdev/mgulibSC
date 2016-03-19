@@ -49,7 +49,11 @@ MGU_parameter {
 			this.val_(msg[1])}, address, nil, oscPort);
 	}
 
-	midiLearn {
+	midiLearn { // tbi
+
+	}
+
+	oscLearn { // tbi
 
 	}
 

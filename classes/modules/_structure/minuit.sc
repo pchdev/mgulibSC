@@ -31,6 +31,11 @@ MGU_minuitInterface {
 
 	}
 
+	respAddr_ { |ip, port|
+		respAddr = NetAddr(ip, port);
+
+	}
+
 	addParameter { |parameter|
 		paramAccesses = paramAccesses.add(parameter);
 		paramAddresses = paramAddresses.add(parameter.address);

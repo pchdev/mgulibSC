@@ -77,6 +77,13 @@ MGU_toggle {
 		view.refresh;
 	}
 
+	value_from_parameter { |v|
+		value = v;
+		AppClock.sched(0, {
+			this.refresh_view();
+		});
+	}
+
 
 
 }

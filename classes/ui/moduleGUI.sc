@@ -1,12 +1,12 @@
 MGU_moduleGUI {
 
-	var name, parameter_array, alwaysOnTop;
+	var name, parameter_array, alwaysOnTop, <description, <parent;
 	var window, window_bounds;
 	var ui_array;
-	var title, description, type, sendsynth_button, bypass_button;
+	var title, description_text, type, sendsynth_button, bypass_button;
 
-	*new {|name, parameter_array, alwaysOnTop|
-		^this.newCopyArgs(name, parameter_array, alwaysOnTop).init
+	*new {|name, parameter_array, alwaysOnTop, description, parent|
+		^this.newCopyArgs(name, parameter_array, alwaysOnTop, description, parent).init
 	}
 
 	init {
@@ -21,13 +21,14 @@ MGU_moduleGUI {
 		title.string = name + "module";
 		title.align = \center;
 
-		description = StaticText(window, Rect(0, 25, 640, 50));
-		description.font = Font("Arial", 11);
-		description.string = "no description currently available...";
-		description.align = \center;
+		description_text = StaticText(window, Rect(0, 25, 640, 50));
+		description_text.font = Font("Arial", 11);
+		description ?? { description = "no description currently available" };
+		description_text.string = description;
+		description_text.align = \center;
 
 		sendsynth_button = MGU_textToggle(window, Rect(window_bounds.width/2 - 75, 70, 75, 25),
-			"send synth", "kill synth");
+			"send synth", "kill synth", [{parent.killAllSynths()}, {parent.sendSynth()}]);
 
 		bypass_button = MGU_textToggle(window, Rect(window_bounds.width/2 -1, 70, 75, 25),
 			"bypass off", "bypass on");
