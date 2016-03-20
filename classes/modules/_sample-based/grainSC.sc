@@ -25,7 +25,7 @@ MGU_scGrainBuf : MGU_AbstractBufferModule {
 	paramCallBack { |param, value|
 		switch(param,
 			\playStop, { switch(value[0],
-				\play, { this.sendGrains },
+				\play, { this.sendSynth() },
 				\stop, { this.killAllSynths })};
 		);
 	}

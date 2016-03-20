@@ -61,6 +61,7 @@ MGU_moduleGUI {
 		// parameters
 
 		parameter_array.size.do({|i|
+
 			var parameter = parameter_array[i];
 			var type = parameter_array[i].type;
 			var pname = parameter_array[i].name;

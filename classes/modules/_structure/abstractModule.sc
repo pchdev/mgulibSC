@@ -295,7 +295,12 @@ MGU_AbstractModule {
 	}
 
 	availablePresets { // returns preset list for this module -- TBI
-
+		var folder_path = this.getPresetFolderPath(), entries = [];
+		PathName(folder_path).filesDo({|file|
+			file = file.fileName.split($.);
+			if(file[1] == "txt") {entries = entries.add(file[0])}
+		});
+		^entries
 	}
 
 }
