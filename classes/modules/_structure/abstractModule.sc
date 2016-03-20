@@ -91,6 +91,8 @@ MGU_AbstractModule {
 
 	initMasterDef {
 
+		var reply_address = '/' ++ name ++ '/reply'; // <- for vu meters
+
 		switch(type)
 
 		{\mts_generator} { // mono to stereo -> panning implementation
@@ -98,7 +100,7 @@ MGU_AbstractModule {
 					var in = In.ar(master_internal, numOutputs);
 					var pan = Pan2.ar(in, pan.kr);
 					var process = pan * level.kr;
-					var reply = SendPeakRMS.kr(process, 20, 3, '/' ++ name ++ '/reply');
+					var reply = SendPeakRMS.kr(process, 20, 3, reply_address);
 					Out.ar(out, process)}).add
 		}
 
@@ -106,7 +108,7 @@ MGU_AbstractModule {
 				master_def = SynthDef(name ++ "_master", {
 					var in = In.ar(master_internal, numOutputs);
 					var process = in * level.kr;
-					var reply = SendPeakRMS.kr(process, 20, 3, '/' ++ name ++ '/reply');
+					var reply = SendPeakRMS.kr(process, 20, 3, reply_address);
 					Out.ar(out, process)}).add
 		}
 
@@ -115,7 +117,7 @@ MGU_AbstractModule {
 					var in_wet = In.ar(master_internal, numOutputs);
 					var in_dry = In.ar(inbus, numInputs);
 					var process = FaustDrywet.ar(in_dry, in_wet, mix.kr) * level.kr;
-					var reply = SendPeakRMS.kr(process, 20, 3, '/' ++ name ++ '/reply');
+					var reply = SendPeakRMS.kr(process, 20, 3, reply_address);
 					Out.ar(out, process)}).add
 		};
 
@@ -188,7 +190,7 @@ MGU_AbstractModule {
 
 	}
 
-	addNewSend { |target, mode = \prefader| // pre-post fader to be implemented
+	addNewSend { |target, mode = \prefader| // pre-post master fader to be implemented
 
 		sendArray ?? { sendArray = [] };
 		sendLevelArray ?? { sendLevelArray = [] };
@@ -222,14 +224,10 @@ MGU_AbstractModule {
 		def.add;
 	}
 
-	// SHORTCUTS
+	// USER INTERFACE
 
 	generateUI { |alwaysOnTop = false|
 		gui = MGU_moduleGUI(this);
-	}
-
-	setDescription { |desc|
-		this.container.description = desc;
 	}
 
 	// PRESET SUPPORT
@@ -255,17 +253,17 @@ MGU_AbstractModule {
 		var stateArray = [];
 		var stateFile;
 		this.instVarSize.do({|i|
-			if(this.instVarAt(i).class == MGU_parameter, {
+			if(this.instVarAt(i).class == MGU_parameter) {
 				this.instVarAt(i).val.postln;
 				stateArray = stateArray.add(this.instVarAt(i).val(true));
-			});
+			};
 		});
 
 		// if path doesn't exist, create path
-		if(PathName(folder_path).isFolder == false, {
+		if(PathName(folder_path).isFolder == false) {
 			folder_path.mkdir;
 			("module: preset folder created at" + folder_path).postln;
-		});
+		};
 
 		// create or overwrite text file
 		stateFile = File((file_path).standardizePath, "w+");
@@ -287,14 +285,14 @@ MGU_AbstractModule {
 		stateArray = stateFile.readAllString.interpret;
 
 		this.instVarSize.do({|i|
-			if(this.instVarAt(i).class == MGU_parameter, {
+			if(this.instVarAt(i).class == MGU_parameter) {
 				this.instVarAt(i).val = stateArray[j];
 				j = j + 1;
-			})
+			};
 		});
 	}
 
-	availablePresets { // returns preset list for this module -- TBI
+	availablePresets { // returns preset list for this module
 		var folder_path = this.getPresetFolderPath(), entries = [];
 		PathName(folder_path).filesDo({|file|
 			file = file.fileName.split($.);
