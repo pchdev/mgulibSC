@@ -190,7 +190,7 @@ MGU_AbstractModule {
 
 	}
 
-	addNewSend { |target, mode = \prefader| // pre-post master fader to be implemented
+	addNewSend { |target, mode = \prefader| // pre-post master fader to be tested
 
 		sendArray ?? { sendArray = [] };
 		sendLevelArray ?? { sendLevelArray = [] };
@@ -202,13 +202,23 @@ MGU_AbstractModule {
 			MGU_parameter(container, "snd_" ++ target.name,
 				Float, [-96, 12], 0, true, \dB, \amp));
 
-		sendDefArray = sendDefArray.add(
-			SynthDef(name ++ "_send" ++ sendArray.size, {
-				var in = In.ar(master_internal, numOutputs);
-				var process = in * sendLevelArray[sendLevelArray.size -1].kr;
-				Out.ar(target.inbus, process);
-			}).add;
-		);
+		switch(mode)
+
+		{\prefader} { sendDefArray = sendDefArray.add(
+				SynthDef(name ++ "_send" ++ sendArray.size, {
+					var in = In.ar(master_internal, numOutputs);
+					var process = in * sendLevelArray[sendLevelArray.size -1].kr;
+					Out.ar(target.inbus, process);
+				}).add;
+		)}
+
+		{\postfader} { sendDefArray = sendDefArray.add(
+				SynthDef(name ++ "_send" ++ sendArray.size, {
+					var in = In.ar(master_internal, numOutputs);
+					var process = in * sendLevelArray[sendLevelArray.size -1].kr * level.kr;
+					Out.ar(target.inbus, process);
+				}).add;
+		)};
 	}
 
 	// MODULE CONNEXIONS
