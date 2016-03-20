@@ -12,7 +12,7 @@ MGU_AbstractModule {
 	var sendDefArray, <sendLevelArray, <sendArray;
 	var nodeArray_send, nodeArray_master, <nodeArray;
 
-	var gui, <description;
+	var <gui, <description;
 
 	*new { |out = 0, server, numInputs, numOutputs, name|
 		^this.newCopyArgs(out, server, numInputs, numOutputs, name)
@@ -155,6 +155,9 @@ MGU_AbstractModule {
 			if(this.instVarAt(i).class.superclass == MGU_AbstractModule)
 			{ this.instVarAt(i).sendSynth() }
 		});
+
+		// refresh module gui if needed
+		gui !? { gui.sendsynth_button.current_state_(1) };
 	}
 
 	killSynth { |index|
@@ -180,6 +183,8 @@ MGU_AbstractModule {
 			nodeArray_send[0].free;
 			nodeArray_send.removeAt(0);
 		});
+
+		gui !? { gui.sendsynth_button.current_state_(0) };
 
 	}
 

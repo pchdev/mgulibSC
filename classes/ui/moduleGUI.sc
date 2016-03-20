@@ -5,7 +5,7 @@ MGU_moduleGUI {
 	var description;
 	var window, window_bounds;
 	var ui_array;
-	var title, description_text, type, sendsynth_button, bypass_button;
+	var title, description_text, type, <sendsynth_button, <bypass_button;
 	var vu_meter;
 
 	*new {|module|
@@ -54,7 +54,9 @@ MGU_moduleGUI {
 		// preset menu
 
 		// vu meters
-		vu_meter = MGU_vuMeter(window, nil, address);
+		module.numOutputs.do({|i|
+			vu_meter = MGU_vuMeter(window, Rect(550 + (13*i), 20, 10, 80), address, i);
+		});
 
 		// parameters
 
