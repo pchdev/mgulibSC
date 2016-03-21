@@ -11,7 +11,14 @@ w.front();
 
 v.valuePeakRMS(0.5, 0.5);
 
+
+g = MGU_grainSampler(0, s);
+
+
+m = MGU_minuitInterface("superColl", 3127);
 g = MGU_scGrainBuf();
+g.registerToMinuit(m);
+
 g.readFile("/Users/meegooh/Desktop/lecture_enregistree-mono.wav");
 g.generateUI;
 g.sendSynth();
@@ -19,6 +26,8 @@ g.killAllSynths();
 g.saveState("testpresets2");
 g.availablePresets();
 
+z = PO_zitaSTS(num_outputs:2);
+z.generateUI();
 
 (
 w = Window("test", Rect(0, 0, 640, 480));

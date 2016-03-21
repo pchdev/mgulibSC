@@ -1,58 +1,61 @@
 MGU_AbstractModule {
 
-	classvar instanceCount;
+	classvar instance_count;
 
-	var <out, <>server, <numInputs, <numOutputs, <>name;
-	var <type, <thisInstance;
-	var <inbus, <container, <>nodeGroup, <master_internal;
+	var <out, <>server, <num_inputs, <num_outputs, <>name;
+	var <type, <this_instance;
+	var <inbus, <container, <>node_group, <master_internal;
 	var <level, <mix, <pan;
 
 	var <def, <master_def;
 
-	var sendDefArray, <sendLevelArray, <sendArray;
-	var nodeArray_send, nodeArray_master, <nodeArray;
+	var <master_container, <sends_container;
+	var senddef_array, <sendlevel_array, <send_array;
+	var node_array_send, node_array_master, <node_array;
 
 	var <gui, <description;
 
-	*new { |out = 0, server, numInputs, numOutputs, name|
-		^this.newCopyArgs(out, server, numInputs, numOutputs, name)
+	*new { |out = 0, server, num_inputs, num_outputs, name|
+		^this.newCopyArgs(out, server, num_inputs, num_outputs, name)
 	}
 
 	init {
 
 		// count
-		instanceCount !? { instanceCount = instanceCount + 1 };
-		instanceCount ?? { instanceCount = 1 };
-		thisInstance = instanceCount;
+		instance_count !? { instance_count = instance_count + 1 };
+		instance_count ?? { instance_count = 1 };
+		this_instance = instance_count;
 
 		// defaults
 		server ?? { server = Server.default };
-		name ?? {name = this.class.asCompileString.split($_)[1] ++ "_" ++ thisInstance };
+		name ?? {name = this.class.asCompileString.split($_)[1] ++ "_" ++ this_instance };
 
 		// node arrays
-		nodeGroup = Group(1, 'addToTail');
-		nodeArray = [];
-		nodeArray_send = [];
-		nodeArray_master = [];
+		node_group = Group(1, 'addToTail');
+		node_array = [];
+		node_array_send = [];
+		node_array_master = [];
 
 		// internal master parameters
-		container = MGU_container(name, nil, nodeGroup, 3127, this);
-		level = MGU_parameter(container, \level, Float, [-96, 12], 0, true, \dB, \amp);
-		master_internal = Bus.audio(server, numOutputs);
+		container = MGU_container(name, nil, node_group, 3127);
+		master_container = MGU_container("master", container, node_group, 3127);
+
+		level = MGU_parameter(master_container, \level, Float, [-96, 12], 0, true, \dB, \amp);
+		master_internal = Bus.audio(server, num_outputs);
 
 		// type inits
 		switch(type)
 		{\effect} {
-			inbus = Bus.audio(server, numInputs);
-			mix = MGU_parameter(container, \mix, Float, [0, 1], 0.5, true)}
+			inbus = Bus.audio(server, num_inputs);
+			mix = MGU_parameter(master_container, \mix, Float, [0, 1], 0.5, true)}
 		{\mts_generator} {
-			pan = MGU_parameter(container, \pan, Float, [-1, 1], 0, true)};
+			pan = MGU_parameter(master_container, \pan, Float, [-1, 1], 0, true)};
 
 	}
 
 	// CUSTOM SETTERS
 
-	inbus_{ |newbus|
+	inbus_{ |newbus| // accessed by effect racks only
 		inbus.free();
 		inbus = newbus;
 		this.initMasterDef();
@@ -63,10 +66,10 @@ MGU_AbstractModule {
 		this.initMasterDef()
 	}
 
-	numOutputs_ {|v|
-		numOutputs = v;
+	num_outputs_ {|v| // in case of multichannel expansion
+		num_outputs = v;
 		master_internal.free();
-		master_internal = Bus.audio(server, numOutputs);
+		master_internal = Bus.audio(server, num_outputs);
 	}
 
 	type_ { |val| // weird but auto setter
@@ -83,8 +86,8 @@ MGU_AbstractModule {
 
 	includeIn { |parent|
 		parent.container.registerContainer(this.container);
-		this.nodeGroup.free;
-		this.nodeGroup = parent.nodeGroup;
+		this.node_group.free;
+		this.node_group = parent.node_group;
 	}
 
 	// DEFS & SYNTHS
@@ -97,7 +100,7 @@ MGU_AbstractModule {
 
 		{\mts_generator} { // mono to stereo -> panning implementation
 				master_def = SynthDef(name ++ "_master", {
-					var in = In.ar(master_internal, numOutputs);
+					var in = In.ar(master_internal, num_outputs);
 					var pan = Pan2.ar(in, pan.kr);
 					var process = pan * level.kr;
 					var reply = SendPeakRMS.kr(process, 20, 3, reply_address);
@@ -106,7 +109,7 @@ MGU_AbstractModule {
 
 		{\generator} {
 				master_def = SynthDef(name ++ "_master", {
-					var in = In.ar(master_internal, numOutputs);
+					var in = In.ar(master_internal, num_outputs);
 					var process = in * level.kr;
 					var reply = SendPeakRMS.kr(process, 20, 3, reply_address);
 					Out.ar(out, process)}).add
@@ -114,8 +117,8 @@ MGU_AbstractModule {
 
 		{\effect} {
 				master_def = SynthDef(name ++ "_master", {
-					var in_wet = In.ar(master_internal, numOutputs);
-					var in_dry = In.ar(inbus, numInputs);
+					var in_wet = In.ar(master_internal, num_outputs);
+					var in_dry = In.ar(inbus, num_inputs);
 					var process = FaustDrywet.ar(in_dry, in_wet, mix.kr) * level.kr;
 					var reply = SendPeakRMS.kr(process, 20, 3, reply_address);
 					Out.ar(out, process)}).add
@@ -127,27 +130,17 @@ MGU_AbstractModule {
 
 		// to implement : auto differentiation between master node and synth nodes (with include in ?)
 
-		switch(type)
+		node_array_master = node_array_master.add(Synth(name ++ "_master",
+			master_container.makeSynthArray.asOSCArgArray, node_group, 'addToTail'));
 
-		{\effect} {
-			nodeArray_master = nodeArray_master.add(Synth(name ++ "_master",
-				[name ++ "_level", level.val, name ++ "_mix", mix.val],
-				nodeGroup, 'addToTail'))
-		}
+		node_array = node_array.add(Synth(name, container.makeSynthArray.asOSCArgArray,
+			node_group, 'addToHead'));
 
-		{\generator} {
-			nodeArray_master = nodeArray_master.add(Synth(name ++ "_master",
-				[name ++ "_level", level.val], nodeGroup, 'addToTail'))
-		};
-
-		nodeArray = nodeArray.add(Synth(name, container.makeSynthArray.asOSCArgArray,
-			nodeGroup, 'addToHead'));
-
-		sendArray !? {
-			sendArray.size.do({|i|
-				nodeArray_send = nodeArray_send.add(
-					Synth(name ++ "_send" ++ (i+1), [name ++ "_snd_" ++ sendArray[i].name,
-						sendLevelArray[i].val], nodeGroup, 'addToTail'))
+		send_array !? {
+			send_array.size.do({|i|
+				node_array_send = node_array_send.add(
+					Synth(name ++ "_send" ++ (i+1), [name ++ "_snd_" ++ send_array[i].name,
+						sendlevel_array[i].val], node_group, 'addToTail'))
 			})
 		};
 
@@ -163,27 +156,27 @@ MGU_AbstractModule {
 	}
 
 	killSynth { |index|
-		nodeArray_master[index].free;
-		nodeArray_master.removeAt(index);
-		nodeArray[index].free;
-		nodeArray.removeAt(index);
+		node_array_master[index].free;
+		node_array_master.removeAt(index);
+		node_array[index].free;
+		node_array.removeAt(index);
 	}
 
 	killAllSynths {
 
-		nodeArray.size.do({|i| // free synth nodes
-			nodeArray[0].free;
-			nodeArray.removeAt(0);
+		node_array.size.do({|i| // free synth nodes
+			node_array[0].free;
+			node_array.removeAt(0);
 		});
 
-		nodeArray_master.size.do({|i| // free master nodes
-			nodeArray_master[0].free;
-			nodeArray_master.removeAt(0);
+		node_array_master.size.do({|i| // free master nodes
+			node_array_master[0].free;
+			node_array_master.removeAt(0);
 		});
 
-		nodeArray_send.size.do({|i| // free send nodes
-			nodeArray_send[0].free;
-			nodeArray_send.removeAt(0);
+		node_array_send.size.do({|i| // free send nodes
+			node_array_send[0].free;
+			node_array_send.removeAt(0);
 		});
 
 		gui !? { gui.sendsynth_button.current_state_(0) };
@@ -192,30 +185,33 @@ MGU_AbstractModule {
 
 	addNewSend { |target, mode = \prefader| // pre-post master fader to be tested
 
-		sendArray ?? { sendArray = [] };
-		sendLevelArray ?? { sendLevelArray = [] };
-		sendDefArray ?? { sendDefArray = [] };
+		send_array ?? { send_array = [] };
+		sendlevel_array ?? {
+			sendlevel_array = [];
+			sends_container = MGU_container("sends", container, node_group, 3127);
+		};
+		senddef_array ?? { senddef_array = [] };
 
-		sendArray = sendArray.add(target);
+		send_array = send_array.add(target);
 
-		sendLevelArray = sendLevelArray.add(
-			MGU_parameter(container, "snd_" ++ target.name,
+		sendlevel_array = sendlevel_array.add(
+			MGU_parameter(sends_container, "snd_" ++ target.name,
 				Float, [-96, 12], 0, true, \dB, \amp));
 
 		switch(mode)
 
-		{\prefader} { sendDefArray = sendDefArray.add(
-				SynthDef(name ++ "_send" ++ sendArray.size, {
-					var in = In.ar(master_internal, numOutputs);
-					var process = in * sendLevelArray[sendLevelArray.size -1].kr;
+		{\prefader} { senddef_array = senddef_array.add(
+				SynthDef(name ++ "_send" ++ send_array.size, {
+					var in = In.ar(master_internal, num_outputs);
+					var process = in * sendlevel_array[sendlevel_array.size -1].kr;
 					Out.ar(target.inbus, process);
 				}).add;
 		)}
 
-		{\postfader} { sendDefArray = sendDefArray.add(
-				SynthDef(name ++ "_send" ++ sendArray.size, {
-					var in = In.ar(master_internal, numOutputs);
-					var process = in * sendLevelArray[sendLevelArray.size -1].kr * level.kr;
+		{\postfader} { senddef_array = senddef_array.add(
+				SynthDef(name ++ "_send" ++ send_array.size, {
+					var in = In.ar(master_internal, num_outputs);
+					var process = in * sendlevel_array[sendlevel_array.size -1].kr * level.kr;
 					Out.ar(target.inbus, process);
 				}).add;
 		)};

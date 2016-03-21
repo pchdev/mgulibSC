@@ -2,8 +2,8 @@ MGU_limiter : MGU_AbstractModule {
 
 	var <ceil, <dur;
 
-	*new { |out = 0, server, numInputs = 1, numOutputs = 1, name|
-		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+	*new { |out = 0, server, num_inputs = 1, num_outputs = 1, name|
+		^super.newCopyArgs(out, server, num_inputs, num_outputs, name).type_(\effect)
 		.init.initModule.initMasterDef
 	}
 
@@ -14,7 +14,7 @@ MGU_limiter : MGU_AbstractModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus, numInputs);
+			in = In.ar(inbus, num_inputs);
 			process = Limiter.ar(in, ceil.kr, dur.kr);
 			Out.ar(master_internal, process);
 		}).add;

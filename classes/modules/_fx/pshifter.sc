@@ -2,8 +2,8 @@ PO_pShifter : MGU_AbstractModule { // pitch-shifting module (doesn't work with f
 
 	var <shift;
 
-	*new { |out = 0, server, numInputs = 1, numOutputs = 1, name|
-		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+	*new { |out = 0, server, num_inputs = 1, num_outputs = 1, name|
+		^super.newCopyArgs(out, server, num_inputs, num_outputs, name).type_(\effect)
 		.init.initModule.initMasterDef
 	}
 
@@ -13,7 +13,7 @@ PO_pShifter : MGU_AbstractModule { // pitch-shifting module (doesn't work with f
 
 		def = SynthDef(name, {
 			var in, shifter, process;
-			in = In.ar(inbus, numInputs);
+			in = In.ar(inbus, num_inputs);
 			shifter = PitchShift.ar(in, 0.2, shift.kr);
 			Out.ar(master_internal, shifter);
 		}).add;
@@ -26,8 +26,8 @@ PO_pshifter2 : MGU_AbstractModule {
 
 	var <shift, <window, <xfade;
 
-	*new { |out = 0, server, numInputs = 1, numOutputs = 1, name|
-		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+	*new { |out = 0, server, num_inputs = 1, num_outputs = 1, name|
+		^super.newCopyArgs(out, server, num_inputs, num_outputs, name).type_(\effect)
 		.init.initModule.initMasterDef
 	}
 
@@ -39,7 +39,7 @@ PO_pshifter2 : MGU_AbstractModule {
 
 		def = SynthDef(name, {
 			var in, process;
-			in = In.ar(inbus, numInputs);
+			in = In.ar(inbus, num_inputs);
 			process = FaustPitchShifter.ar(in, shift.kr, window.kr, xfade.kr);
 			Out.ar(master_internal, process);
 		}).add;

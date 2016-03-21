@@ -2,8 +2,8 @@ MGU_moduleRack : MGU_AbstractModule {
 
 	var <module_array;
 
-	*new { |out = 0, server, numInputs = 2, numOutputs = 2, name|
-		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+	*new { |out = 0, server, num_inputs = 2, num_outputs = 2, name|
+		^super.newCopyArgs(out, server, num_inputs, num_outputs, name).type_(\effect)
 		.init.initRack.initMasterDef;
 	}
 
@@ -28,9 +28,9 @@ MGU_moduleRack : MGU_AbstractModule {
 
 	}
 
-	addModules { |...moduleArray|
-		moduleArray.size.do({|i|
-			this.addModule(moduleArray[i]);
+	addModules { |...array|
+		array.size.do({|i|
+			this.addModule(array[i]);
 		});
 	}
 
@@ -38,11 +38,11 @@ MGU_moduleRack : MGU_AbstractModule {
 		module_array = module_array.removeAt(slot);
 	}
 
-	replaceModule { |module, slot|
+	replaceModule { |module, slot| // tbi
 		module_array.put(slot, module);
 	}
 
-	printRackContents {
+	printRackContents { // tbi
 
 	}
 
@@ -56,16 +56,16 @@ MGU_moduleRack : MGU_AbstractModule {
 			module_array[j].sendSynth()
 		});
 
-		nodeArray_master = nodeArray_master.add(
-					Synth(name ++ "_master", [name ++ "_level", level.val, name ++ "_mix",
-				mix.val], nodeGroup, 'addToTail'))
+		node_array_master = node_array_master.add(
+			Synth(name ++ "/master", master_container.makeSynthArray.asOSCArgArray,
+				node_group, 'addToTail'));
 	}
 
-	killAllSynths {
+	killAllSynths { // tbi
 
 	}
 
-	connectToModule {}
+	connectToModule {} // is this useful ?
 
 	module { |index|
 		^module_array[index];

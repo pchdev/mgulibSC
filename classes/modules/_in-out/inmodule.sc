@@ -1,7 +1,7 @@
 MGU_inModule : MGU_AbstractModule {
 
-	*new { |out = 0, server, numInputs = 1, numOutputs = 1, name|
-		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\generator)
+	*new { |out = 0, server, num_inputs = 1, num_outputs = 1, name|
+		^super.newCopyArgs(out, server, num_inputs, num_outputs, name).type_(\generator)
 		.init.initModule.initMasterDef
 	}
 

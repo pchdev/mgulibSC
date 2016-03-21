@@ -5,8 +5,8 @@ PO_inProcess : MGU_AbstractModule { // mic + comp + eq
 	var <eq1_freq, <eq1_q, <eq1_db;
 	var <eq2_freq, <eq2_q, <eq2_db;
 
-	*new { |out = 0, server, numInputs = 1, numOutputs = 1, name|
-		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+	*new { |out = 0, server, num_inputs = 1, num_outputs = 1, name|
+		^super.newCopyArgs(out, server, num_inputs, num_outputs, name).type_(\effect)
 		.init.initModule.initMasterDef
 	}
 
@@ -28,7 +28,7 @@ PO_inProcess : MGU_AbstractModule { // mic + comp + eq
 
 		def = SynthDef(name, {
 			var in, eq1, eq2, lowcut, comp, process;
-			in = In.ar(inbus, numInputs);
+			in = In.ar(inbus, num_inputs);
 			lowcut = HPF.ar(in, lowcut_freq.kr);
 			eq1 = BPeakEQ.ar(lowcut, eq1_freq.kr);
 			eq2 = BPeakEQ.ar(eq1, eq2_freq.kr);

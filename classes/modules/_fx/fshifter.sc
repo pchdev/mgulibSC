@@ -2,8 +2,8 @@ PO_fShifter : MGU_AbstractModule { // frequency shifter module -- TBC
 
 	var <freq;
 
-	*new { |out = 0, server, numInputs = 1, numOutputs = 1, name|
-		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+	*new { |out = 0, server, num_inputs = 1, num_outputs = 1, name|
+		^super.newCopyArgs(out, server, num_inputs, num_outputs, name).type_(\effect)
 		.init.initModule.initMasterDef
 	}
 
@@ -13,7 +13,7 @@ PO_fShifter : MGU_AbstractModule { // frequency shifter module -- TBC
 
 		def = SynthDef(name, {
 			var in, shift;
-			in = In.ar(inbus, numInputs);
+			in = In.ar(inbus, num_inputs);
 			shift = FreqShift.ar(in, freq.kr);
 			Out.ar(master_internal, shift);
 		}).add;

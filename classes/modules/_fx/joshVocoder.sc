@@ -2,8 +2,8 @@ MGU_joshVocoder : MGU_AbstractWavetableModule {
 
 	var <freq;
 
-	*new { |out = 0, server, numInputs = 1, numOutputs = 1, name|
-		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+	*new { |out = 0, server, num_inputs = 1, num_outputs = 1, name|
+		^super.newCopyArgs(out, server, num_inputs, num_outputs, name).type_(\effect)
 		.init.initWavetable.initModule.initMasterDef
 	}
 
@@ -13,7 +13,7 @@ MGU_joshVocoder : MGU_AbstractWavetableModule {
 
 		def = SynthDef(name, {
 			var in, car, process;
-			in = In.ar(inbus, numInputs);
+			in = In.ar(inbus, num_inputs);
 			car = WhiteNoise.ar();
 			process = Vocoder.ar(car, in, 24, 100, 5000, 0.02, 3000, 0.05, 25);
 			Out.ar(master_internal, process)
@@ -24,8 +24,8 @@ MGU_joshVocoder : MGU_AbstractWavetableModule {
 
 MGU_joshVocoder2 : MGU_AbstractModule {
 
-	*new { |out = 0, server, numInputs = 1, numOutputs = 1, name|
-		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+	*new { |out = 0, server, num_inputs = 1, num_outputs = 1, name|
+		^super.newCopyArgs(out, server, num_inputs, num_outputs, name).type_(\effect)
 		.init.initModule.initMasterDef
 	}
 
@@ -33,7 +33,7 @@ MGU_joshVocoder2 : MGU_AbstractModule {
 
 		def = SynthDef(name, {
 			var in, car, process;
-			in = In.ar(inbus, numInputs);
+			in = In.ar(inbus, num_inputs);
 			car = PinkNoise.ar();
 			process = Vocoder.ar(car, in, 12, 100, 5000, 0.02, 3000, 0.05, 25);
 			Out.ar(master_internal, process)

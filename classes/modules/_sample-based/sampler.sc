@@ -6,8 +6,8 @@ PO_sampler : MGU_AbstractBufferModule { // simple soundFile player
 	var <attack, <decay, <sustain, <release;
 	var <env;
 
-	*new { |out = 0, server, numInputs = 0, numOutputs = 2, name|
-		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\generator)
+	*new { |out = 0, server, num_inputs = 0, num_outputs = 2, name|
+		^super.newCopyArgs(out, server, num_inputs, num_outputs, name).type_(\generator)
 		.init.initModule.initMasterDef;
 	}
 
@@ -36,9 +36,9 @@ PO_sampler : MGU_AbstractBufferModule { // simple soundFile player
 
 	bufferLoaded {
 
-		startPos.range[1] = (numFrames / sampleRate) * 1000;
-		startPos.sr = sampleRate; //
-		length.default = numFrames;
+		startPos.range[1] = (num_frames / samplerate) * 1000;
+		startPos.sr = samplerate; //
+		length.default = num_frames;
 		length.val = length.default;
 
 		def = SynthDef(name, {
@@ -46,7 +46,7 @@ PO_sampler : MGU_AbstractBufferModule { // simple soundFile player
 			clock = FaustRfshClock.ar((length.kr/SampleRate.ir).reciprocal);
 			phasor = Phasor.ar(clock, BufRateScale.kr(buffer.bufnum) * pitch.kr,
 				startPos.kr, startPos.kr + length.kr, startPos.kr);
-			bufrd = BufRd.ar(numOutputs, buffer.bufnum, phasor, loop.kr);
+			bufrd = BufRd.ar(num_outputs, buffer.bufnum, phasor, loop.kr);
 			bufrd = bufrd * In.kr(level.kbus);
 			Out.ar(master_internal, bufrd);
 		}).add;

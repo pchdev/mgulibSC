@@ -1,13 +1,13 @@
 MGU_AbstractBufferModule : MGU_AbstractModule {
 
-	var <buffer, <numFrames, <sampleRate;
+	var <buffer, <num_frames, <samplerate;
 
 	readFileFunc {|path, read| // private
 		var soundFile;
 		soundFile = SoundFile.openRead(path);
-		numFrames = soundFile.numFrames;
-		this.numOutputs_(soundFile.numChannels);
-		sampleRate = soundFile.sampleRate;
+		num_frames = soundFile.numFrames;
+		this.num_outputs_(soundFile.numChannels);
+		samplerate = soundFile.sampleRate;
 
 		buffer ?? { buffer = Buffer.read(server, path, action: { this.bufferLoaded() })};
 		("[] File:" + path + "succesfully loaded.").postln;

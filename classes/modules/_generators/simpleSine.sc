@@ -2,8 +2,8 @@ MGU_simpleSine : MGU_AbstractModule {
 
 	var <freq;
 
-	*new { |out, server, numInputs = 1, numOutputs = 1, name|
-		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\generator)
+	*new { |out, server, num_inputs = 1, num_outputs = 1, name|
+		^super.newCopyArgs(out, server, num_inputs, num_outputs, name).type_(\generator)
 		.init.initModule.initMasterDef;
 	}
 

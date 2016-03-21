@@ -3,8 +3,8 @@ MGU_scGrainBuf : MGU_AbstractBufferModule {
 	var <rfsh, <grain_size, <rate, <pos, <pan;
 	var <rand_pos_freq, <rand_pos_width;
 
-	*new { |out = 0, server, numInputs = 1, numOutputs = 2, name|
-		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\generator)
+	*new { |out = 0, server, num_inputs = 1, num_outputs = 2, name|
+		^super.newCopyArgs(out, server, num_inputs, num_outputs, name).type_(\generator)
 		.init.initModule.initMasterDef
 	}
 
@@ -32,7 +32,7 @@ MGU_scGrainBuf : MGU_AbstractBufferModule {
 
 	bufferLoaded {
 
-		this.numOutputs_(2);
+		this.num_outputs_(2);
 
 		def = SynthDef(name, {
 			var clock = Impulse.ar(rfsh.kr);

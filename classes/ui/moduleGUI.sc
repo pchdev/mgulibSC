@@ -7,6 +7,7 @@ MGU_moduleGUI {
 	var ui_array;
 	var title, description_text, type, <sendsynth_button, <bypass_button;
 	var vu_meter;
+	var master_parameters_text;
 
 	*new {|module|
 		^this.newCopyArgs(module).init
@@ -54,9 +55,14 @@ MGU_moduleGUI {
 		// preset menu
 
 		// vu meters
-		module.numOutputs.do({|i|
-			vu_meter = MGU_vuMeter(window, Rect(550 + (13*i), 20, 10, 80), address, i);
+		module.num_outputs.do({|i|
+			var offset = module.num_outputs * 7;
+			vu_meter = MGU_vuMeter(window, Rect(535 + (13*i) - offset, 20, 10, 80), address, i*2);
 		});
+
+		master_parameters_text = StaticText(window, Rect(20, 125, 200, 15));
+		master_parameters_text.font = Font("Arial", 10, false, false);
+		master_parameters_text.string = "MASTER PARAMETERS";
 
 		// parameters
 

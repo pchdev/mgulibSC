@@ -2,8 +2,8 @@ PO_rmod : MGU_AbstractWavetableModule {
 
 	var <freq;
 
-	*new { |out = 0, server, numInputs = 1, numOutputs = 1, name|
-		^super.newCopyArgs(out, server, numInputs, numOutputs, name).type_(\effect)
+	*new { |out = 0, server, num_inputs = 1, num_outputs = 1, name|
+		^super.newCopyArgs(out, server, num_inputs, num_outputs, name).type_(\effect)
 		.init.initWavetable.initModule.initMasterDef
 	}
 
@@ -14,7 +14,7 @@ PO_rmod : MGU_AbstractWavetableModule {
 
 		def = SynthDef(name, {
 			var in, sin, process, outarray;
-			in = In.ar(inbus, numInputs);
+			in = In.ar(inbus, num_inputs);
 			sin = Osc.ar(wavetable.bufnum, freq.kr);
 			process = in * sin;
 			Out.ar(master_internal, process)
