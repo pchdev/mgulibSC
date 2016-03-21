@@ -17,6 +17,14 @@ g = MGU_grainSampler(0, s);
 
 m = MGU_minuitInterface("superColl", 3127);
 g = MGU_scGrainBuf();
+g.pushLearn();
+g.grain_size.pushLearn();
+g.grain_size.val(true);
+g.rate.pushLearn();
+g.pos.pushLearn();
+
+g.grain_size.val = 150;
+
 g.registerToMinuit(m);
 
 g.readFile("/Users/meegooh/Desktop/lecture_enregistree-mono.wav");
@@ -29,13 +37,9 @@ g.availablePresets();
 z = PO_zitaSTS(num_outputs:2);
 z.generateUI();
 
-(
-w = Window("test", Rect(0, 0, 640, 480));
-w.background = Color.white;
-p = PopUpMenu(w, Rect(10, 10, 100, 20));
-p.items = g.availablePresets();
-p.font = Font("Arial", 11);
+i = MGU_simplePushInterface();
 
-w.front();
+MIDIFunc.trace;
+// cc + = 1 to 10
+// cc - = 127 to 117
 
-)

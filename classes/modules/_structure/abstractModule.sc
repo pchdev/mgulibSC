@@ -236,6 +236,16 @@ MGU_AbstractModule {
 		gui = MGU_moduleGUI(this);
 	}
 
+	// CONTROLLERS
+
+	pushLearn { // this doesn't work for container with 8+ parameters...
+
+		container.paramAccesses.size.do({|i|
+			container.paramAccesses[i].pushLearnResponder(71+i);
+		});
+
+	}
+
 	// PRESET SUPPORT
 
 	getPresetFolderPath {

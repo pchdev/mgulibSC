@@ -25,6 +25,7 @@ MGU_pushParser {
 		var control_array = [85, 86, 87, 88, 89, 90, 116, 117, 118, 119, 9, 3, 44, 45, 46, 47, 48, 49,
 		50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 110, 111, 112,
 		113, 114, 115, 36, 37, 38, 39, 40, 41, 42, 43, 28, 29];
+
 		var note_array = Array.fill(64, {|i| i+36});
 		var toggle_up_array = Array.fill(8, {|i| i+20});
 		var toggle_down_array = Array.fill(8, {|i| 100 + i});
@@ -48,8 +49,6 @@ MGU_pushParser {
 		});
 
 		push_responder.lcd_clearAll;
-		push_responder.lcd_display("PCHDEV", 2);
-		push_responder.lcd_display("reaper / collider", 3);
 
 		this.initUser
 
@@ -73,9 +72,7 @@ MGU_pushParser {
 	// NOTES
 
 	parseNoteOn { |index, velocity|
-
 		var note = index;
-
 		push_responder.setPadColor(index, 2, 8, 2);
 		currentchannel_array.size.do({|i|
 			reaper_responder.send_noteOn(note, velocity, currentchannel_array[i])
@@ -83,7 +80,6 @@ MGU_pushParser {
 	}
 
 	parseNoteOff { |index|
-
 		push_responder.setPadColor(index, 1, 3, 2);
 		currentchannel_array.size.do({|i|
 			reaper_responder.send_noteOff(index, currentchannel_array[i])
@@ -98,7 +94,7 @@ MGU_pushParser {
 				switch(index,
 					0, { select_mode = \reaper; this.parseInitReaper },
 					1, { select_mode = \collider; this.parseInitCollider },
-					2, { select_mode = \max; this.parseInitMix },
+					2, { select_mode = \max; this.parseInitMax },
 					3, { select_mode = \game; this.parseInitGame })},
 			\reaper, { },
 			\collider, { },
@@ -114,7 +110,26 @@ MGU_pushParser {
 		push_responder.lcd_display(" PCHD: reaper  mode selected", 2);
 	}
 
+	parseInitCollider {
+		push_responder.setControl_uptoggles(\off);
+		push_responder.setControl(21, 19);
+		push_responder.lcd_clearAll();
+		push_responder.lcd_display(" PCHD : collider mode selected", 2);
+	}
+
+	parseInitMax {
+		push_responder.setControl_uptoggles(\off);
+		push_responder.setControl(22, 19);
+		push_responder.lcd_clearAll();
+		push_responder.lcd_display(" PCHD : max mode selected", 2);
+	}
+
 	// CC - KNOBS
+
+	parseCC { |ccnum, value|
+
+
+	}
 
 	// CONTROLS
 

@@ -3,7 +3,7 @@ ParOral {
 	var <with_gui, <gui;
 	var <mic_in, <rec_test, <pre_process;
 	var <rack_1, <pshifter, <rmod, <chorus, <delay, <filter_1;
-	var <rack_2, <graindelay, <grip, <vocoder;
+	var <rack_2, <graindelay, <vocoder;
 	var <filter_2, <verb;
 	var <minuitInterface;
 	var oscFunc;
@@ -41,7 +41,7 @@ ParOral {
 		rmod = PO_rmod(name: "rmod"); "[PARORAL] rmod succesfully built".postln;
 		chorus = PO_chorusMTS(name: "chorus"); "[PARORAL] chorus succesfully built".postln;
 		delay = PO_sdelaySTS(name: "delay"); "[PARORAL] delay succesfully built".postln;
-		filter_1 = PO_lpf(numInputs: 2, name: "filter_1"); "[PARORAL] filter_1 succesfully built".postln;
+		filter_1 = PO_lpf(num_inputs: 2, name: "filter_1"); "[PARORAL] filter_1 succesfully built".postln;
 
 		rack_1 = MGU_moduleRack(0, nil, 1, 2, "rack_1"); "[PARORAL] rack1 succesfully built".postln;
 		rack_1.mix.val = 1;
@@ -50,8 +50,6 @@ ParOral {
 		// others
 
 		//graindelay = PO_granaryMTS(name: "graindelay"); "[PARORAL] graindelay succesfully built".postln;
-		grip = PO_grip(name: "grip"); "[PARORAL] grip succesfully built".postln;
-		//vocoder = PO_vocoder(name: "vocoder");
 
 		// rack #2
 
@@ -72,15 +70,12 @@ ParOral {
 
 		pre_process.addNewSend(rack_1);
 		//pre_process.addNewSend(graindelay);
-		//pre_process.addNewSend(grip);
 		//pre_process.addNewSend(vocoder);
 
 		//graindelay.addNewSend(rack_2);
-		//grip.addNewSend(rack_2);
 		//vocoder.addNewSend(rack_2);
 
 		//rack_1.addNewSend(graindelay);
-		//rack_1.addNewSend(grip);
 
 		"[PARORAL] connexions succesfully established!".postln;
 
@@ -116,6 +111,7 @@ ParOral {
 				oscFunc = OSCFunc({|msg| msg.postln}, '/lastIndex', nil, 8889);
 
 				window = Window("ParOral tester", Rect(0, 0, 500, 375), false);
+				window.background = Color.white;
 				window.onClose = { rec_test.killAllSynths() };
 
 				startPos_slider = MGU_slider(window, Rect(120, 10, 120, 25), rec_test.startPos);
@@ -132,33 +128,34 @@ ParOral {
 
 				pre_process_slider = MGU_slider(window, Rect(10, 125, 150, 20), pre_process.level, 0);
 
-				pre_process.sendLevelArray.size.do({|i|
+				pre_process.sendlevel_array.size.do({|i|
 					send_slider_array = send_slider_array.add(
 						MGU_slider(window, Rect(10, 155 + (i*25), 150, 20),
-							pre_process.sendLevelArray[i]));
+							pre_process.sendlevel_array[i]));
 				});
 
 				// OPEN BUTTONS
 
-				pre_process_button = MGU_textButton(window, Rect(340, 125, 100, 20), "open pre_process", {
+				pre_process_button = MGU_textButton(window, Rect(350, 125, 100, 20), "open pre_process", {
 					pre_process.generateUI();
 				});
 
-				rack_1_button = MGU_textButton(window, Rect(340, 155, 100, 20), "open rack_1", {
+				rack_1_button = MGU_textButton(window, Rect(350, 155, 100, 20), "open rack_1", {
 					rack_1.generateUI();
 				});
 
-				graindelay_button = MGU_textButton(window, Rect(340, 185, 100, 20), "open graindelay", {
+				graindelay_button = MGU_textButton(window, Rect(350, 185, 100, 20), "open graindelay", {
 					graindelay.generateUI();
 				});
 
-				grip_button = MGU_textButton(window, Rect(340, 215, 100, 20), "open grip", {
-					grip.generateUI();
+				vocoder_button = MGU_textButton(window, Rect(350, 245, 100, 20), "open vocoder", {
+					vocoder.generateUI();
 				});
 
-				vocoder_button = MGU_textButton(window, Rect(340, 245, 100, 20), "open vocoder", {
-					vocoder.generatEUI();
-				});
+				StaticText(window, Rect(10, 360, 200, 15))
+				.font_(Font("Arial", 10))
+				.string_("Minuit device \"" ++ minuitInterface.address
+					++ "\" on port" + minuitInterface.port ++ ".");
 
 				window.front();
 			});

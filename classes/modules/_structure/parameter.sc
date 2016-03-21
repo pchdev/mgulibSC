@@ -13,6 +13,7 @@ MGU_parameter {
 	var <>bound_to_ui, <>ui, ui_type;
 	var <>description;
 	var <kbus;
+	var midifunc, midi_cc_num;
 
 
 	*new { |container, name, type, range, default, alwaysOnServ = false,
@@ -50,6 +51,49 @@ MGU_parameter {
 	}
 
 	midiLearn { // tbi
+		midifunc = MIDIFunc.cc({|v, num|
+			this.midiLearnResponder(num);
+		});
+	}
+
+	midiLearnResponder { |ccnum|
+		("MIDI Learn, cc number" + ccnum).postln;
+		midifunc = nil;
+		midifunc = MIDIFunc.cc({|v, num|
+
+		}, ccnum);
+
+	}
+
+	pushLearn {
+		midifunc = MIDIFunc.cc({|v, num|
+			this.pushLearnResponder(num);
+		});
+	}
+
+	pushLearnResponder { |ccnum|
+
+		("PUSH Learn cc number" + ccnum).postln;
+
+		midifunc !? { midifunc.free() };
+		midifunc = MIDIFunc.cc({|v, num|
+			var phase = (range[1] - range[0]) / 100, res;
+
+			if(v < 100) {
+				switch(type)
+				{Integer} { res = this.val(true) + 1}
+				{Float} { res = this.val(true) + (phase*v)};
+			} {
+				v = (128 - v);
+				switch(type)
+				{Integer} { res = this.val(true) - 1}
+				{Float} { res = this.val(true) - (phase*v) }
+			};
+
+			this.val_(res);
+
+
+		}, ccnum);
 
 	}
 
@@ -149,7 +193,7 @@ MGU_parameter {
 					address ++ ":value", absolute_val].postln)};
 
 			// reply to gui element
-			if((bound_to_ui) && (report_to_ui)) { ui.value_from_parameter(val) };
+			if((bound_to_ui) && (report_to_ui)) { ui.value_from_parameter(absolute_val) };
 
 		};
 
