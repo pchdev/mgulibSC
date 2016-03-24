@@ -15,41 +15,60 @@ MGU_moduleGUI {
 
 	init {
 
+		// HEADER
+
+		var wINDOW_SIZE = [640, 480];
+		var tITLE_OFFSET = 15;
+		var tITLE_SIZE = 18;
+		var sUBTITLE_OFFSET = tITLE_OFFSET + tITLE_SIZE + 5;
+		var sUBTITLE_SIZE = 11 * 2 ; // 2 lines for subtitles
+		var hEADER_BUTTONS_OFFSET = sUBTITLE_OFFSET + sUBTITLE_SIZE + 10;
+		var hEADER_BUTTONS_SIZE = [75, 25];
+		var hEADER_SIZE = hEADER_BUTTONS_OFFSET + hEADER_BUTTONS_SIZE[1] + 20;
+
+		// MASTER PARAMETERS
+
+
+
 		// query ui-relevant accesses from module & its container(s)
 		parameter_array = module.container.paramAccesses;
 		address = module.container.address;
 
 		// window
-		window_bounds = Rect(0, 0, 640, 480);
+		window_bounds = Rect(0, 0, wINDOW_SIZE[0], wINDOW_SIZE[1]);
 		window = Window(address, window_bounds, false, scroll: true);
 		window.background = Color.white;
 
 		window.drawFunc_({ // header separator
 			Pen.width = 0.5;
 			Pen.strokeColor = Color.black;
-			Pen.line(Point(0, 115), Point(640, 115));
+			Pen.line(Point(0, hEADER_SIZE), Point(wINDOW_SIZE[0], hEADER_SIZE));
 			Pen.stroke;
 		});
 
 		// title
-		title = StaticText(window, Rect(0, 0, 640, 50));
-		title.font = Font("Arial", 18, false);
+		title = StaticText(window, Rect(0, tITLE_OFFSET, wINDOW_SIZE[0], tITLE_SIZE));
+		title.font = Font("Arial", tITLE_SIZE, false);
 		title.string = address + "module";
 		title.align = \center;
 
 		// subtitle - module description
-		description = StaticText(window, Rect(0, 25, 640, 50));
-		description.font = Font("Arial", 11);
+		description = StaticText(window, Rect(0, sUBTITLE_OFFSET, wINDOW_SIZE[0], sUBTITLE_SIZE));
+		description.font = Font("Arial", sUBTITLE_SIZE/2);
 		description.align = \center;
 
 		module.description !? { description.string = module.description };
 		module.description ?? { description.string = "no description currently available.." };
 
 		// module buttons
-		sendsynth_button = MGU_textToggle(window, Rect(window_bounds.width/2 - 75, 70, 75, 25),
+		sendsynth_button = MGU_textToggle(window, Rect(
+			window_bounds.width/2 - 75,
+			hEADER_BUTTONS_OFFSET, 75, 25),
 			"send synth", "kill synth", [{module.killAllSynths()}, {module.sendSynth()}]);
 
-		bypass_button = MGU_textToggle(window, Rect(window_bounds.width/2 -1, 70, 75, 25),
+		bypass_button = MGU_textToggle(window, Rect( // tbi in core
+			window_bounds.width/2 -1,
+			hEADER_BUTTONS_OFFSET, 75, 25),
 			"bypass off", "bypass on");
 
 		// preset menu

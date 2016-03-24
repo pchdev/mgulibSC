@@ -17,13 +17,9 @@ g = MGU_grainSampler(0, s);
 
 m = MGU_minuitInterface("superColl", 3127);
 g = MGU_scGrainBuf();
+g.generateUI();
 g.pushLearn();
-g.grain_size.pushLearn();
-g.grain_size.val(true);
-g.rate.pushLearn();
-g.pos.pushLearn();
 
-g.grain_size.val = 150;
 
 g.registerToMinuit(m);
 
@@ -42,4 +38,6 @@ i = MGU_simplePushInterface();
 MIDIFunc.trace;
 // cc + = 1 to 10
 // cc - = 127 to 117
+
+MGU_moduleGUI
 

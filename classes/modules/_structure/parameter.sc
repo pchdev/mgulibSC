@@ -12,11 +12,11 @@ MGU_parameter {
 	var listening, netaddr_responder, responder_device;
 	var <>bound_to_ui, <>ui, ui_type;
 	var <>description;
-	var <kbus;
+	var <kbus, <abus;
 	var midifunc, midi_cc_num;
 
 
-	*new { |container, name, type, range, default, alwaysOnServ = false,
+	*new { |container, name, type, range, default, alwaysOnServ = true,
 		inUnit, outUnit, sr = 44100|
 		^this.newCopyArgs(container, name, type, range, default, alwaysOnServ,
 			inUnit, outUnit, sr).init
@@ -39,6 +39,8 @@ MGU_parameter {
 
 	}
 
+	// OSC & MIDI
+
 	address_{ |newAddress|
 		address = newAddress;
 		this.initOSC();
@@ -56,10 +58,21 @@ MGU_parameter {
 		});
 	}
 
-	midiLearnResponder { |ccnum|
+	midiLearnResponder { |ccnum| // TBI
 		("MIDI Learn, cc number" + ccnum).postln;
 		midifunc = nil;
 		midifunc = MIDIFunc.cc({|v, num|
+			var tmp_range = (range[1] - range[0]), res;
+			if(v < 100) {
+				switch(type)
+				{Integer} {}
+				{Float} {};
+			} {
+				v = (128-v);
+				switch(type)
+				{Integer} {}
+				{Float} {};
+			};
 
 		}, ccnum);
 
@@ -71,7 +84,7 @@ MGU_parameter {
 		});
 	}
 
-	pushLearnResponder { |ccnum|
+	pushLearnResponder { |ccnum| // seems ok for now
 
 		("PUSH Learn cc number" + ccnum).postln;
 
@@ -101,16 +114,23 @@ MGU_parameter {
 
 	}
 
-	enableModulation { |server|
-		kbus ?? { kbus = Bus.control(server, 1) }
+	// MODULATION
+
+	enableModulation { |server, type = \control|
+		switch(type)
+		{\control} { kbus ?? { kbus = Bus.control(server, 1)}}
+		{\audio} { abus ?? { abus = Bus.audio(server, 1)}};
 	}
 
 	disableModulation {
 		kbus !? {
 			kbus.free;
 			kbus = nil;
-		}
+		};
+		abus !? { abus.free; abus = nil };
 	}
+
+	// CORE
 
 	unitCheck { |value|
 
@@ -147,6 +167,7 @@ MGU_parameter {
 		absolute_unit = false, report_to_ui = true|
 
 		var process;
+
 		process = {
 			value.size.do({|i|
 				// casts & type tests
@@ -203,7 +224,7 @@ MGU_parameter {
 		// node & value always as array
 		if(node.isArray == false) { node = [node] };
 
-		// if value is a function
+		// if value is a function -> doesn't seem to work atm ?
 		if(value.isFunction, {
 			var func, currentVal = [];
 			func = value;
@@ -220,6 +241,8 @@ MGU_parameter {
 			 	 process.value});
 
 	}
+
+	// MINUIT
 
 	enableListening { |netaddr, device| // accessed by minuit interfaces only
 		listening = true;

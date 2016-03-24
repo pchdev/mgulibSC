@@ -70,6 +70,7 @@ MGU_AbstractModule {
 		num_outputs = v;
 		master_internal.free();
 		master_internal = Bus.audio(server, num_outputs);
+		this.initMasterDef();
 	}
 
 	type_ { |val| // weird but auto setter
@@ -224,10 +225,11 @@ MGU_AbstractModule {
 		this.initMasterDef();
 	}
 
-	connectToParameter { |parameter, replace = false| // also tbi
-		parameter.enableModulation();
-		this.out_(parameter.kbus);
-		def.add;
+	connectToParameter { |parameter, type = \control| // also tbi
+		switch(type)
+		{\control} {this.out_(parameter.kbus.index)}
+		{\audio} {this.out_(parameter.kbus.index)};
+		def.add; // no master ?
 	}
 
 	// USER INTERFACE
@@ -238,8 +240,7 @@ MGU_AbstractModule {
 
 	// CONTROLLERS
 
-	pushLearn { // this doesn't work for container with 8+ parameters...
-
+	pushLearn { // this doesn't work for container with 9+ parameters...
 		container.paramAccesses.size.do({|i|
 			container.paramAccesses[i].pushLearnResponder(71+i);
 		});
