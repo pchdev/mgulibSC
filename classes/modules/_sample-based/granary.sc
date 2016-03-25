@@ -19,6 +19,7 @@ MGU_grainSampler : MGU_AbstractBufferModule {
 
 		var bufsignal, bufsize;
 		note_group = [];
+		bufsize = 16384;
 
 		numGrains = 8;
 
@@ -37,7 +38,8 @@ MGU_grainSampler : MGU_AbstractBufferModule {
 		playstop = MGU_parameter(container, \playStop, Symbol, nil, \stop, true);
 		playstop.parentAccess = this; // allows access to this for parameter call back;
 
-		env = Env([0,1,0], [1,1], \welch);
+		env = Env([0,1,0], [1,1], \welch).asSignal(bufsize);
+		buf_env = Buffer.alloc(server, bufsize);
 
 	}
 
@@ -50,35 +52,40 @@ MGU_grainSampler : MGU_AbstractBufferModule {
 		);
 	}
 
-	buildGrainEnvelope { |size|
-		env = env.asSignal(size);
-		buf_env !? { buf_env.sendCollection(env) };
-		buf_env ?? { buf_env = Buffer.alloc(server, size, 1);
-			fork({ 0.5.wait; buf_env.sendCollection(env) })};
+	buildGrainEnvelope {
+		buf_env.sendCollection(env);
 	}
 
 	sendSynth {
 
-		// for multiple voices in a single note
+		// for multiple voices in a single note (num_grains)
 
 		note_group = note_group.add(Group(node_group));
-		node_array_master = node_array_master.add(Synth(name ++ "_master",
-			master_container.makeSynthArray.asOSCArgArray, node_group, 'addToTail'));
+
+		// if no master, create one, otherwise only send synths
+		if(node_array_master[0].isNil) { node_array_master = node_array_master.add(
+			Synth(name ++ "_master", master_container.makeSynthArray.asOSCArgArray,
+				node_group, 'addToTail'))};
 
 		fork({
 			numGrains.do({|i|
 				node_array = node_array.add(
-					Synth(name, container.makeSynthArray.asOSCArgArray, note_group[note_group.size - 1], 'addToHead'));
+					Synth(name, container.makeSynthArray.asOSCArgArray,
+						note_group[note_group.size - 1], 'addToHead'));
 				0.125.wait();
 			});
 		});
 	}
 
 
-	bufferLoaded {
+	bufferLoaded { // callback function after readFile completion
 
 		startPos.range[1] = (num_frames / samplerate) * 1000;
 		startPos.sr = samplerate;
+
+		1.do({|i|
+			this.buildGrainEnvelope();
+		});
 
 		this.num_outputs_(2);
 
@@ -93,7 +100,8 @@ MGU_grainSampler : MGU_AbstractBufferModule {
 			ramp = MGU_ramper.ar(freqr);
 			clock = MGU_clock.ar(freqr);
 
-			start = Latch.ar(startPos.ar + LFNoise1.ar(randPosFreq.kr, randPosWidth.kr), clock);
+			start = Latch.ar(startPos.ar + LFNoise1.ar(randPosFreq.kr, randPosWidth.kr)
+				+ In.ar(startPos.abus), clock);
 			end = Latch.ar(start + size, clock);
 			randpan = LFNoise1.kr(randPanFreq.kr);
 
@@ -117,5 +125,3 @@ MGU_grainSampler : MGU_AbstractBufferModule {
 
 
 }
-
-	

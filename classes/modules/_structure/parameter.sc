@@ -27,6 +27,9 @@ MGU_parameter {
 		instanceCount !? { instanceCount = instanceCount + 1 };
 		instanceCount ?? { instanceCount = 1 };
 
+		abus = inf;
+		kbus = inf;
+
 		bound_to_ui = false;
 		listening = false;
 		description = "no description available";
@@ -116,7 +119,7 @@ MGU_parameter {
 
 	// MODULATION
 
-	enableModulation { |server, type = \control|
+	enableModulation { |server, module, type = \control|
 		switch(type)
 		{\control} { kbus ?? { kbus = Bus.control(server, 1)}}
 		{\audio} { abus ?? { abus = Bus.audio(server, 1)}};
@@ -160,7 +163,6 @@ MGU_parameter {
 		var res;
 		if(beforeConversion) { res = absolute_val } { res = val };
 		^res
-
 	}
 
 	val_ { |value, node, interp = false, duration = 2000, curve = \lin, onServ,
