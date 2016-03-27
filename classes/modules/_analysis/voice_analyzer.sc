@@ -40,7 +40,7 @@ PO_voiceAnalyzer : MGU_AbstractModule {
 			onsets.val = msg[3]}, '/onset');
 		OSCFunc({|msg|
 			var l = msg[3];
-			("reported loudness value:" + l).postln;
+			//("reported loudness value:" + l).postln;
 			loudness.val = l}, '/loudness');
 
 		// def

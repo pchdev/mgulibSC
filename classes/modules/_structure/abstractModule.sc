@@ -201,8 +201,6 @@ MGU_AbstractModule {
 			MGU_parameter(sends_container, "snd_" ++ target.name,
 				Float, [-96, 12], 0, true, \dB, \amp));
 
-		(name ++ "_send" ++ send_array.size).postln;
-
 		switch(mode)
 
 		{\prefader} { senddef_array = senddef_array.add(

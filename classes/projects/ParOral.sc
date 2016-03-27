@@ -37,7 +37,7 @@ ParOral {
 		rec_test = PO_sfPlayer(name: "rec_test");
 		"[PARORAL] rec_test succesfully built".postln;
 
-		pre_process = PO_inProcess(0, name: "pre_process");
+		pre_process = PO_inProcess(name: "pre_process");
 		"[PARORAL] pre_process succesfully built".postln;
 		pre_process.mix.val = 1;
 		pre_process.level.val = -24;
@@ -60,11 +60,11 @@ ParOral {
 		filter_1 = PO_lpf(num_inputs: 2, name: "filter_1");
 		"[PARORAL] filter_1 succesfully built".postln;
 
-		rack_1 = MGU_moduleRack(0, nil, 1, 2, "rack_1");
+		rack_1 = MGU_moduleRack(num_inputs: 1, num_outputs: 2, name: "rack_1");
 		"[PARORAL] rack_1 succesfully built".postln;
 
 		rack_1.description = "input > rmod > chorus > delay > lpf > output";
-		rack_1.mix.val = 1;
+		rack_1.mix.val = 0;
 		rack_1.addModules(pshifter, rmod, chorus, delay, filter_1);//, chorus, delay, filter_1);
 
 		// others
@@ -83,6 +83,7 @@ ParOral {
 		rack_2 = MGU_moduleRack(name: "rack_2");
 		"[PARORAL] rack_2 succesfully built".postln;
 
+		rack_2.description = "input > graindelay > filter > verb > output";
 		rack_2.addModules(filter_2, verb);
 
 		"[PARORAL] module building completed!".postln;
@@ -119,7 +120,7 @@ ParOral {
 		//vocoder.connectToModule(out_limiter);
 		//vocoder.addNewSend(rack_2);
 
-		//rack_1.connectToModule(out_limiter);
+		rack_1.connectToModule(out_limiter);
 		//rack_1.addNewSend(graindelay);
 
 		//rack_2.connectToModule(out_limiter);

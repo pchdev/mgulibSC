@@ -34,7 +34,7 @@ MGU_moduleRack : MGU_AbstractModule {
 		});
 	}
 
-	removeModule { |slot|
+	removeModule { |slot| // tbi
 		module_array = module_array.removeAt(slot);
 	}
 
