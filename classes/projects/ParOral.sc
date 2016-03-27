@@ -5,6 +5,7 @@ ParOral {
 	var <rack_1, <pshifter, <rmod, <chorus, <delay, <filter_1;
 	var <rack_2, <graindelay, <vocoder;
 	var <filter_2, <verb;
+	var <out_limiter, <voice_analyzer;
 	var <minuitInterface;
 	var oscFunc;
 	var window, mic_toggle, test_toggle, init_button;
@@ -61,6 +62,14 @@ ParOral {
 
 		"[PARORAL] building modules completed!".postln;
 
+		// final limiter
+
+		out_limiter = MGU_limiter(num_inputs: 2, num_outputs: 2);
+
+		// voice analysis
+
+		voice_analyzer = PO_voiceAnalyzer();
+
 		// CONNEXIONS
 
 		"[PARORAL] establishing module connexions...".postln;
@@ -68,6 +77,7 @@ ParOral {
 		mic_in.connectToModule(pre_process);
 		rec_test.connectToModule(pre_process);
 
+		pre_process.connectToModule(out_limiter);
 		pre_process.addNewSend(rack_1);
 		//pre_process.addNewSend(graindelay);
 		//pre_process.addNewSend(vocoder);
@@ -163,12 +173,6 @@ ParOral {
 		};
 
 		// PROCESS
-
-		fork {
-			1.wait;
-			pre_process.sendSynth();
-			//rec_test.sendSynth();
-		};
 
 	}
 
