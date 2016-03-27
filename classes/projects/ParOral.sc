@@ -146,8 +146,8 @@ ParOral {
 		// OTHERS
 
 		//rec_test.readFile("samples/lecture-enregistree.wav");
-		//rec_test.readFile("/Users/meegooh/Dropbox/ParOral/audio/samples/lecture-enregistree.wav");
-		rec_test.readFile("/Users/meegooh/Desktop/lecture_enregistree-mono.wav");
+		rec_test.readFile("samples/lecture-enregistree.wav");
+		//rec_test.readFile("/Users/meegooh/Desktop/lecture_enregistree-mono.wav");
 
 		// GUI
 
@@ -176,6 +176,7 @@ ParOral {
 						out_limiter.sendSynth();
 						rack_2.sendRack();
 						rack_1.sendRack();
+						voice_analyzer.sendSynth();
 						pre_process.sendSynth();
 				});
 

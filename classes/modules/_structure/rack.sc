@@ -57,7 +57,7 @@ MGU_moduleRack : MGU_AbstractModule {
 		});
 
 		node_array_master = node_array_master.add(
-			Synth(name ++ "/master", master_container.makeSynthArray.asOSCArgArray,
+			Synth(name ++ "_master", master_container.makeSynthArray.asOSCArgArray,
 				node_group, 'addToTail'));
 	}
 
