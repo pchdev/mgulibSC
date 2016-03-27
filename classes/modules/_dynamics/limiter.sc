@@ -9,6 +9,8 @@ MGU_limiter : MGU_AbstractModule {
 
 	initModule {
 
+		description = "based on SC Limiter UGen...";
+
 		ceil = MGU_parameter(container, \ceil, Float, [-96, 0], -0.3, true, \dB, \amp);
 		dur = MGU_parameter(container, \dur, Integer, [5, 100], 10, true, \ms, \s);
 

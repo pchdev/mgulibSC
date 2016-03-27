@@ -13,6 +13,7 @@ ParOral {
 	var pre_process_slider;
 	var send_slider_array;
 	var pre_process_button, rack_1_button, graindelay_button, grip_button, vocoder_button;
+	var voice_analyzer_button, limiter_button;
 
 
 	*new { |with_gui = true|
@@ -28,47 +29,75 @@ ParOral {
 		minuitInterface = MGU_minuitInterface("audio", 3127);
 		"[PARORAL] minuitInterface succesfully built".postln;
 
-		mic_in = MGU_inModule(name: "mic_in"); "[PARORAL] inModule succesfully built".postln;
-		rec_test = PO_sfPlayer(name: "rec_test"); "[PARORAL] rec_test succesfully built".postln;
-		pre_process = PO_inProcess(0, name: "pre_process"); "[PARORAL] pre_process succesfully built".postln;
+		// in + pre-processing
+
+		mic_in = MGU_inModule(name: "mic_in");
+		"[PARORAL] inModule succesfully built".postln;
+
+		rec_test = PO_sfPlayer(name: "rec_test");
+		"[PARORAL] rec_test succesfully built".postln;
+
+		pre_process = PO_inProcess(0, name: "pre_process");
+		"[PARORAL] pre_process succesfully built".postln;
 		pre_process.mix.val = 1;
 		pre_process.level.val = -24;
 
 		// rack #1
 
-		pshifter = PO_pshifter2(name: "pshifter"); "[PARORAL] pshifter succesfully built".postln;
+		pshifter = PO_pshifter2(name: "pshifter");
+		"[PARORAL] pshifter succesfully built".postln;
 		pshifter.mix.val = 1;
 
-		rmod = PO_rmod(name: "rmod"); "[PARORAL] rmod succesfully built".postln;
-		chorus = PO_chorusMTS(name: "chorus"); "[PARORAL] chorus succesfully built".postln;
-		delay = PO_sdelaySTS(name: "delay"); "[PARORAL] delay succesfully built".postln;
-		filter_1 = PO_lpf(num_inputs: 2, name: "filter_1"); "[PARORAL] filter_1 succesfully built".postln;
+		rmod = PO_rmod(name: "rmod");
+		"[PARORAL] rmod succesfully built".postln;
 
-		rack_1 = MGU_moduleRack(0, nil, 1, 2, "rack_1"); "[PARORAL] rack1 succesfully built".postln;
+		chorus = PO_chorusMTS(name: "chorus");
+		"[PARORAL] chorus succesfully built".postln;
+
+		delay = PO_sdelaySTS(name: "delay");
+		"[PARORAL] delay succesfully built".postln;
+
+		filter_1 = PO_lpf(num_inputs: 2, name: "filter_1");
+		"[PARORAL] filter_1 succesfully built".postln;
+
+		rack_1 = MGU_moduleRack(0, nil, 1, 2, "rack_1");
+		"[PARORAL] rack_1 succesfully built".postln;
+
+		rack_1.description = "input > rmod > chorus > delay > lpf > output";
 		rack_1.mix.val = 1;
 		rack_1.addModules(pshifter, rmod, chorus, delay, filter_1);//, chorus, delay, filter_1);
 
 		// others
 
-		//graindelay = PO_granaryMTS(name: "graindelay"); "[PARORAL] graindelay succesfully built".postln;
+		//graindelay = PO_granaryMTS(name: "graindelay");
+		//"[PARORAL] graindelay succesfully built".postln;
 
 		// rack #2
 
-		filter_2 = PO_lpf(name: "filter_2"); "[PARORAL] filter_2 succesfully built".postln;
-		verb = PO_zitaSTS(name: "verb"); "[PARORAL] verb succesfully built".postln;
+		filter_2 = PO_lpf(name: "filter_2");
+		"[PARORAL] filter_2 succesfully built".postln;
 
-		rack_2 = MGU_moduleRack(name: "rack_2"); "[PARORAL] rack_2 succesfully built".postln;
+		verb = PO_zitaSTS(name: "verb");
+		"[PARORAL] verb succesfully built".postln;
+
+		rack_2 = MGU_moduleRack(name: "rack_2");
+		"[PARORAL] rack_2 succesfully built".postln;
+
 		rack_2.addModules(filter_2, verb);
 
-		"[PARORAL] building modules completed!".postln;
+		"[PARORAL] module building completed!".postln;
 
 		// final limiter
 
-		out_limiter = MGU_limiter(num_inputs: 2, num_outputs: 2);
+		out_limiter = MGU_limiter(num_inputs: 2, num_outputs: 2, name: "master_limiter");
+		out_limiter.mix.val = 1;
+		"[PARORAL] limiter succesfully built".postln;
 
 		// voice analysis
 
-		voice_analyzer = PO_voiceAnalyzer();
+		voice_analyzer = PO_voiceAnalyzer(name: "voice_analyzer");
+		voice_analyzer.thresh.val = -12;
+		"[PARORAL] voice_analyzer successfully built".postln;
 
 		// CONNEXIONS
 
@@ -79,13 +108,21 @@ ParOral {
 
 		pre_process.connectToModule(out_limiter);
 		pre_process.addNewSend(rack_1);
+		pre_process.addNewSend(voice_analyzer);
+
 		//pre_process.addNewSend(graindelay);
 		//pre_process.addNewSend(vocoder);
 
+		//graindelay.connectToModule(out_limiter);
 		//graindelay.addNewSend(rack_2);
+
+		//vocoder.connectToModule(out_limiter);
 		//vocoder.addNewSend(rack_2);
 
+		//rack_1.connectToModule(out_limiter);
 		//rack_1.addNewSend(graindelay);
+
+		//rack_2.connectToModule(out_limiter);
 
 		"[PARORAL] connexions succesfully established!".postln;
 
@@ -103,7 +140,8 @@ ParOral {
 		rack_2.registerToMinuit(minuitInterface);
 
 		"[PARORAL] Minuit registering completed, you may now use i-score.".postln;
-		("[PARORAL] Minuit device" + "\"" ++ minuitInterface.address ++ "\"" + "on port" + minuitInterface.port ++ ".").postln;
+		("[PARORAL] Minuit device" + "\"" ++ minuitInterface.address
+			++ "\"" + "on port" + minuitInterface.port ++ ".").postln;
 
 		// OTHERS
 
@@ -118,56 +156,73 @@ ParOral {
 			AppClock.sched(0, {
 
 				"[PARORAL] building user interface...".postln;
-				oscFunc = OSCFunc({|msg| msg.postln}, '/lastIndex', nil, 8889);
+				//oscFunc = OSCFunc({|msg| msg.postln}, '/lastIndex', nil, 8889);
 
-				window = Window("ParOral tester", Rect(0, 0, 500, 375), false);
+				window = Window("ParOral tester", Rect(0, 0, 550, 375), false);
 				window.background = Color.white;
 				window.onClose = { rec_test.killAllSynths() };
 
-				startPos_slider = MGU_slider(window, Rect(120, 10, 120, 25), rec_test.startPos);
-				test_toggle = MGU_textToggle(window, Rect(10, 10, 100, 25), "tester off", "tester on",
+				startPos_slider = MGU_slider(window, Rect(180, 10, 150, 25), rec_test.startPos);
+				test_toggle = MGU_textToggle(window, Rect(10, 10, 100, 25),
+					"tester off", "tester on",
 					[{rec_test.killAllSynths()}, {rec_test.sendSynth()}]);
-				mic_toggle = MGU_textToggle(window, Rect(10, 40, 100, 25), "mic off", "mic on",
+
+				mic_toggle = MGU_textToggle(window, Rect(10, 40, 100, 25),
+					"mic off", "mic on",
 					[{mic_in.killAllSynths}, {mic_in.sendSynth()}]);
 
-				initEffects = MGU_textButton(window, Rect(10, 70, 100, 25), "init effects", {
-					rack_1.sendRack();
-					pre_process.sendSynth();
-					rack_2.sendRack();
+				initEffects = MGU_textButton(window, Rect(10, 70, 100, 25),
+					"init effects", {
+						out_limiter.sendSynth();
+						rack_2.sendRack();
+						rack_1.sendRack();
+						pre_process.sendSynth();
 				});
 
-				pre_process_slider = MGU_slider(window, Rect(10, 125, 150, 20), pre_process.level, 0);
+				pre_process_slider = MGU_slider(window, Rect(10, 125, 150, 20),
+					pre_process.level, 0);
 
 				pre_process.sendlevel_array.size.do({|i|
 					send_slider_array = send_slider_array.add(
-						MGU_slider(window, Rect(10, 155 + (i*25), 150, 20),
+						MGU_slider(window, Rect(10, 150 + (i*25), 150, 20),
 							pre_process.sendlevel_array[i]));
 				});
 
 				// OPEN BUTTONS
 
-				pre_process_button = MGU_textButton(window, Rect(350, 125, 100, 20), "open pre_process", {
-					pre_process.generateUI();
-				});
+				pre_process_button = MGU_textButton(window, Rect(415, 125, 100, 20),
+					"open pre_process", {pre_process.generateUI()});
 
-				rack_1_button = MGU_textButton(window, Rect(350, 155, 100, 20), "open rack_1", {
-					rack_1.generateUI();
-				});
+				rack_1_button = MGU_textButton(window, Rect(415, 150, 100, 20),
+					"open rack_1", {rack_1.generateUI()});
 
-				graindelay_button = MGU_textButton(window, Rect(350, 185, 100, 20), "open graindelay", {
-					graindelay.generateUI();
-				});
+				voice_analyzer_button = MGU_textButton(window, Rect(415, 175, 100, 20),
+					"open voice analyzer", {voice_analyzer.generateUI()});
 
-				vocoder_button = MGU_textButton(window, Rect(350, 245, 100, 20), "open vocoder", {
-					vocoder.generateUI();
-				});
+				graindelay_button = MGU_textButton(window, Rect(415, 200, 100, 20),
+					"open graindelay", {graindelay.generateUI()});
+
+				vocoder_button = MGU_textButton(window, Rect(415, 225, 100, 20),
+					"open vocoder", {vocoder.generateUI()});
+
+				limiter_button = MGU_textButton(window, Rect(415, 250, 100, 20),
+					"open limiter", {out_limiter.generateUI()});
+
+				// MINUIT INFORMATION FOOTER
 
 				StaticText(window, Rect(10, 360, 200, 15))
 				.font_(Font("Arial", 10))
 				.string_("Minuit device \"" ++ minuitInterface.address
 					++ "\" on port" + minuitInterface.port ++ ".");
 
+				// MISC.
+
+				StaticText(window, Rect(410, 360, 300, 15))
+				.font_(Font("Arial", 10, false, true))
+				.string_("ParOral testing window - pchd");
+
 				window.front();
+
 			});
 
 		};

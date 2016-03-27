@@ -102,6 +102,9 @@ MGU_slider {
 		parameter_address_display.font = Font("Arial", 11);
 		parameter_address_display.align = \topLeft;
 		parameter_address_display.string = bound_parameter.address;
+		bound_parameter.inUnit !? {
+			parameter_address_display.string = parameter_address_display.string
+			+ "(" ++ bound_parameter.inUnit ++ ")"};
 		parameter_address_display.canFocus = true;
 
 		parameter_address_display.mouseDownAction = { |me, x, y, mod, bn, cc|

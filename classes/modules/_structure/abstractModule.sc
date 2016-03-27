@@ -13,7 +13,7 @@ MGU_AbstractModule {
 	var senddef_array, <sendlevel_array, <send_array;
 	var node_array_send, node_array_master, <node_array;
 
-	var <gui, <description;
+	var <gui, <>description;
 
 	*new { |out = 0, server, num_inputs, num_outputs, name|
 		^this.newCopyArgs(out, server, num_inputs, num_outputs, name)
@@ -48,6 +48,8 @@ MGU_AbstractModule {
 		{\effect} {
 			inbus = Bus.audio(server, num_inputs);
 			mix = MGU_parameter(master_container, \mix, Float, [0, 1], 0.5, true)}
+		{\analyzer} {
+			inbus = Bus.audio(server, num_inputs)}
 		{\mts_generator} {
 			pan = MGU_parameter(master_container, \pan, Float, [-1, 1], 0, true)};
 
@@ -129,10 +131,10 @@ MGU_AbstractModule {
 
 	sendSynth {
 
-		// to implement : auto differentiation between master node and synth nodes (with include in ?)
-
+		if((type == \generator) || (type == \effect)) {
 		node_array_master = node_array_master.add(Synth(name ++ "_master",
 			master_container.makeSynthArray.asOSCArgArray, node_group, 'addToTail'));
+		};
 
 		node_array = node_array.add(Synth(name, container.makeSynthArray.asOSCArgArray,
 			node_group, 'addToHead'));
@@ -140,8 +142,8 @@ MGU_AbstractModule {
 		send_array !? {
 			send_array.size.do({|i|
 				node_array_send = node_array_send.add(
-					Synth(name ++ "_send" ++ (i+1), [name ++ "_snd_" ++ send_array[i].name,
-						sendlevel_array[i].val], node_group, 'addToTail'))
+					Synth(name ++ "_send" ++ (i+1),
+						sends_container.makeSynthArray.asOSCArgArray, node_group, 'addToTail'));
 			})
 		};
 
@@ -198,6 +200,8 @@ MGU_AbstractModule {
 		sendlevel_array = sendlevel_array.add(
 			MGU_parameter(sends_container, "snd_" ++ target.name,
 				Float, [-96, 12], 0, true, \dB, \amp));
+
+		(name ++ "_send" ++ send_array.size).postln;
 
 		switch(mode)
 
