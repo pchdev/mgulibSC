@@ -58,13 +58,14 @@ ParOral {
 		"[PARORAL] delay succesfully built".postln;
 
 		filter_1 = PO_lpf(num_inputs: 2, name: "filter_1");
+		filter_1.mix.val = 0;
 		"[PARORAL] filter_1 succesfully built".postln;
 
 		rack_1 = MGU_moduleRack(num_inputs: 1, num_outputs: 2, name: "rack_1");
 		"[PARORAL] rack_1 succesfully built".postln;
 
 		rack_1.description = "input > rmod > chorus > delay > lpf > output";
-		rack_1.mix.val = 0;
+		rack_1.mix.val = 1;
 		rack_1.addModules(pshifter, rmod, chorus, delay, filter_1);//, chorus, delay, filter_1);
 
 		// others
@@ -110,6 +111,7 @@ ParOral {
 		pre_process.connectToModule(out_limiter);
 		pre_process.addNewSend(rack_1);
 		pre_process.addNewSend(voice_analyzer);
+		pre_process.sendlevel_array[0].val = -96;
 
 		//pre_process.addNewSend(graindelay);
 		//pre_process.addNewSend(vocoder);
@@ -139,6 +141,7 @@ ParOral {
 		//grip.registerToMinuit(minuitInterface);
 		//vocoder.registerToMinuit(minuitInterface);
 		rack_2.registerToMinuit(minuitInterface);
+		voice_analyzer.registerToMinuit(minuitInterface);
 
 		"[PARORAL] Minuit registering completed, you may now use i-score.".postln;
 		("[PARORAL] Minuit device" + "\"" ++ minuitInterface.address
@@ -146,8 +149,7 @@ ParOral {
 
 		// OTHERS
 
-		//rec_test.readFile("samples/lecture-enregistree.wav");
-		rec_test.readFile("samples/lecture-enregistree.wav");
+		rec_test.readFile("samples/lecture_enregistree-mono.wav");
 		//rec_test.readFile("/Users/meegooh/Desktop/lecture_enregistree-mono.wav");
 
 		// GUI

@@ -5,8 +5,8 @@ MGU_container {
 	var <>name, <>parentContainer, <>node, <>oscPort;
 	var <>address;
 
-	var <paramAccesses, <paramAddresses;
-	var <contAccesses, <contAddresses;
+	var <parameter_array;
+	var <container_array;
 	var <oscPort;
 
 	*new { |address, parentContainer, node, oscPort|
@@ -19,94 +19,90 @@ MGU_container {
 		instanceCount !? { instanceCount = instanceCount + 1 };
 		instanceCount ?? { instanceCount = 1 };
 
-		if(name.beginsWith("/"), { name = name.drop(1) }); // name != address
+		if(name.beginsWith("/"))
+		{ name = name.drop(1) }; // name != address
 		address = "/" ++ name;
 
 		// init arrays
-		paramAccesses = [];
-		paramAddresses = [];
-		contAccesses = [];
-		contAddresses = [];
+		parameter_array = [];
+		container_array = [];
 
+		// register to parent container
 		parentContainer !? { parentContainer.registerContainer(this) }; // register to parent
 
 	}
 
-	directHierarchy { |type|
-		var branchNb, children = [];
-		branchNb = address.split($/).size;
+	getDirectHierarchy { var branch_number, children = [];
 
-		contAddresses.size.do({|i|
-			if(contAccesses[i].address.split($/).size == (branchNb + 1), {
-				contAddresses[i].postln;
-				children = children.add(contAccesses[i].name.postln;)})});
+		branch_number = address.split($/).size;
 
-		paramAddresses.size.do({|i|
-				if(paramAccesses[i].address.split($/).size == (branchNb + 1), {
-					children = children.add(paramAccesses[i].name.postln)})});
-		^children
+		container_array.do({|container_target|
+			if(container_target.address.split($/).size == (branch_number + 1))
+			{ children = children.add(container_target.name) };
+		});
+
+		parameter_array.do({|parameter_target|
+			if(parameter_target.address.split($/).size == (branch_number + 1))
+			{ children = children.add(parameter_target.name) };
+		});
+
+		^children;
+
 	}
 
-	registerParameter { |parameter| // accessed by parameters
+	registerParameter { |parameter_target| // accessed by parameters
 
-		parameter.defName = name ++ "_" ++ parameter.name;
-		parameter.address = address ++ "/" ++ parameter.name;
-		parameter.oscPort = oscPort;
-		parameter.defaultNode = node;
+		parameter_target.defName = this.name ++ "_" ++ parameter_target.name;
+		parameter_target.address = this.address ++ "/" ++ parameter_target.name;
+		parameter_target.oscPort = this.oscPort;
+		parameter_target.defaultNode = this.node;
 
-		this.addParameter(parameter);
-		parentContainer !? { parentContainer.addParameter(parameter) };
+		this.addParameter(parameter_target);
+		parentContainer !? { parentContainer.addParameter(parameter_target) };
 	}
 
-	addParameter { |parameter|
-		paramAccesses = paramAccesses.add(parameter);
-		paramAddresses = paramAddresses.add(parameter.address);
+	addParameter { |parameter_target| // must be left independent
+		parameter_array = this.parameter_array.add(parameter_target);
 	}
 
-	registerContainer { |container| // accessed by children containers
+	registerContainer { |container_target| // accessed by children containers
 
 		// setting
-		container.address = address ++ container.address;
-		container.oscPort = oscPort;
-		container.node = node;
-		container.paramAccesses.size.do({|i|
-			var target = container.paramAccesses[i];
-			target.address = address ++ target.address;
+		container_target.address = this.address ++ container_target.address;
+		container_target.oscPort = this.oscPort;
+		container_target.node = this.node;
+		container_target.parameter_array.do({|parameter_target|
+			parameter_target.address = this.address ++ parameter_target.address;
+		});
+
+		container_target.container_array.do({|target|
+			target.address = this.address ++ target.address;
 		});
 
 		// merging accesses & addresses
-		this.addContainer(container);
-		parentContainer !? { parentContainer.addContainer(container) };
+		this.addContainer(container_target);
+		parentContainer !? { parentContainer.addContainer(container_target) };
 	}
 
-	addContainer { |container|
-		contAccesses = contAccesses.add(container);
-		contAccesses = contAccesses ++ container.contAccesses;
-		contAddresses = contAddresses.add(container.address);
-		contAddresses = contAddresses ++ container.contAddresses;
-		paramAccesses = paramAccesses ++ container.paramAccesses;
-		paramAddresses = paramAddresses ++ container.paramAddresses;
+	addContainer { |container_target|
+		container_array = this.container_array.add(container_target);
+		container_array = this.container_array ++ container_target.container_array;
+		parameter_array = this.parameter_array ++ container_target.parameter_array;
 	}
 
-	makeSynthArray { |iter| // for generating Synths
-		var synthArray = [];
-		paramAccesses.size.do({|i|
-			synthArray = synthArray.add(paramAccesses[i].defName);
+	makeSynthArray { |iter| var synth_array = [];
+
+		parameter_array.do({|parameter|
+			synth_array = synth_array.add(parameter.defName);
 
 			// Warning: if value is array, report to |iter| argument within Synth send iteration
 
-			if(paramAccesses[i].val.isArray, {
-				synthArray = synthArray.add(paramAccesses[i].val[iter])}, { // else
-					synthArray = synthArray.add(paramAccesses[i].val)});
+			if(parameter.val.isArray) {
+				synth_array = synth_array.add(parameter.val[iter])} { // else
+					synth_array = synth_array.add(parameter.val)};
 		});
 
-		^synthArray
-
-	}
-
-	// CONTROL
-
-	controlWithPush {
+		^synth_array
 
 	}
 

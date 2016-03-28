@@ -83,8 +83,8 @@ MGU_AbstractModule {
 	// OSC MODULE MANAGEMENT
 
 	registerToMinuit { |minuitInterface|
-		minuitInterface.addContainer(container);
-		container.parentContainer = minuitInterface;
+		minuitInterface.addContainer(this.container);
+		this.container.parentContainer = minuitInterface;
 	}
 
 	includeIn { |parent|
