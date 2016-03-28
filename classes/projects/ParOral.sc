@@ -5,7 +5,7 @@ ParOral {
 	var <rack_1, <pshifter, <rmod, <chorus, <delay, <filter_1;
 	var <rack_2, <graindelay, <vocoder;
 	var <filter_2, <verb;
-	var <out_limiter, <voice_analyzer;
+	var <out_limiter, <voice_analyzer, <panner;
 	var <minuitInterface;
 	var oscFunc;
 	var window, mic_toggle, test_toggle, init_button;
@@ -41,6 +41,9 @@ ParOral {
 		"[PARORAL] pre_process succesfully built".postln;
 		pre_process.mix.val = 1;
 		pre_process.level.val = -24;
+
+		panner = MGU_pan2(name: "panner");
+		panner.mix.val = 1;
 
 		// rack #1
 
@@ -108,7 +111,9 @@ ParOral {
 		mic_in.connectToModule(pre_process);
 		rec_test.connectToModule(pre_process);
 
-		pre_process.connectToModule(out_limiter);
+		pre_process.connectToModule(panner);
+		panner.connectToModule(out_limiter);
+
 		pre_process.addNewSend(rack_1);
 		pre_process.addNewSend(voice_analyzer);
 		pre_process.sendlevel_array[0].val = -96;
@@ -149,8 +154,8 @@ ParOral {
 
 		// OTHERS
 
-		//rec_test.readFile("samples/lecture_enregistree-mono.wav");
-		rec_test.readFile("/Users/meegooh/Desktop/lecture_enregistree-mono.wav");
+		rec_test.readFile("samples/lecture_enregistree-mono.wav");
+		//rec_test.readFile("/Users/meegooh/Desktop/lecture_enregistree-mono.wav");
 
 		// GUI
 
