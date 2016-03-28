@@ -83,9 +83,7 @@ MGU_grainSampler : MGU_AbstractBufferModule {
 		startPos.range[1] = (num_frames / samplerate) * 1000;
 		startPos.sr = samplerate;
 
-		1.do({|i|
-			this.buildGrainEnvelope();
-		});
+		this.buildGrainEnvelope();
 
 		this.num_outputs_(2);
 
@@ -97,8 +95,8 @@ MGU_grainSampler : MGU_AbstractBufferModule {
 			size = grainSize.kr;
 
 			freqr = (size/SampleRate.ir).reciprocal * grainPitch.kr;
-			ramp = MGU_ramper.ar(freqr);
-			clock = MGU_clock.ar(freqr);
+			ramp = MGU_ramper.ar(freqr, 0);
+			clock = MGU_clock.ar(freqr, 0);
 
 			start = Latch.ar(startPos.ar + LFNoise1.ar(randPosFreq.kr, randPosWidth.kr)
 				+ In.ar(startPos.abus), clock);

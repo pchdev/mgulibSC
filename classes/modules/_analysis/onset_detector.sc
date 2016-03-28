@@ -3,8 +3,9 @@ MGU_onsetDetector : MGU_AbstractModule {
 	var <fftsize;
 	var <thresh, <odftype, <relaxtime, <floor, <mingap, <medianspan;
 
-	*new { |out, server, numChannels = 1, name|
-		^super.newCopyArgs(out, server, numChannels, name).init.initParameters;
+	*new { |out = 0, server, num_inputs = 1, num_outputs = 1, name|
+		^this.newCopyArgs(out, server, num_inputs, num_outputs, name).type_(\analyzer)
+		.init.initModule;
 	}
 
 	initParameters {

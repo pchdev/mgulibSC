@@ -61,9 +61,9 @@ MGU_minuitInterface {
 
 	getApplicationNodes {
 		var nodes = [];
-		container_array.size.do({|i|
-			if(container_array[i].address.split($/).size == 2)
-			{ nodes = nodes.add(container_array[i].address.drop(1).asSymbol)};
+		container_array.do({|container_target|
+			if(container_target.address.split($/).size == 2)
+			{ nodes = nodes.add(container_target.address.drop(1).asSymbol)};
 		});
 
 		^nodes;
@@ -73,15 +73,15 @@ MGU_minuitInterface {
 
 		node = node.asString;
 
-		container_array.size.do({|i| // node is container ?
-			if(node == container_array[i].address)
-			{ node_access = container_array[i]};
+		container_array.do({|container_target| // node is container ?
+			if(node == container_target.address)
+			{ node_access = container_target};
 		});
 
 		node_access ?? { // then node is parameter
-			parameter_array.size.do({|i|
-				if(node == parameter_array[i].address)
-				{ node_access = parameter_array[i]};
+			parameter_array.do({|parameter_target|
+				if(node == parameter_target.address)
+				{ node_access = parameter_target};
 			});
 		};
 

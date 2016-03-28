@@ -138,7 +138,7 @@ ParOral {
 		pre_process.registerToMinuit(minuitInterface);
 		rack_1.registerToMinuit(minuitInterface);
 		//graindelay.registerToMinuit(minuitInterface);
-		//grip.registerToMinuit(minuitInterface);
+
 		//vocoder.registerToMinuit(minuitInterface);
 		rack_2.registerToMinuit(minuitInterface);
 		voice_analyzer.registerToMinuit(minuitInterface);
