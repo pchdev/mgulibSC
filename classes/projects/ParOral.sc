@@ -149,8 +149,8 @@ ParOral {
 
 		// OTHERS
 
-		rec_test.readFile("samples/lecture_enregistree-mono.wav");
-		//rec_test.readFile("/Users/meegooh/Desktop/lecture_enregistree-mono.wav");
+		//rec_test.readFile("samples/lecture_enregistree-mono.wav");
+		rec_test.readFile("/Users/meegooh/Desktop/lecture_enregistree-mono.wav");
 
 		// GUI
 

@@ -31,7 +31,7 @@ MGU_moduleGUI {
 
 
 		// query ui-relevant accesses from module & its container(s)
-		parameter_array = module.container.paramAccesses;
+		parameter_array = module.container.parameter_array;
 		address = module.container.address;
 
 		// window
