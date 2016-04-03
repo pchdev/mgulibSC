@@ -32,7 +32,7 @@ PO_zitaSTS : MGU_AbstractModule { // faust zita_rev1
 			verb = FaustZitaRev1.ar(in[0], in[1], indel.kr, lfx.kr,
 				low_rt60.kr, mid_rt60.kr, hf_damping.kr, eq1_freq.kr,
 				eq1_lvl.kr,
-				eq2_freq.kr, eq2_lvl.kr, 0, 0);
+				eq2_freq.kr, eq2_lvl.kr, 1, 0);
 			Out.ar(master_internal, verb);
 		}).add;
 

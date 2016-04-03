@@ -266,7 +266,8 @@ MGU_AbstractModule {
 
 		switch(fader_mode)
 
-		{\prefader} { senddef_array = senddef_array.add(
+		{\prefader} { 		master_internal.postln;
+			senddef_array = senddef_array.add(
 				SynthDef(name ++ "_send" ++ send_array.size, {
 					var in = In.ar(master_internal, num_outputs);
 					var process = in * sendlevel_array[sendlevel_array.size -1].kr;

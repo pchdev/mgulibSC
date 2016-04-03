@@ -59,6 +59,15 @@ MGU_moduleRack : MGU_AbstractModule {
 		node_array_master = node_array_master.add(
 			Synth(name ++ "_master", master_container.makeSynthArray.asOSCArgArray,
 				node_group, 'addToTail'));
+
+		// create sends
+		send_array !? {
+			send_array.size.do({|i|
+				node_array_send = node_array_send.add(
+					Synth(name ++ "_send" ++ (i+1),
+						sends_container.makeSynthArray.asOSCArgArray, node_group, 'addToTail'));
+			})
+		};
 	}
 
 	killAllSynths { // tbi

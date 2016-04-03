@@ -15,6 +15,8 @@ ParOral {
 	var pre_process_button, rack_1_button, graindelay_button, grip_button, vocoder_button;
 	var voice_analyzer_button, limiter_button, rack_2_button;
 
+	var <boiling_sample, paatos_sample;
+
 
 	*new { |with_gui = true|
 		^this.newCopyArgs(with_gui).init
@@ -28,6 +30,16 @@ ParOral {
 
 		minuitInterface = MGU_minuitInterface("audio", 3127);
 		"[PARORAL] minuitInterface succesfully built".postln;
+
+		// sound_design
+
+		boiling_sample = PO_sfPlayer(name: "boiling_sample");
+		boiling_sample.sends_only = true;
+
+		paatos_sample = PO_sfPlayer(name: "paatos_sample");
+
+		boiling_sample.readFile("/Users/meegooh/Dropbox/ParOral/audio/samples/nappe-intro.wav");
+		paatos_sample.readFile("/Users/meegooh/Dropbox/ParOral/audio/samples/paatos.wav");
 
 		// in + pre-processing
 
@@ -110,6 +122,12 @@ ParOral {
 
 		"[PARORAL] establishing module connexions...".postln;
 
+		//boiling_sample.connectToModule(out_limiter);
+		boiling_sample.addNewSend(out_limiter);
+		boiling_sample.addNewSend(rack_2);
+
+		paatos_sample.connectToModule(out_limiter);
+
 		mic_in.connectToModule(pre_process);
 		rec_test.connectToModule(pre_process);
 
@@ -145,6 +163,9 @@ ParOral {
 
 		"[PARORAL] registering modules to Minuit protocol...".postln;
 
+		boiling_sample.registerToMinuit(minuitInterface);
+		paatos_sample.registerToMinuit(minuitInterface);
+
 		mic_in.registerToMinuit(minuitInterface);
 		rec_test.registerToMinuit(minuitInterface);
 		pre_process.registerToMinuit(minuitInterface);
@@ -161,16 +182,19 @@ ParOral {
 		("[PARORAL] Minuit device" + "\"" ++ minuitInterface.address
 			++ "\"" + "on port" + minuitInterface.port ++ ".").postln;
 
-		// OTHERS
+		// SAMPLES BUFFERING
 
 		//rec_test.readFile("samples/lecture_enregistree-mono.wav");
+		//boiling_sample.readFile("samples/nappe-intro.wav");
+		//paatos_sample.readFile("samples/paatos.wav");
+
 		rec_test.readFile("/Users/meegooh/Desktop/lecture_enregistree-mono.wav");
 
 		// GUI
 
 		if(with_gui) {
 
-			var buttons_offset = 575;
+			var buttons_offset = 560;
 
 			AppClock.sched(0, {
 
@@ -200,7 +224,16 @@ ParOral {
 					"tester off", "tester on",
 					[{rec_test.killAllSynths()}, {rec_test.sendSynth()}]);
 
-				MGU_hSeparator(window, Rect(10, 65, 690, 1));
+				MGU_textToggle(window, Rect(10, 34, 100, 25),
+					"sample-intro off", "sample-intro on",
+					[{boiling_sample.killAllSynths()}, {boiling_sample.sendSynth()}]);
+
+				MGU_textToggle(window, Rect(109, 34, 100, 25),
+					"paatos off", "paatos on",
+					[{paatos_sample.killAllSynths()}, {paatos_sample.sendSynth()}]);
+
+
+				MGU_hSeparator(window, Rect(10, 80, 690, 1));
 
 				startPos_slider = MGU_slider(window, Rect(10, 100, 150, 20), rec_test.startPos)
 				.background_color_(MGU_colorPalette.blueGreenGrey());
