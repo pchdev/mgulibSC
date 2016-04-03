@@ -7,6 +7,8 @@ MGU_AbstractModule {
 	var <inbus, <>node_group, <master_internal;
 	var <level, <mix, <pan;
 
+	var <>sends_only;
+
 	var <def, <master_def;
 
 	var <master_container, <sends_container, <container;
@@ -37,6 +39,7 @@ MGU_AbstractModule {
 		node_array_master = [];
 
 		// internal master parameters
+		sends_only = false;
 		container = MGU_container(name, nil, node_group, 3127);
 		master_container = MGU_container("master", container, node_group, 3127);
 
@@ -132,14 +135,18 @@ MGU_AbstractModule {
 
 	sendSynth {
 
-		if((type == \generator) || (type == \effect)) {
+		// create master
+
+		if(((type == \generator) || (type == \effect)) && (sends_only == false)) {
 		node_array_master = node_array_master.add(Synth(name ++ "_master",
 			master_container.makeSynthArray.asOSCArgArray, node_group, 'addToTail'));
 		};
 
+		// create main node
 		node_array = node_array.add(Synth(name, container.makeSynthArray.asOSCArgArray,
 			node_group, 'addToHead'));
 
+		// create sends
 		send_array !? {
 			send_array.size.do({|i|
 				node_array_send = node_array_send.add(

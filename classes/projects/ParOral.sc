@@ -43,6 +43,7 @@ ParOral {
 		pre_process.level.val = -24;
 
 		panner = MGU_pan2(name: "panner");
+		panner.sends_only = true;
 		panner.mix.val = 1;
 
 		// rack #1
