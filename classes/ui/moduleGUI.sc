@@ -1,13 +1,14 @@
 MGU_moduleGUI {
 
 	var module, address;
-	var parameter_array;
+	var parameter_array, master_parameter_array;
 	var description;
 	var window, window_bounds;
 	var ui_array;
-	var title, description_text, type, <sendsynth_button, <bypass_button;
+	var title, description_text, type, main_menu;
 	var vu_meter;
 	var master_parameters_text;
+	var user_parameters_text;
 
 	*new {|module|
 		^this.newCopyArgs(module).init
@@ -25,11 +26,17 @@ MGU_moduleGUI {
 		var hEADER_BUTTONS_OFFSET = sUBTITLE_OFFSET + sUBTITLE_SIZE + 10;
 		var hEADER_BUTTONS_SIZE = [75, 25];
 		var hEADER_SIZE = hEADER_BUTTONS_OFFSET + hEADER_BUTTONS_SIZE[1] + 20;
+		var parameter_offset = 0;
+
+
+
+		var container_collection = [];
 
 		// MASTER PARAMETERS
 
 		// query ui-relevant accesses from module & its container(s)
 		parameter_array = module.container.parameter_array;
+		master_parameter_array = module.master_container.parameter_array;
 		address = module.container.address;
 
 		// window
@@ -37,79 +44,78 @@ MGU_moduleGUI {
 		window = Window(address, window_bounds, false, scroll: true);
 		window.background = Color.white;
 
-		window.drawFunc_({ // header separator
-			Pen.width = 0.5;
-			Pen.strokeColor = Color.black;
-			Pen.line(Point(0, hEADER_SIZE), Point(wINDOW_SIZE[0], hEADER_SIZE));
-			Pen.stroke;
-		});
-
 		// title
-		title = StaticText(window, Rect(0, tITLE_OFFSET, wINDOW_SIZE[0], tITLE_SIZE));
+		title = StaticText(window, Rect(0, tITLE_OFFSET, wINDOW_SIZE[0] -2, tITLE_SIZE));
 		title.font = Font("Arial", tITLE_SIZE, false);
 		title.string = address + "module";
 		title.align = \center;
 
 		// subtitle - module description
-		description = StaticText(window, Rect(0, sUBTITLE_OFFSET, wINDOW_SIZE[0], sUBTITLE_SIZE));
+		description = StaticText(window, Rect(0, sUBTITLE_OFFSET, wINDOW_SIZE[0] -2, sUBTITLE_SIZE));
 		description.font = Font("Arial", sUBTITLE_SIZE/2);
 		description.align = \center;
 
 		module.description !? { description.string = module.description };
 		module.description ?? { description.string = "no description currently available.." };
 
-		// module buttons
-		sendsynth_button = MGU_textToggle(window, Rect(
-			window_bounds.width/2 - 75,
-			hEADER_BUTTONS_OFFSET, 75, 25),
-			"send synth", "kill synth", [{module.killAllSynths()}, {module.sendSynth()}]);
+		// main menu
 
-		bypass_button = MGU_textToggle(window, Rect( // tbi in core
-			window_bounds.width/2 -1,
-			hEADER_BUTTONS_OFFSET, 75, 25),
-			"bypass off", "bypass on");
+		main_menu = PopUpMenu(window, Rect(wINDOW_SIZE[0]/2 - 80, hEADER_BUTTONS_OFFSET, 160, 20))
+		.items_(["send synth", "kill all synths", "bypass"])
+		.background_(Color.white)
+		.font_(Font("Arial", 11));
 
 		// preset menu
 
-		// vu meters
+		// VU METERS
+
+		// inputs
+
+		if(module.type == \effect) {
+			module.num_inputs.do({|i|
+				var offset = module.num_inputs * 7;
+				MGU_vuMeter(window, Rect(105 + (13*i) - offset, 20, 10, 80), address ++ "/input", i*2);
+			});
+		};
+
+		// outputs
+
 		module.num_outputs.do({|i|
 			var offset = module.num_outputs * 7;
 			vu_meter = MGU_vuMeter(window, Rect(535 + (13*i) - offset, 20, 10, 80), address, i*2);
 		});
 
-		master_parameters_text = StaticText(window, Rect(20, 125, 200, 15));
-		master_parameters_text.font = Font("Arial", 10, false, false);
-		master_parameters_text.string = "MASTER PARAMETERS";
+		// PARAMETERS
 
-		// parameters
+		// collecting containers
 
-		parameter_array.size.do({|i|
+		module.instVarSize.do({|i|
+			if(module.instVarAt(i).class == MGU_container)
+			{ container_collection = container_collection.add(module.instVarAt(i)) };
+		});
 
-			var parameter = parameter_array[i];
-			var type = parameter_array[i].type;
-			var pname = parameter_array[i].name;
-			var range = parameter_array[i].range;
-			var y_offset = 145 + (i*30);
+		if(module.class == MGU_moduleRack) { // if module rack
+			module.module_array.do({|m|
+				m.instVarSize.do({|i|
+					if(m.instVarAt(i).class == MGU_container)
+					{ container_collection = container_collection.add(m.instVarAt(i)) };
+			})});
+		};
 
-			case
+		// adding successive ui parameter groups
 
-			{ type == Integer } {
-				if(range == [0, 1]) { ui_array = ui_array.add(MGU_toggle(window,
-					Rect(20, y_offset, 17, 17), parameter)) }
-				{ if(pname != \inbuser) { ui_array = ui_array.add(MGU_slider(window,
-					Rect(20, y_offset, 150, 20), parameter)) }}}
-			{ type == Float } {
-				if(pname == \freq) { ui_array.add(MGU_slider(window,
-					Rect(20, y_offset, 150, 20), parameter, 7)) } {
-					ui_array.add(MGU_slider(window, Rect(20, y_offset, 150, 20), parameter))};
-			};
+		container_collection.do({|container|
+			var offset = hEADER_BUTTONS_OFFSET + 20 + 15 + parameter_offset;
+			var c = MGU_containerUI(container, window, Rect(20, offset, wINDOW_SIZE[0] - 2, 0));
+			parameter_offset = parameter_offset + c.computeRequiredUISize();
+
 		});
 
 		// when closing window, unbind parameters from ui elements
 		window.onClose = {
-			parameter_array.size.do({|i|
-				parameter_array[i].bound_to_ui = false;
-				parameter_array[i].ui = nil;
+			parameter_array.do({|param|
+				param.bound_to_ui = false;
+				param.ui = nil;
 			});
 		};
 

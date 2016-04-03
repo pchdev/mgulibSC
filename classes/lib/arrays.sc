@@ -1,18 +1,40 @@
 MGU_arrayLib {
 
-	*pickHigherNote { |scale, note_array|
-		var res, note;
-		note = note_array[note_array.maxIndex];
-		note ?? { res = scale.choose };
-		note !? { res = MGU_arrayLib.split(scale, note)[1].choose};
+	*pickHigherNote { |scale, note|
+		var res;
+
+		scale = scale.copy(); // copy, otherwise .removeAt() removes the notes from the ref
+
+		("current note is" + note).postln;
+		if(note.isNil) // if no note, randomly pick a note from the array
+		{ res = [scale.choose()]}
+		{ res = MGU_arrayLib.split(scale, note)[1] }; // otherwise res is the higher split
+
+		if(res[0].isNil)
+		{ scale.removeAt(scale.indexOf(note));
+			scale.postln;
+			res = scale.choose}
+		{ res = res.choose() };
+
 		^res;
 	}
 
-	*pickLowerNote { |scale, note_array|
-		var res, note;
-		note = note_array[note_array.minIndex];
-		note ?? { res = scale.choose };
-		note !? { res = MGU_arrayLib.split(scale, note)[0].choose};
+	*pickLowerNote { |scale, note|
+		var res;
+		scale = scale.copy();
+
+		("current note is" + note).postln;
+
+		if(note.isNil) // if no note, randomly pick a note from the array
+		{ res = [scale.choose()]}
+		{ res = MGU_arrayLib.split(scale, note)[0] }; // otherwise res is the higher split
+
+		if(res[0].isNil)
+		{ scale.removeAt(scale.indexOf(note));
+			scale.postln;
+			res = scale.choose}
+		{ res = res.choose() };
+
 		^res;
 	}
 

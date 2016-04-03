@@ -15,6 +15,7 @@ PO_voiceAnalyzer : MGU_AbstractModule {
 		description = "onset detector + pitch & loudness tracker";
 
 		// onset detection parameters
+
 		fftsize = MGU_parameter(container, \fftsize, Integer, [0, inf], 2048, true);
 		thresh = MGU_parameter(container, \thresh, Float, [-96, 12], -40, true, \dB, \amp);
 		odftype = MGU_parameter(container, \odftype, Symbol, nil, \rcomplex, true);
@@ -26,8 +27,8 @@ PO_voiceAnalyzer : MGU_AbstractModule {
 		// reply parameters
 
 		pitch = MGU_parameter(container, \pitch, Float, [0, 1000], 440, true);
+		loudness = MGU_parameter(container, \loudness, Float, [0, 1000], 0, true);
 		onsets = MGU_parameter(container, \onsets, Integer, [0, 1], 0, true);
-		loudness = MGU_parameter(container, \loudness, Float, [0, 64], 0, true);
 
 		// osc functions
 
@@ -59,7 +60,7 @@ PO_voiceAnalyzer : MGU_AbstractModule {
 				0.01, 0.5, 2, 0);
 			SendReply.kr(trig, '/loudness', loudness);
 			SendReply.kr(trig, '/pitch', pitch);
-			SendReply.kr(onset, '/onset', onset, -1); // no output needed
+			SendReply.kr(trig, '/onset', onset, -1); // no output needed
 		}).add;
 
 

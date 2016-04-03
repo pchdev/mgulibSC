@@ -13,7 +13,7 @@ MGU_container {
 		^this.newCopyArgs(address, parentContainer, node, oscPort).init
 	}
 
-	init { // NOTE : remove addresses, no use
+	init {
 
 		// global
 		instanceCount !? { instanceCount = instanceCount + 1 };
@@ -28,11 +28,13 @@ MGU_container {
 		container_array = [];
 
 		// register to parent container
-		parentContainer !? { parentContainer.registerContainer(this) }; // register to parent
+		parentContainer !? { parentContainer.registerContainer(this) };
 
 	}
 
-	getDirectHierarchy { var branch_number, children = [];
+	getDirectHierarchy {
+
+		var branch_number, children = [];
 
 		branch_number = address.split($/).size;
 
@@ -47,6 +49,20 @@ MGU_container {
 		});
 
 		^children;
+
+	}
+
+	getDirectParameters {
+
+		var branch_number, children = [];
+		branch_number = address.split($/).size;
+
+		parameter_array.do({|parameter_target|
+			if(parameter_target.address.split($/).size == (branch_number + 1))
+			{ children = children.add(parameter_target) };
+		});
+
+		^children
 
 	}
 

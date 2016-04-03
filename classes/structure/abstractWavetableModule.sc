@@ -13,7 +13,8 @@ MGU_AbstractWavetableModule : MGU_AbstractModule {
 
 		numFrames = 16384;
 		numPartials = 64;
-		waveform = MGU_parameter(container, \waveform, Symbol, nil, \sine);
+		waveform = MGU_parameter(container, \waveform, Symbol,
+			[\sine, \triangle, \square, \saw, \sawtooth], \sine);
 		waveform.parentAccess = this;
 		wavetable = Buffer.alloc(server, numFrames, 1);
 

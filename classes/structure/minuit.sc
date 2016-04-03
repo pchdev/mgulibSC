@@ -1,12 +1,12 @@
 MGU_minuitInterface {
 
-	var <address, <port;
+	var <address, <port, <>print;
 	var <parameter_array;
 	var <container_array;
 	var <respAddr;
 
-	*new { |address = "superColl", port = 3127|
-		^this.newCopyArgs(address, port).init
+	*new { |address = "superColl", port = 3127, print = false|
+		^this.newCopyArgs(address, port, print).init
 	}
 
 	init {
@@ -18,13 +18,16 @@ MGU_minuitInterface {
 		container_array = [];
 
 		// init OSC responders
-		OSCFunc({|msg, time, addr, recvPort| msg.postln;
+		OSCFunc({|msg, time, addr, recvPort|
+			if(print) { msg.postln };
 			this.parseDiscovery(msg[1])}, "i-score?namespace", nil, port);
 
-		OSCFunc({|msg, time, addr, recvPort| msg.postln;
+		OSCFunc({|msg, time, addr, recvPort|
+			if(print) { msg.postln };
 			this.parseGet(msg[1])}, "i-score?get", nil, port);
 
-		OSCFunc({|msg, time, addr, recvPort| msg.postln;
+		OSCFunc({|msg, time, addr, recvPort|
+			if(print) { msg.postln };
 			this.parseListen(msg[1], msg[2])}, "i-score?listen", nil, port);
 
 	}
@@ -202,7 +205,7 @@ MGU_minuitInterface {
 			values.size.do({|i|
 				msg_array = msg_array.add(values[i])})};
 
-		msg_array.postln;
+		if(print) { msg_array.postln };
 
 		respAddr.sendBundle(nil, msg_array);
 	}

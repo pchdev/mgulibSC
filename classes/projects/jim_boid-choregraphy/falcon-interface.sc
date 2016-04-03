@@ -62,13 +62,10 @@ JIM_falconInterface : MGU_AbstractModule {
 		noise_gain = MGU_parameter(container, \noise_gain, Float,
 			[0, 2], 1, true).parentAccess_(this);
 
-		this.setDescription("superCollider de canards...\n ceci n'est pas très règlementaire..");
+		description = ("superCollider de canards...\n ceci n'est pas très règlementaire..");
 
 		granpad_scale = [72, 71, 69, 67, 65, 64, 62, 60, 59, 57, 55, 53, 52, 50, 48];
-		granpad_playing = [];
-
 		bassfm_scale = [47, 45, 43, 41, 40, 38, 36];
-		bassfm_playing = [];
 
 	}
 
@@ -85,6 +82,9 @@ JIM_falconInterface : MGU_AbstractModule {
 			6.do({|i|
 				falcon_midi.allNotesOff(i)
 			});
+
+
+			"echo gmeason | sudo -S pkill -9 tbupddwu".unixCmd;
 
 		}
 
@@ -127,12 +127,12 @@ JIM_falconInterface : MGU_AbstractModule {
 			{1} {falcon_midi.noteOn(0, 69, 100)}
 			{2} { // pick random higher note than current one
 				var chosen_note = MGU_arrayLib.pickHigherNote(granpad_scale, granpad_playing);
-				granpad_playing = [chosen_note];
+				granpad_playing = chosen_note;
 				falcon_midi.noteOn(0, chosen_note, 64);
 			}
 			{3} { // pick random lower note than current one
 				var chosen_note = MGU_arrayLib.pickLowerNote(granpad_scale, granpad_playing);
-				granpad_playing = [chosen_note];
+				granpad_playing = chosen_note;
 				falcon_midi.noteOn(0, chosen_note, 64);
 			};
 
@@ -151,12 +151,12 @@ JIM_falconInterface : MGU_AbstractModule {
 			{1} {falcon_midi.noteOn(2, 34, 64)}
 			{2} { // pick random higher note than current one
 				var chosen_note = MGU_arrayLib.pickHigherNote(bassfm_scale, bassfm_playing);
-				bassfm_playing = [chosen_note];
+				bassfm_playing = chosen_note;
 				falcon_midi.noteOn(2, chosen_note, 64);
 			}
 			{3} { // pick random lower note than current one
 				var chosen_note = MGU_arrayLib.pickLowerNote(bassfm_scale, bassfm_playing);
-				bassfm_playing = [chosen_note];
+				bassfm_playing = chosen_note;
 				falcon_midi.noteOn(2, chosen_note, 64);
 			};
 		}

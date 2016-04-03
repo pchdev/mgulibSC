@@ -10,11 +10,13 @@ MGU_pan2 : MGU_AbstractModule {
 	initModule {
 
 		var pos = MGU_parameter(container, \pos, Float, [-1, 1], 0, true);
+		mix.val = 1;
 
 		def = SynthDef(name, {
 			var in, process;
 			in = In.ar(inbus, num_inputs);
 			process = Pan2.ar(in, pos.kr);
+			Out.ar(master_internal, process);
 		}).add;
 
 	}

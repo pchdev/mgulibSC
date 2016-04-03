@@ -1,7 +1,7 @@
 MGU_slider {
 
-	var parent, bounds, bound_parameter, <>curve_factor;
-	var orientation, background_color;
+	var parent, <bounds, bound_parameter, <>curve_factor;
+	var orientation, <>background_color;
 	var frame_view, view, value_display, parameter_address_display;
 	var type, range, <>value, default_value, <graphical_value;
 	var has_focus;
@@ -27,10 +27,12 @@ MGU_slider {
 		bound_parameter ?? { Error("slider is not linked to any parameter").throw; };
 		this.bind_to_parameter(bound_parameter);
 		this.init_views;
+
 	}
 
 	init_views {
 
+		var display_size;
 		var mouse_actions;
 
 		frame_view = UserView(parent, bounds);
@@ -87,8 +89,10 @@ MGU_slider {
 
 
 		// text display
-		value_display = StaticText(frame_view, Rect(bounds.width/2 - 5, bounds.height/2 - 6,
-			bounds.width/2, bounds.height/2));
+
+		display_size = 80;
+		value_display = StaticText(parent, Rect(bounds.left + bounds.width + 55, bounds.top + (bounds.height/4),
+			display_size, bounds.height));
 		value_display.font = Font("Arial", 10, false, true);
 		value_display.acceptsMouse = false;
 		value_display.align = \topLeft;
@@ -97,7 +101,7 @@ MGU_slider {
 
 
 		// parameter address display
-		parameter_address_display = StaticText(parent, Rect(bounds.left + bounds.width + 15,
+		parameter_address_display = StaticText(parent, Rect(value_display.bounds.left + value_display.bounds.width,
 			bounds.top + (frame_view.bounds.height/4) - 1,
 			bound_parameter.address.size * 11, 12));
 		parameter_address_display.font = Font("Arial", 11);
@@ -170,11 +174,8 @@ MGU_slider {
 	}
 
 	refresh_displayed_value {
+		value_display.stringColor = Color.black;
 		value_display.string = value.round(0.001);
-		if((graphical_value * view.bounds.width) > (view.bounds.width / 1.6), {
-			value_display.stringColor = Color.white}, {
-			value_display.stringColor = Color.black
-		});
 	}
 
 	roundValue {

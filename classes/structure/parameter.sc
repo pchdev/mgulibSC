@@ -50,6 +50,7 @@ MGU_parameter {
 	}
 
 	initOSC {
+		oscFunc !? { oscFunc.free() };
 		oscFunc = OSCFunc({|msg, time, addr, recvPort|
 			msg.postln;
 			this.val_(msg[1])}, address, nil, oscPort);
@@ -144,7 +145,7 @@ MGU_parameter {
 		{ (inUnit == \s) && (outUnit == \ms) } { val = value * 1000 }
 		{ (inUnit == \s) && (outUnit == \samps) } { val = value * sr }
 		{ (inUnit == \ms) && (outUnit == \s) } { val = value/1000 }
-		{ (inUnit == \ms) && (outUnit == \freq) } { val = (value/1000).reciprocal.postln }
+		{ (inUnit == \ms) && (outUnit == \freq) } { val = (value/1000).reciprocal }
 		{ (inUnit == \ms) && (outUnit == \samps) } { val = (value/1000) * sr }
 		{ (inUnit == \samps) && (outUnit == \s) } { val = value/sr }
 		{ (inUnit == \samps) && (outUnit == \ms) } { val = (value/sr) * 1000 }
@@ -213,7 +214,7 @@ MGU_parameter {
 			// reply to minuit listening
 			if(listening)
 				{ netaddr_responder.sendBundle(nil, [responder_device ++ ":listen",
-					address ++ ":value", absolute_val].postln)};
+					address ++ ":value", absolute_val])};
 
 			// reply to gui element
 			if((bound_to_ui) && (report_to_ui)) { ui.value_from_parameter(absolute_val) };

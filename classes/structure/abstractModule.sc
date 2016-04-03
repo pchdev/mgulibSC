@@ -4,12 +4,12 @@ MGU_AbstractModule {
 
 	var <out, <>server, <num_inputs, <num_outputs, <>name;
 	var <type, <this_instance;
-	var <inbus, <container, <>node_group, <master_internal;
+	var <inbus, <>node_group, <master_internal;
 	var <level, <mix, <pan;
 
 	var <def, <master_def;
 
-	var <master_container, <sends_container;
+	var <master_container, <sends_container, <container;
 	var senddef_array, <sendlevel_array, <send_array;
 	var node_array_send, node_array_master, <node_array;
 
@@ -102,29 +102,30 @@ MGU_AbstractModule {
 		switch(type)
 
 		{\mts_generator} { // mono to stereo -> panning implementation
-				master_def = SynthDef(name ++ "_master", {
-					var in = In.ar(master_internal, num_outputs);
-					var pan = Pan2.ar(in, pan.kr);
-					var process = pan * level.kr;
-					var reply = SendPeakRMS.kr(process, 20, 3, reply_address);
-					Out.ar(out, process)}).add
+			master_def = SynthDef(name ++ "_master", {
+				var in = In.ar(master_internal, num_outputs);
+				var pan = Pan2.ar(in, pan.kr);
+				var process = pan * level.kr;
+				var reply = SendPeakRMS.kr(process, 20, 3, reply_address);
+				Out.ar(out, process)}).add
 		}
 
 		{\generator} {
-				master_def = SynthDef(name ++ "_master", {
-					var in = In.ar(master_internal, num_outputs);
-					var process = in * level.kr;
-					var reply = SendPeakRMS.kr(process, 20, 3, reply_address);
-					Out.ar(out, process)}).add
+			master_def = SynthDef(name ++ "_master", {
+				var in = In.ar(master_internal, num_outputs);
+				var process = in * level.kr;
+				var reply = SendPeakRMS.kr(process, 20, 3, reply_address);
+				Out.ar(out, process)}).add
 		}
 
 		{\effect} {
-				master_def = SynthDef(name ++ "_master", {
-					var in_wet = In.ar(master_internal, num_outputs);
-					var in_dry = In.ar(inbus, num_inputs);
-					var process = FaustDrywet.ar(in_dry, in_wet, mix.kr) * level.kr;
-					var reply = SendPeakRMS.kr(process, 20, 3, reply_address);
-					Out.ar(out, process)}).add
+			master_def = SynthDef(name ++ "_master", {
+				var in_wet = In.ar(master_internal, num_outputs);
+				var in_dry = In.ar(inbus, num_inputs);
+				var process = FaustDrywet.ar(in_dry, in_wet, mix.kr) * level.kr;
+				var reply = SendPeakRMS.kr(process, 20, 3, reply_address);
+				var reply_dry = SendPeakRMS.kr(in_dry, 20, 3, reply_address ++ '/input');
+				Out.ar(out, process)}).add
 		};
 
 	}
@@ -186,13 +187,14 @@ MGU_AbstractModule {
 
 	}
 
-	addNewSend { |target, mode = \prefader| // pre-post master fader to be tested
+	addNewSend { |target, fader_mode = \prefader, fx_mode = \postfx| // pre-post master fader to be tested
 
 		send_array ?? { send_array = [] };
 		sendlevel_array ?? {
 			sendlevel_array = [];
 			sends_container = MGU_container("sends", container, node_group, 3127);
 		};
+
 		senddef_array ?? { senddef_array = [] };
 
 		send_array = send_array.add(target);
@@ -201,7 +203,61 @@ MGU_AbstractModule {
 			MGU_parameter(sends_container, "snd_" ++ target.name,
 				Float, [-96, 12], 0, true, \dB, \amp));
 
-		switch(mode)
+		if(type == \effect)
+		{ this.generateSendSynthDefFromEffect(target, fader_mode, fx_mode) }
+		{ this.generateSendSynthDef(target, fader_mode) };
+
+	}
+
+	generateSendSynthDefFromEffect { |target, fader_mode, fx_mode|
+
+		case
+
+		{ (fader_mode == \prefader) && (fx_mode == \prefx) }
+		{ senddef_array = senddef_array.add(
+			SynthDef(name ++ "_send" ++ send_array.size, {
+				var in = In.ar(master_internal, num_outputs);
+				var process = in * sendlevel_array[sendlevel_array.size - 1].kr;
+				Out.ar(target.inbus, process);
+			}).add;
+		)}
+
+		{ (fader_mode == \postfader) && (fx_mode == \postfx) }
+		{ senddef_array = senddef_array.add(
+			SynthDef(name ++ "_send" ++ send_array.size, {
+				var in_dry = In.ar(inbus, num_inputs);
+				var in_wet = In.ar(master_internal, num_outputs);
+				var process = FaustDrywet.ar(in_dry, in_wet, mix.kr)
+				* sendlevel_array[sendlevel_array.size - 1].kr * level.kr;
+				Out.ar(target.inbus, process);
+			}).add;
+		)}
+
+		{ (fader_mode == \prefader) && (fx_mode == \postfx) }
+		{ senddef_array = senddef_array.add(
+			SynthDef(name ++ "_send" ++ send_array.size, {
+				var in_dry = In.ar(inbus, num_inputs);
+				var in_wet = In.ar(master_internal, num_outputs);
+				var process = FaustDrywet.ar(in_dry, in_wet, mix.kr)
+				* sendlevel_array[sendlevel_array.size - 1].kr;
+				Out.ar(target.inbus, process);
+			}).add;
+		)}
+
+		{ (fader_mode == \postfader) && (fx_mode == \prefx) }
+		{ senddef_array = senddef_array.add(
+			SynthDef(name ++ "_send" ++ send_array.size, {
+				var in = In.ar(master_internal, num_outputs);
+				var process = in * sendlevel_array[sendlevel_array.size - 1].kr * level.kr;
+				Out.ar(target.inbus, process);
+			}).add;
+		)};
+
+	}
+
+	generateSendSynthDef { |target, fader_mode|
+
+		switch(fader_mode)
 
 		{\prefader} { senddef_array = senddef_array.add(
 				SynthDef(name ++ "_send" ++ send_array.size, {
@@ -218,6 +274,7 @@ MGU_AbstractModule {
 					Out.ar(target.inbus, process);
 				}).add;
 		)};
+
 	}
 
 	// MODULE CONNEXIONS
