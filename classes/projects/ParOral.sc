@@ -38,8 +38,11 @@ ParOral {
 
 		paatos_sample = PO_sfPlayer(name: "paatos_sample");
 
-		boiling_sample.readFile("/Users/meegooh/Dropbox/ParOral/audio/samples/nappe-intro.wav");
-		paatos_sample.readFile("/Users/meegooh/Dropbox/ParOral/audio/samples/paatos.wav");
+		boiling_sample.readFile("/home/fluxus/Bureau/paroral_samples/nappe-intro.wav");
+		paatos_sample.readFile("/home/fluxus/Bureau/paroral_samples/paatos.wav");
+
+		//boiling_sample.readFile("/Users/meegooh/Dropbox/ParOral/audio/samples/nappe-intro.wav");
+		//paatos_sample.readFile("/Users/meegooh/Dropbox/ParOral/audio/samples/paatos.wav");
 
 		// in + pre-processing
 
@@ -48,6 +51,9 @@ ParOral {
 
 		rec_test = PO_sfPlayer(name: "rec_test");
 		"[PARORAL] rec_test succesfully built".postln;
+
+		rec_test.readFile("/home/fluxus/Bureau/paroral_samples/lecture_enregistree-mono.wav");
+		//rec_test.readFile("/Users/meegooh/Desktop/lecture_enregistree-mono.wav");
 
 		pre_process = PO_inProcess(name: "pre_process");
 		"[PARORAL] pre_process succesfully built".postln;
@@ -181,14 +187,6 @@ ParOral {
 		"[PARORAL] Minuit registering completed, you may now use i-score.".postln;
 		("[PARORAL] Minuit device" + "\"" ++ minuitInterface.address
 			++ "\"" + "on port" + minuitInterface.port ++ ".").postln;
-
-		// SAMPLES BUFFERING
-
-		//rec_test.readFile("samples/lecture_enregistree-mono.wav");
-		//boiling_sample.readFile("samples/nappe-intro.wav");
-		//paatos_sample.readFile("samples/paatos.wav");
-
-		rec_test.readFile("/Users/meegooh/Desktop/lecture_enregistree-mono.wav");
 
 		// GUI
 
