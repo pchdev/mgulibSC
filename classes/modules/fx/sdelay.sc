@@ -12,8 +12,6 @@ PO_sdelaySTS : MGU_AbstractModule { // faust smooth delay
 
 	initModule {
 
-		"ok".postln;
-
 		dtime_left = MGU_parameter(container, \dtime_left, Float, [0.01, 2], 0.5, true);
 		dtime_right = MGU_parameter(container, \dtime_right, Float, [0.01, 2.0], 0.5, true);
 		fbk_left = MGU_parameter(container, \fbk_left, Float, [0, 100], 50, true);

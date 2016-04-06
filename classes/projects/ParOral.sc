@@ -38,22 +38,27 @@ ParOral {
 
 		paatos_sample = PO_sfPlayer(name: "paatos_sample");
 
-		boiling_sample.readFile("/home/fluxus/Bureau/paroral_samples/nappe-intro.wav");
-		paatos_sample.readFile("/home/fluxus/Bureau/paroral_samples/paatos.wav");
+		rec_test = PO_sfPlayer(name: "rec_test");
+		"[PARORAL] rec_test succesfully built".postln;
 
-		//boiling_sample.readFile("/Users/meegooh/Dropbox/ParOral/audio/samples/nappe-intro.wav");
-		//paatos_sample.readFile("/Users/meegooh/Dropbox/ParOral/audio/samples/paatos.wav");
+
+		Platform.case(
+			\osx, {
+				boiling_sample.readFile(
+					"/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/nappe-intro.wav");
+				paatos_sample.readFile(
+					"/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/paatos.wav");
+				rec_test.readFile("/Users/meegooh/Desktop/lecture_enregistree-mono.wav")},
+			\linux, {
+				boiling_sample.readFile("/home/fluxus/Bureau/paroral_samples/nappe-intro.wav");
+				paatos_sample.readFile("/home/fluxus/Bureau/paroral_samples/paatos.wav");
+				rec_test.readFile("/home/fluxus/Bureau/paroral_samples/lecture_enregistree-mono.wav")};
+		);
 
 		// in + pre-processing
 
 		mic_in = MGU_inModule(name: "mic_in");
 		"[PARORAL] inModule succesfully built".postln;
-
-		rec_test = PO_sfPlayer(name: "rec_test");
-		"[PARORAL] rec_test succesfully built".postln;
-
-		rec_test.readFile("/home/fluxus/Bureau/paroral_samples/lecture_enregistree-mono.wav");
-		//rec_test.readFile("/Users/meegooh/Desktop/lecture_enregistree-mono.wav");
 
 		pre_process = PO_inProcess(name: "pre_process");
 		"[PARORAL] pre_process succesfully built".postln;
@@ -221,6 +226,10 @@ ParOral {
 				test_toggle = MGU_textToggle(window, Rect(208, 10, 100, 25),
 					"tester off", "tester on",
 					[{rec_test.killAllSynths()}, {rec_test.sendSynth()}]);
+
+				MGU_textToggle(window, Rect(307, 10, 100, 25),
+					"tester pause off", "tester pause on",
+					[{rec_test.pause.val = 0}, {rec_test.pause.val = 1}]);
 
 				MGU_textToggle(window, Rect(10, 34, 100, 25),
 					"sample-intro off", "sample-intro on",
