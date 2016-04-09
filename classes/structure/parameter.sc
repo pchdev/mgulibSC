@@ -120,10 +120,10 @@ MGU_parameter {
 
 	// MODULATION
 
-	enableModulation { |server, module, type = \control|
+	enableModulation { |server, type = \control|
 		switch(type)
-		{\control} { kbus ?? { kbus = Bus.control(server, 1)}}
-		{\audio} { abus ?? { abus = Bus.audio(server, 1)}};
+		{\control} { kbus = Bus.control(server, 1)}
+		{\audio} { abus = Bus.audio(server, 1)};
 	}
 
 	disableModulation {

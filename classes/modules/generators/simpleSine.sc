@@ -2,7 +2,7 @@ MGU_simpleSine : MGU_AbstractModule {
 
 	var <freq;
 
-	*new { |out, server, num_inputs = 1, num_outputs = 1, name|
+	*new { |out = 0, server, num_inputs = 1, num_outputs = 1, name|
 		^super.newCopyArgs(out, server, num_inputs, num_outputs, name).type_(\generator)
 		.init.initModule.initMasterDef;
 	}
@@ -14,7 +14,7 @@ MGU_simpleSine : MGU_AbstractModule {
 
 		// then init synthdef, with .add method
 		def = SynthDef(name, {
-			var process = SinOsc.ar(freq.kr);
+			var process = SinOsc.ar(MGU_modParameter.kr(freq));
 			Out.ar(master_internal, process);
 		}).add;
 

@@ -292,11 +292,15 @@ MGU_AbstractModule {
 		this.initMasterDef();
 	}
 
-	connectToParameter { |parameter, type = \control| // also tbi
-		switch(type)
-		{\control} {this.out_(parameter.kbus.index)}
-		{\audio} {this.out_(parameter.kbus.index)};
-		def.add; // no master ?
+	connectToParameter { |module, parameter, type = \control| // also tbi
+		parameter.enableModulation(server, type);
+
+		fork({
+			server.sync();
+			def.add;
+			module.def.add;
+		});
+
 	}
 
 	// USER INTERFACE

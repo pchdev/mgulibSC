@@ -69,19 +69,28 @@ ParOral {
 		panner.sends_only = true;
 		panner.mix.val = 1;
 
+		// others
+
+		graindelay = MGU_grainDelay(name: "grain_delay");
+		graindelay.mix.val = 1;
+		"[PARORAL] graindelay succesfully built".postln;
+
 		// rack #1
 
 		pshifter = PO_pshifter2(name: "pshifter");
+		pshifter.mix.val = 0;
 		"[PARORAL] pshifter succesfully built".postln;
-		pshifter.mix.val = 1;
 
 		rmod = PO_rmod(name: "rmod");
+		rmod.mix.val = 0;
 		"[PARORAL] rmod succesfully built".postln;
 
 		chorus = PO_chorusMTS(name: "chorus");
+		chorus.mix.val = 0;
 		"[PARORAL] chorus succesfully built".postln;
 
 		delay = PO_sdelaySTS(name: "delay");
+		delay.mix.val = 0;
 		"[PARORAL] delay succesfully built".postln;
 
 		filter_1 = PO_lpf(num_inputs: 2, name: "filter_1");
@@ -95,17 +104,15 @@ ParOral {
 		rack_1.mix.val = 1;
 		rack_1.addModules(pshifter, rmod, chorus, delay, filter_1);//, chorus, delay, filter_1);
 
-		// others
-
-		graindelay = MGU_grainDelay(name: "grain_delay");
-		"[PARORAL] graindelay succesfully built".postln;
 
 		// rack #2
 
 		filter_2 = PO_lpf(name: "filter_2", num_inputs: 2, num_outputs: 2);
+		filter_2.mix.val = 0;
 		"[PARORAL] filter_2 succesfully built".postln;
 
 		verb = PO_zitaSTS(name: "verb");
+		verb.mix.val = 1;
 		"[PARORAL] verb succesfully built".postln;
 
 		rack_2 = MGU_moduleRack(name: "rack_2");
@@ -157,7 +164,10 @@ ParOral {
 		//pre_process.addNewSend(vocoder);
 
 		graindelay.connectToModule(out_limiter);
+		graindelay.addNewSend(rack_1);
 		graindelay.addNewSend(rack_2);
+		graindelay.sendlevel_array[0].val = -96;
+		graindelay.sendlevel_array[1].val = -96;
 
 		//vocoder.connectToModule(out_limiter);
 		//vocoder.addNewSend(rack_2);
