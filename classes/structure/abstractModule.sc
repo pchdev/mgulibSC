@@ -324,14 +324,14 @@ MGU_AbstractModule {
 		var folder_path;
 		folder_path = Platform.userExtensionDir +/+ "mgulibSC/classes/modules/presets" +/+
 		this.class.asCompileString;
-		folder_path = folder_path.standardizePath;
+		folder_path = folder_path.standardizePath();
 		^folder_path
 	}
 
 	getPresetFilePath { |fileName|
 		var file_path;
 		file_path = this.getPresetFolderPath +/+ fileName ++ ".txt";
-		file_path = file_path.standardizePath;
+		file_path = file_path.standardizePath();
 		^file_path
 	}
 

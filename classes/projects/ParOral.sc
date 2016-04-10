@@ -71,7 +71,7 @@ ParOral {
 
 		// others
 
-		graindelay = MGU_grainDelay(name: "grain_delay");
+		graindelay = MGU_grainDelay2(name: "grain_delay");
 		graindelay.mix.val = 1;
 		"[PARORAL] graindelay succesfully built".postln;
 
@@ -298,6 +298,12 @@ ParOral {
 
 				limiter_button = MGU_textButton(window, Rect(buttons_offset, 275, 100, 20),
 					"open limiter", {out_limiter.generateUI()});
+
+				MGU_textButton(window, Rect(buttons_offset, 300, 100, 20),
+					"open sample-intro", {boiling_sample.generateUI()});
+
+				MGU_textButton(window, Rect(buttons_offset, 325, 100, 20),
+					"open paatos", {paatos_sample.generateUI()});
 
 				// MINUIT INFORMATION FOOTER
 
