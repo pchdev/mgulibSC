@@ -6,6 +6,7 @@ ParOral {
 	var <rack_2, <graindelay, <vocoder;
 	var <filter_2, <verb;
 	var <out_limiter, <voice_analyzer, <panner;
+	var <index_trigger;
 	var <minuitInterface;
 	var oscFunc;
 	var window, mic_toggle, test_toggle, init_button;
@@ -15,7 +16,13 @@ ParOral {
 	var pre_process_button, rack_1_button, graindelay_button, grip_button, vocoder_button;
 	var voice_analyzer_button, limiter_button, rack_2_button;
 
-	var <boiling_sample, paatos_sample;
+	var <boiling_sample, <paatos_sample;
+	var <streetambient_sample, <churchbells1_sample, <churchbells2_sample;
+	var <firecrackers_sample;
+	var <cicadas_sample, <cricket_sample, <cricketswarm1_sample, <cricketswarm2_sample;
+	var <carriage_sample, <singing_sample;
+
+	var <george_darkchoir_sample, <nightmare_cicadas_sample;
 
 
 	*new { |with_gui = true|
@@ -28,7 +35,8 @@ ParOral {
 
 		"[PARORAL] now building modules...".postln;
 
-		minuitInterface = MGU_minuitInterface("audio", 3127);
+		minuitInterface = MGU_minuitInterface("audio", 9998, true);
+		//minuitInterface.respAddr_("192.168.0.2", 13579);
 		"[PARORAL] minuitInterface succesfully built".postln;
 
 		// sound_design
@@ -42,13 +50,78 @@ ParOral {
 		"[PARORAL] rec_test succesfully built".postln;
 
 
+		churchbells1_sample = PO_sfPlayer(name: "churchbells1_sample");
+		churchbells1_sample.description = "big church bells";
+
+		churchbells2_sample = PO_sfPlayer(name: "churchbells2_sample");
+		churchbells2_sample.description = "lighter church bells ambience";
+
+		streetambient_sample = PO_sfPlayer(name: "streetambient_sample");
+		streetambient_sample.description = "street voices";
+
+		firecrackers_sample = PO_sfPlayer(name: "firecrackers_sample");
+		firecrackers_sample.description = "distant reverberated firecrackers sample";
+
+		cicadas_sample = PO_sfPlayer(name: "cicadas_sample");
+		cicadas_sample.description = "a swarm of cicadas";
+
+		cricket_sample = PO_sfPlayer(name: "cricket_sample");
+		cricket_sample.description = "single cricket";
+
+		cricketswarm1_sample = PO_sfPlayer(name: "cricketswarm1_sample");
+		cricketswarm1_sample.description = "cricket swarm n°1";
+
+		cricketswarm2_sample = PO_sfPlayer(name: "cricketswarm2_sample");
+		cricketswarm2_sample.description = "cricket swarm n°2";
+
+		carriage_sample = PO_sfPlayer(name: "carriage_sample");
+		carriage_sample.description = "carriage noise";
+
+		singing_sample = PO_sfPlayer(name: "singing_sample");
+		singing_sample.description = "distant bar singing";
+
 		Platform.case(
+
 			\osx, {
-				boiling_sample.readFile(
-					"/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/nappe-intro.wav");
-				paatos_sample.readFile(
-					"/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/paatos.wav");
+
+				boiling_sample
+				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/nappe-intro.wav");
+
+				paatos_sample
+				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/paatos.wav");
+
+				churchbells1_sample
+				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/cloches1.wav");
+
+				streetambient_sample
+				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/ambiance-voix-rue.wav");
+
+				churchbells2_sample
+				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/cloches2.wav");
+
+				firecrackers_sample
+				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/petards1.wav");
+
+				cicadas_sample
+				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/cicadas1.wav");
+
+				cricket_sample
+				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/cricket1.wav");
+
+				cricketswarm1_sample
+				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/cricketswarm1.wav");
+
+				cricketswarm2_sample
+				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/cricketswarm2.wav");
+
+				carriage_sample
+				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/carriage1.wav");
+
+				singing_sample
+				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/singing1.wav");
+
 				rec_test.readFile("/Users/meegooh/Desktop/lecture_enregistree-mono.wav")},
+
 			\linux, {
 				boiling_sample.readFile("/home/fluxus/Bureau/paroral_samples/nappe-intro.wav");
 				paatos_sample.readFile("/home/fluxus/Bureau/paroral_samples/paatos.wav");
@@ -144,6 +217,17 @@ ParOral {
 		boiling_sample.addNewSend(out_limiter);
 		boiling_sample.addNewSend(rack_2);
 
+		streetambient_sample.connectToModule(out_limiter);
+		churchbells1_sample.connectToModule(out_limiter);
+		churchbells2_sample.connectToModule(out_limiter);
+		firecrackers_sample.connectToModule(out_limiter);
+		cicadas_sample.connectToModule(out_limiter);
+		cricket_sample.connectToModule(out_limiter);
+		cricketswarm1_sample.connectToModule(out_limiter);
+		cricketswarm2_sample.connectToModule(out_limiter);
+		carriage_sample.connectToModule(out_limiter);
+		singing_sample.connectToModule(out_limiter);
+
 		paatos_sample.connectToModule(out_limiter);
 
 		mic_in.connectToModule(pre_process);
@@ -164,10 +248,8 @@ ParOral {
 		//pre_process.addNewSend(vocoder);
 
 		graindelay.connectToModule(out_limiter);
-		graindelay.addNewSend(rack_1);
 		graindelay.addNewSend(rack_2);
 		graindelay.sendlevel_array[0].val = -96;
-		graindelay.sendlevel_array[1].val = -96;
 
 		//vocoder.connectToModule(out_limiter);
 		//vocoder.addNewSend(rack_2);
@@ -184,8 +266,22 @@ ParOral {
 
 		"[PARORAL] registering modules to Minuit protocol...".postln;
 
+		index_trigger = MGU_ParOralTrigger(name: "trigger");
+		index_trigger.registerToMinuit(minuitInterface);
+
 		boiling_sample.registerToMinuit(minuitInterface);
 		paatos_sample.registerToMinuit(minuitInterface);
+
+		streetambient_sample.registerToMinuit(minuitInterface);
+		churchbells1_sample.registerToMinuit(minuitInterface);
+		churchbells2_sample.registerToMinuit(minuitInterface);
+		firecrackers_sample.registerToMinuit(minuitInterface);
+		cicadas_sample.registerToMinuit(minuitInterface);
+		cricket_sample.registerToMinuit(minuitInterface);
+		cricketswarm1_sample.registerToMinuit(minuitInterface);
+		cricketswarm2_sample.registerToMinuit(minuitInterface);
+		carriage_sample.registerToMinuit(minuitInterface);
+		singing_sample.registerToMinuit(minuitInterface);
 
 		mic_in.registerToMinuit(minuitInterface);
 		rec_test.registerToMinuit(minuitInterface);
@@ -214,7 +310,7 @@ ParOral {
 				"[PARORAL] building user interface...".postln;
 				//oscFunc = OSCFunc({|msg| msg.postln}, '/lastIndex', nil, 8889);
 
-				window = Window("ParOral tester", Rect(0, 0, 700, 375), false);
+				window = Window("ParOral tester", Rect(0, 0, 700, 500), false);
 				window.background = Color.white;
 				window.onClose = { rec_test.killAllSynths() };
 
@@ -305,16 +401,35 @@ ParOral {
 				MGU_textButton(window, Rect(buttons_offset, 325, 100, 20),
 					"open paatos", {paatos_sample.generateUI()});
 
+				MGU_textButton(window, Rect(buttons_offset, 350, 100, 20),
+					"open lastIndex", {index_trigger.generateUI()});
+
+				MGU_textButton(window, Rect(buttons_offset, 375, 100, 20),
+					"open street-ambient", {streetambient_sample.generateUI()});
+
+				MGU_textButton(window, Rect(buttons_offset, 400, 100, 20),
+					"open churchbells_1", {churchbells1_sample.generateUI()});
+
+				MGU_textButton(window, Rect(buttons_offset, 425, 100, 20),
+					"open churchbells_2", {churchbells2_sample.generateUI()});
+
+				MGU_textButton(window, Rect(buttons_offset, 450, 100, 20),
+					"open firecrackers", {firecrackers_sample.generateUI()});
+
+/*				var <cicadas_sample, <cricket_sample, <cricketswarm1_sample, <cricketswarm2_sample;
+				var <carriage_sample, <singing_sample;*/
+
+
 				// MINUIT INFORMATION FOOTER
 
-				StaticText(window, Rect(10, 360, 200, 15))
+				StaticText(window, Rect(10, 485, 200, 15))
 				.font_(Font("Arial", 10))
 				.string_("Minuit device \"" ++ minuitInterface.address
 					++ "\" on port" + minuitInterface.port ++ ".");
 
 				// MISC.
 
-				StaticText(window, Rect(545, 360, 300, 15))
+				StaticText(window, Rect(545, 485, 300, 15))
 				.font_(Font("Arial", 10, false, true))
 				.string_("ParOral testing window - pchd");
 

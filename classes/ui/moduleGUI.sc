@@ -63,6 +63,10 @@ MGU_moduleGUI {
 		main_menu = PopUpMenu(window, Rect(wINDOW_SIZE[0]/2 - 80, hEADER_BUTTONS_OFFSET, 160, 20))
 		.items_(["send synth", "kill all synths", "bypass"])
 		.background_(Color.white)
+		.action_({|menu|
+			switch(menu.item)
+			{"send synth"} { module.sendSynth() }
+			{"kill all synths"} { module.killAllSynths() }})
 		.font_(Font("Arial", 11));
 
 		// preset menu

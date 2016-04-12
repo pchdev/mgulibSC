@@ -3,6 +3,7 @@ PO_voiceAnalyzer : MGU_AbstractModule {
 	var <fftsize;
 	var <thresh, <odftype, <relaxtime, <floor, <mingap, <medianspan;
 	var <pitch, <onsets, <loudness;
+	var <netaddr;
 
 
 	*new { |out = 0, server, num_inputs = 1, num_outputs = 1, name|
@@ -13,6 +14,8 @@ PO_voiceAnalyzer : MGU_AbstractModule {
 	initModule {
 
 		description = "onset detector + pitch & loudness tracker";
+
+		netaddr = NetAddr("192.168.0.2", 9995);
 
 		// onset detection parameters
 
@@ -66,6 +69,21 @@ PO_voiceAnalyzer : MGU_AbstractModule {
 
 
 	}
+/*
+	paramCallBack {|param, value|
+
+		case
+
+		{param == \pitch} { netaddr.sendBundle(nil,['/trigger/pitch', value]) }
+		{param == \loudness} { netaddr.sendBundle(nil, ['/trigger/loudness', value]) }
+		{param == \onset} { netaddr.sendBundle(nil, ['/trigger/onsets', value]) };
+
+
+	}
+
+	*/
+
+
 
 
 

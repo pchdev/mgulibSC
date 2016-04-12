@@ -119,7 +119,7 @@ MGU_grainDelay2 : MGU_AbstractBufferModule {
 
 	var <grain_size, <randpos_freq, <randpos_width, <randpan_freq;
 	var <start_pos, <grain_pitch, <freeze;
-	var <freq, <playstop;
+	var <freq, <playstop, <period;
 
 	*new { |out = 0, server, num_inputs = 1, num_outputs = 2, name|
 		^super.newCopyArgs(out, server, num_inputs, num_outputs, name).type_(\effect)
@@ -146,6 +146,7 @@ MGU_grainDelay2 : MGU_AbstractBufferModule {
 			[0, 1], 0, true);
 		freq = MGU_parameter(container, \freq, Integer,
 			[0.25, 500], 20, true);
+		period = MGU_parameter(container, \period, Integer, [5, 1000], 50, true, \period_ms, \freq);
 
 		playstop = MGU_parameter(container, \playstop, Symbol, [\play, \stop], \stop);
 		playstop.parentAccess = this; // allows access to this for parameter call back;
