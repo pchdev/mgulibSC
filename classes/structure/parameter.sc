@@ -82,10 +82,18 @@ MGU_parameter {
 
 	}
 
-	pushLearn {
-		midifunc = MIDIFunc.cc({|v, num|
+	// PUSH LEARNING
+
+	pushLearn { |n|
+		n !? { this.pushLearnResponder(n) };
+		n ?? { midifunc = MIDIFunc.cc({|v, num|
 			this.pushLearnResponder(num);
-		});
+		})};
+	}
+
+	pushUnlearn {
+		midifunc.free;
+		midifunc = nil;
 	}
 
 	pushLearnResponder { |ccnum| // seems ok for now

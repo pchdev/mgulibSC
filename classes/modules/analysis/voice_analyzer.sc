@@ -6,7 +6,7 @@ PO_voiceAnalyzer : MGU_AbstractModule {
 	var <netaddr;
 
 
-	*new { |out = 0, server, num_inputs = 1, num_outputs = 1, name|
+	*new { |out = 0, server, num_inputs = 1, num_outputs = 0, name|
 		^this.newCopyArgs(out, server, num_inputs, num_outputs, name).type_(\analyzer)
 		.init.initModule;
 	}

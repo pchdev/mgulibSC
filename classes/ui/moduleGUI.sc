@@ -27,9 +27,6 @@ MGU_moduleGUI {
 		var hEADER_BUTTONS_SIZE = [75, 25];
 		var hEADER_SIZE = hEADER_BUTTONS_OFFSET + hEADER_BUTTONS_SIZE[1] + 20;
 		var parameter_offset = 0;
-
-
-
 		var container_collection = [];
 
 		// MASTER PARAMETERS
@@ -67,6 +64,7 @@ MGU_moduleGUI {
 			switch(menu.item)
 			{"send synth"} { module.sendSynth() }
 			{"kill all synths"} { module.killAllSynths() }})
+		.allowsReselection_(true)
 		.font_(Font("Arial", 11));
 
 		// preset menu

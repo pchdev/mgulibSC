@@ -23,6 +23,7 @@ ParOral {
 	var <carriage_sample, <singing_sample;
 
 	var <george_darkchoir_sample, <nightmare_cicadas_sample;
+	var event_array, current_event;
 
 
 	*new { |with_gui = true|
@@ -30,6 +31,11 @@ ParOral {
 	}
 
 	init {
+
+		event_array = [0, 1, 312, 590, 865, 1100, 1226];
+		current_event = 0;
+
+		//MGU_simplePushInterface();
 
 		send_slider_array = [];
 
@@ -135,8 +141,9 @@ ParOral {
 
 		pre_process = PO_inProcess(name: "pre_process");
 		"[PARORAL] pre_process succesfully built".postln;
-		pre_process.mix.val = 1;
+		pre_process.mix.val = 0;
 		pre_process.level.val = -24;
+		pre_process.level.pushLearn(71);
 
 		panner = MGU_pan2(name: "panner");
 		panner.sends_only = true;
@@ -242,8 +249,13 @@ ParOral {
 		panner.addNewSend(out_limiter);
 
 		pre_process.sendlevel_array[0].val = -96;
+		pre_process.sendlevel_array[0].pushLearn(72);
 		pre_process.sendlevel_array[2].val = -96;
+		pre_process.sendlevel_array[2].pushLearn(73);
+
 		panner.sendlevel_array[0].val = -96;
+		panner.sendlevel_array[0].pushLearn(74);
+		panner.sendlevel_array[1].pushLearn(75);
 
 		//pre_process.addNewSend(vocoder);
 
@@ -298,6 +310,27 @@ ParOral {
 		"[PARORAL] Minuit registering completed, you may now use i-score.".postln;
 		("[PARORAL] Minuit device" + "\"" ++ minuitInterface.address
 			++ "\"" + "on port" + minuitInterface.port ++ ".").postln;
+
+		MIDIFunc.cc({|v, num|
+			if(v == 0) {
+				current_event = current_event + 1;
+				index_trigger.lastIndex.val = event_array[current_event - 1];
+			};
+		}, 45);
+
+		MIDIFunc.cc({|v, num|
+			if(v == 0) {
+				current_event = (current_event - 1).clip(0, 1000);
+				index_trigger.lastIndex.val = event_array[current_event].asInteger;
+			};
+		}, 44);
+
+		MIDIFunc.cc({|v, num|
+			if(v == 0) {
+				current_event = 0;
+				index_trigger.lastIndex.val = 0;
+			};
+		}, 47);
 
 		// GUI
 

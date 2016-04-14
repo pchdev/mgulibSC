@@ -8,7 +8,6 @@ MGU_AbstractModule {
 	var <level, <mix, <pan;
 
 	var <>sends_only;
-
 	var <def, <master_def;
 
 	var <master_container, <sends_container, <container;
@@ -136,7 +135,6 @@ MGU_AbstractModule {
 	sendSynth {
 
 		// create master
-
 		if(((type == \generator) || (type == \effect)) && (sends_only == false)) {
 		node_array_master = node_array_master.add(Synth(name ++ "_master",
 			master_container.makeSynthArray.asOSCArgArray, node_group, 'addToTail'));
@@ -163,7 +161,7 @@ MGU_AbstractModule {
 		});
 
 		// refresh module gui if needed
-		gui !? { gui.sendsynth_button.current_state_(1) };
+		//gui !? { gui.sendsynth_button.current_state_(1) };
 	}
 
 	killSynth { |index|
@@ -190,11 +188,12 @@ MGU_AbstractModule {
 			node_array_send.removeAt(0);
 		});
 
-		gui !? { gui.sendsynth_button.current_state_(0) };
+		//gui !? { gui.sendsynth_button.current_state_(0) };
 
 	}
 
-	addNewSend { |target, fader_mode = \prefader, fx_mode = \postfx| // pre-post master fader to be tested
+	addNewSend { |target, fader_mode = \prefader, fx_mode = \postfx|
+		// pre-post master fader to be tested
 
 		send_array ?? { send_array = [] };
 		sendlevel_array ?? {
@@ -311,9 +310,9 @@ MGU_AbstractModule {
 
 	// CONTROLLERS
 
-	pushLearn { // this doesn't work for container with 9+ parameters...
-		container.paramAccesses.size.do({|i|
-			container.paramAccesses[i].pushLearnResponder(71+i);
+	pushLearn { // this doesn't work for container with >9 parameters...
+		container.paramAccesses.do({|param, i|
+			param.pushLearnResponder(71+i);
 		});
 
 	}
