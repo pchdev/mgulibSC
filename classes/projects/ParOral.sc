@@ -23,6 +23,7 @@ ParOral {
 	var <carriage_sample, <singing_sample;
 
 	var <george_darkchoir_sample, <nightmare_cicadas_sample;
+	var <strange_light_sample;
 	var event_array, current_event;
 
 
@@ -32,10 +33,10 @@ ParOral {
 
 	init {
 
-		event_array = [0, 1, 312, 590, 865, 1100, 1226];
+		event_array = [0, 1, 312, 505, 834, 1100, 1200, 1500, 1550, 1830, 2090];
 		current_event = 0;
 
-		//MGU_simplePushInterface();
+		MGU_simplePushInterface();
 
 		send_slider_array = [];
 
@@ -55,6 +56,8 @@ ParOral {
 		rec_test = PO_sfPlayer(name: "rec_test");
 		"[PARORAL] rec_test succesfully built".postln;
 
+		strange_light_sample = PO_sfPlayer(name: "strangelight_sample");
+		strange_light_sample.description = "strange light synthesis";
 
 		churchbells1_sample = PO_sfPlayer(name: "churchbells1_sample");
 		churchbells1_sample.description = "big church bells";
@@ -118,13 +121,16 @@ ParOral {
 				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/cricketswarm1.wav");
 
 				cricketswarm2_sample
-				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/cricketswarm2.wav");
+				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/grillons2.wav");
 
 				carriage_sample
 				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/carriage1.wav");
 
 				singing_sample
 				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/singing1.wav");
+
+				strange_light_sample
+				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/strange_light.wav");
 
 				rec_test.readFile("/Users/meegooh/Desktop/lecture_enregistree-mono.wav")},
 
@@ -213,7 +219,7 @@ ParOral {
 		// voice analysis
 
 		voice_analyzer = PO_voiceAnalyzer(name: "voice_analyzer");
-		voice_analyzer.thresh.val = -12;
+		voice_analyzer.thresh.val = -22;
 		"[PARORAL] voice_analyzer successfully built".postln;
 
 		// CONNEXIONS
@@ -235,6 +241,8 @@ ParOral {
 		carriage_sample.connectToModule(out_limiter);
 		singing_sample.connectToModule(out_limiter);
 
+		strange_light_sample.connectToModule(out_limiter);
+
 		paatos_sample.connectToModule(out_limiter);
 
 		mic_in.connectToModule(pre_process);
@@ -249,6 +257,7 @@ ParOral {
 		panner.addNewSend(out_limiter);
 
 		pre_process.sendlevel_array[0].val = -96;
+		pre_process.sendlevel_array[1].val = 6;
 		pre_process.sendlevel_array[0].pushLearn(72);
 		pre_process.sendlevel_array[2].val = -96;
 		pre_process.sendlevel_array[2].pushLearn(73);
@@ -295,6 +304,8 @@ ParOral {
 		carriage_sample.registerToMinuit(minuitInterface);
 		singing_sample.registerToMinuit(minuitInterface);
 
+		strange_light_sample.registerToMinuit(minuitInterface);
+
 		mic_in.registerToMinuit(minuitInterface);
 		rec_test.registerToMinuit(minuitInterface);
 		pre_process.registerToMinuit(minuitInterface);
@@ -331,6 +342,13 @@ ParOral {
 				index_trigger.lastIndex.val = 0;
 			};
 		}, 47);
+
+		MIDIFunc.noteOn({|vel, note|
+			switch(note)
+			{92} { index_trigger.scene.val = 1 }
+			{93} { index_trigger.scene.val = 2 }
+			{94} { index_trigger.scene.val = 3 }
+		});
 
 		// GUI
 
