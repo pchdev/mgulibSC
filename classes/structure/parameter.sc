@@ -175,7 +175,7 @@ MGU_parameter {
 	}
 
 	val_ { |value, node, interp = false, duration = 2000, curve = \lin, onServ,
-		absolute_unit = false, report_to_ui = true|
+		absolute_unit = false, report_to_ui = true, callback = true|
 
 		var process;
 
@@ -217,7 +217,7 @@ MGU_parameter {
 			});
 
 			// call parent methods
-			parentAccess !? { parentAccess.paramCallBack(name, value)};
+			if(parentAccess.notNil && callback) { parentAccess.parameterCallBack(name, value)};
 
 			// reply to minuit listening
 			if(listening)

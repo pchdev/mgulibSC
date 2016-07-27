@@ -1,4 +1,4 @@
-PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
+MGU_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 
 	var <startPos;
 	var <loop;
@@ -30,7 +30,7 @@ PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 	}
 }
 
-MGU_groover : MGU_AbstractBufferModule {
+MGU_groover : MGU_AbstractBufferModule { // more complex player
 
 	var <start_pos, <end_pos;
 	var <loop, <rate, <pitch, <pause;
@@ -48,9 +48,17 @@ MGU_groover : MGU_AbstractBufferModule {
 		end_pos = MGU_parameter(container, \end_pos, Integer, [0, inf], 1000, true, \ms, \samps);
 		loop = MGU_parameter(container, \loop, Integer, [0, 1], 1, true);
 		rate = MGU_parameter(container, \rate, Float, [-16, 16], 1, true);
+		rate.parentAccess_(this);
 		pitch = MGU_parameter(container, \pitch, Float, [-24, 24], 0, true, \semitones, \ratio);
+		pitch.parentAccess_(this);
 		pause = MGU_parameter(container, \pause, Integer, [0, 1], 0, true);
 
+	}
+
+	parameterCallBack { |parameter_name, value|
+		switch(parameter_name)
+		{ \rate } { pitch.val_(MGU_conversionLib.ratio_st(value), callback: false) }
+		{ \pitch } { rate.val_(MGU_conversionLib.st_ratio(value), callback: false) };
 	}
 
 	bufferLoaded {

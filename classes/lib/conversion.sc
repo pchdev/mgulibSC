@@ -6,9 +6,10 @@ MGU_conversionLib {
 	}
 
 	*ratio_st { |ratio|
-		var res = 0;
+		var res = ratio.log2() * 12;
 		^res
 	}
+
 
 }
 	
