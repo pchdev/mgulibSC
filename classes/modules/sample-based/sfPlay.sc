@@ -13,20 +13,10 @@ PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 
 		description = "simple soundfile player...";
 
-		playstop = MGU_parameter(container, \playStop, Symbol, [\play, \stop], \stop);
 		startPos = MGU_parameter(container, \startPos, Integer, [0, inf], 0, true, \ms, \samps);
-		playstop.parentAccess = this; // allows access to this for parameter call back;
 		loop = MGU_parameter(container, \loop, Integer, [0, 1], 1, true);
 		pause = MGU_parameter(container, \pause, Integer, [0, 1], 0, true);
 
-	}
-
-	paramCallBack { |param, value|
-		switch(param,
-			\playStop, { switch(value[0],
-				\play, { this.sendSynth },
-				\stop, { this.killAllSynths })};
-		);
 	}
 
 	bufferLoaded {
@@ -36,7 +26,7 @@ PO_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 			var imp, phasor, bufrd;
 			imp = Impulse.ar((BufFrames.kr(buffer.bufnum)/SampleRate.ir).reciprocal);
 			phasor = Phasor.ar(imp, (1 - pause.kr), startPos.kr, BufFrames.kr(buffer.bufnum), 0);
-				bufrd = BufRd.ar(num_outputs, buffer.bufnum, phasor, 1) * (1 - pause.kr);
+				bufrd = BufRd.ar(num_outputs, buffer.bufnum, phasor, loop.kr) * (1 - pause.kr);
 			Out.ar(master_internal, bufrd);
 		}).add;
 

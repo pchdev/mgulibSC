@@ -9,7 +9,7 @@ MGU_ParOralTrigger : MGU_AbstractModule {
 
 	initModule {
 		lastIndex = MGU_parameter(container, \lastIndex, Integer, [0, 200000], 0, true);
-		scene = MGU_parameter(container, \scene, Integer, [1, 3], 1, true);
+		scene = MGU_parameter(container, \scene, Integer, [1, 4], 1, true);
 	}
 
 	sendSynth {}

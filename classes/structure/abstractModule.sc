@@ -156,7 +156,7 @@ MGU_AbstractModule {
 		// send children synths
 
 		this.instVarSize.do({|i|
-			if(this.instVarAt(i).class.superclass == MGU_AbstractModule)
+			if(this.instVarAt(i).class.superclasses.includes(MGU_AbstractModule))
 			{ this.instVarAt(i).sendSynth() }
 		});
 
@@ -379,13 +379,18 @@ MGU_AbstractModule {
 		});
 	}
 
-	availablePresets { // returns preset list for this module
+	getAvailablePresets { // returns preset list for this module
 		var folder_path = this.getPresetFolderPath(), entries = [];
 		PathName(folder_path).filesDo({|file|
 			file = file.fileName.split($.);
 			if(file[1] == "txt") {entries = entries.add(file[0])}
 		});
 		^entries
+	}
+
+	deletePreset { |file_name|
+		var file_path = this.getPresetFilePath(file_name);
+		("rm -rf" + "\"" ++ file_path ++ "\"").unixCmd;
 	}
 
 }

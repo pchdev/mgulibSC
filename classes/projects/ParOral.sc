@@ -23,7 +23,8 @@ ParOral {
 	var <carriage_sample, <singing_sample;
 
 	var <george_darkchoir_sample, <nightmare_cicadas_sample;
-	var <strange_light_sample;
+	var <strange_light_sample, <strange_light2_sample, <gripFX_sample;
+	var <knock_sample;
 	var event_array, current_event;
 
 
@@ -36,7 +37,7 @@ ParOral {
 		event_array = [0, 1, 312, 505, 834, 1100, 1200, 1500, 1550, 1830, 2090];
 		current_event = 0;
 
-		MGU_simplePushInterface();
+//		MGU_simplePushInterface();
 
 		send_slider_array = [];
 
@@ -55,6 +56,8 @@ ParOral {
 
 		rec_test = PO_sfPlayer(name: "rec_test");
 		"[PARORAL] rec_test succesfully built".postln;
+
+		knock_sample = PO_sfPlayer(name: "knock_sample");
 
 		strange_light_sample = PO_sfPlayer(name: "strangelight_sample");
 		strange_light_sample.description = "strange light synthesis";
@@ -89,9 +92,22 @@ ParOral {
 		singing_sample = PO_sfPlayer(name: "singing_sample");
 		singing_sample.description = "distant bar singing";
 
+		gripFX_sample = PO_sfPlayer(name: "gripFX_sample");
+		strange_light2_sample = PO_sfPlayer(name: "strangelight2_sample");
+
+
 		Platform.case(
 
 			\osx, {
+
+				knock_sample
+				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/knockrev.wav");
+
+				gripFX_sample
+				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/gripFX.wav");
+
+				strange_light2_sample
+				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/strange_light2.wav");
 
 				boiling_sample
 				.readFile("/Users/meegooh/Dropbox/ParOral/audio/paroral_samples/nappe-intro.wav");
@@ -242,6 +258,9 @@ ParOral {
 		singing_sample.connectToModule(out_limiter);
 
 		strange_light_sample.connectToModule(out_limiter);
+		strange_light2_sample.connectToModule(out_limiter);
+		gripFX_sample.connectToModule(out_limiter);
+		knock_sample.connectToModule(out_limiter);
 
 		paatos_sample.connectToModule(out_limiter);
 
@@ -288,35 +307,11 @@ ParOral {
 		"[PARORAL] registering modules to Minuit protocol...".postln;
 
 		index_trigger = MGU_ParOralTrigger(name: "trigger");
-		index_trigger.registerToMinuit(minuitInterface);
 
-		boiling_sample.registerToMinuit(minuitInterface);
-		paatos_sample.registerToMinuit(minuitInterface);
-
-		streetambient_sample.registerToMinuit(minuitInterface);
-		churchbells1_sample.registerToMinuit(minuitInterface);
-		churchbells2_sample.registerToMinuit(minuitInterface);
-		firecrackers_sample.registerToMinuit(minuitInterface);
-		cicadas_sample.registerToMinuit(minuitInterface);
-		cricket_sample.registerToMinuit(minuitInterface);
-		cricketswarm1_sample.registerToMinuit(minuitInterface);
-		cricketswarm2_sample.registerToMinuit(minuitInterface);
-		carriage_sample.registerToMinuit(minuitInterface);
-		singing_sample.registerToMinuit(minuitInterface);
-
-		strange_light_sample.registerToMinuit(minuitInterface);
-
-		mic_in.registerToMinuit(minuitInterface);
-		rec_test.registerToMinuit(minuitInterface);
-		pre_process.registerToMinuit(minuitInterface);
-		rack_1.registerToMinuit(minuitInterface);
-		graindelay.registerToMinuit(minuitInterface);
-
-		//vocoder.registerToMinuit(minuitInterface);
-		rack_2.registerToMinuit(minuitInterface);
-		voice_analyzer.registerToMinuit(minuitInterface);
-		panner.registerToMinuit(minuitInterface);
-		out_limiter.registerToMinuit(minuitInterface);
+		this.instVarSize.do({|i|
+			if(this.instVarAt(i).class.superclasses.includes(MGU_AbstractModule))
+				{ this.instVarAt(i).registerToMinuit(minuitInterface) }
+		});
 
 		"[PARORAL] Minuit registering completed, you may now use i-score.".postln;
 		("[PARORAL] Minuit device" + "\"" ++ minuitInterface.address
@@ -348,6 +343,7 @@ ParOral {
 			{92} { index_trigger.scene.val = 1 }
 			{93} { index_trigger.scene.val = 2 }
 			{94} { index_trigger.scene.val = 3 }
+			{95} { index_trigger.scene.val = 4 }
 		});
 
 		// GUI
@@ -466,10 +462,6 @@ ParOral {
 
 				MGU_textButton(window, Rect(buttons_offset, 450, 100, 20),
 					"open firecrackers", {firecrackers_sample.generateUI()});
-
-/*				var <cicadas_sample, <cricket_sample, <cricketswarm1_sample, <cricketswarm2_sample;
-				var <carriage_sample, <singing_sample;*/
-
 
 				// MINUIT INFORMATION FOOTER
 

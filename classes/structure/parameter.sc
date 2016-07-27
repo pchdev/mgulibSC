@@ -91,11 +91,6 @@ MGU_parameter {
 		})};
 	}
 
-	pushUnlearn {
-		midifunc.free;
-		midifunc = nil;
-	}
-
 	pushLearnResponder { |ccnum| // seems ok for now
 
 		("PUSH Learn cc number" + ccnum).postln;
@@ -120,6 +115,11 @@ MGU_parameter {
 
 		}, ccnum);
 
+	}
+
+	pushUnlearn {
+		midifunc.free;
+		midifunc = nil;
 	}
 
 	oscLearn { // tbi

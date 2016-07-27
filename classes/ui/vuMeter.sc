@@ -80,8 +80,8 @@ MGU_vuMeter {
 		var peak_bounded, rms_bounded, res;
 
 		AppClock.sched(0, {
-			peak_bounded = peak.clip(0, 1);
-			rms_bounded = rms.clip(0, 1);
+			peak_bounded = peak.clip(0, 1).linexp(0, 1, 0, 1);
+			rms_bounded = rms.clip(0, 1).linexp(0, 1, 0, 1);
 			if(peak == 0) {};
 			if(peak > 1) { this.drawClip() };
 			res = [peak_bounded, rms_bounded];

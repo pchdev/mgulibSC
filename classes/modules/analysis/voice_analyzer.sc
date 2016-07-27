@@ -57,7 +57,7 @@ PO_voiceAnalyzer : MGU_AbstractModule {
 			rate = 16;
 			trig = Impulse.kr(rate);
 			in = In.ar(inbus, 1);
-			filtered_in = LPF.ar(in, 440);
+			filtered_in = LPF.ar(in, 1000);
 			chain = FFT(LocalBuf(fftsize.kr), in, 0.5, 1, 1);
 			//onset = Onsets.kr(chain, thresh.kr, odftype.kr, relaxtime.kr,
 				//floor.kr, mingap.kr, medianspan.kr, 1, 0);
@@ -72,8 +72,6 @@ PO_voiceAnalyzer : MGU_AbstractModule {
 			SendReply.kr(trig, '/pitch', pitch);
 			SendReply.kr(trig, '/onset', peak, -1); // no output needed
 		}).add;
-
-		PeakFollower
 
 	}
 /*

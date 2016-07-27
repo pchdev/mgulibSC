@@ -164,9 +164,9 @@ MGU_minuitInterface {
 
 		response = node ++ ":value";
 
-		parameter_array.size.do({|i|
-			if(node == parameter_array[i].address)
-			{ node_access = parameter_array[i] };
+		parameter_array.do({|parameter_target|
+			if(node == parameter_target.address)
+			{ node_access = parameter_target };
 		});
 
 		// if state = enable, access node to send value whenever it changes
@@ -198,12 +198,12 @@ MGU_minuitInterface {
 			msg_array = msg_array.add('}')};
 
 		if(msg_type == "get") {
-			values.size.do({|i|
-				msg_array = msg_array.add(values[i])})};
+			values.do({|v|
+				msg_array = msg_array.add(v)})};
 
 		if(msg_type == "listen") {
-			values.size.do({|i|
-				msg_array = msg_array.add(values[i])})};
+			values.do({|v|
+				msg_array = msg_array.add(v)})};
 
 		if(print) { msg_array.postln };
 
