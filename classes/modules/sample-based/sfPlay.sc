@@ -1,6 +1,6 @@
 MGU_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 
-	var <startPos;
+	var <start_pos;
 	var <loop;
 	var <rate;
 
@@ -13,7 +13,7 @@ MGU_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 
 		description = "simple soundfile player...";
 
-		startPos = MGU_parameter(container, \startPos, Integer, [0, inf], 0, true, \ms, \samps);
+		start_pos = MGU_parameter(container, \start_pos, Integer, [0, inf], 0, true, \ms, \samps);
 		loop = MGU_parameter(container, \loop, Integer, [0, 1], 1, true);
 		rate = MGU_parameter(container, \rate, Float, [-16, 16], 1, true);
 
@@ -23,7 +23,7 @@ MGU_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 		startPos.range[1] = (num_frames / samplerate) * 1000;
 		startPos.sr = samplerate; //
 		def = SynthDef(name, {
-			var playbuf = PlayBuf.ar(num_outputs, buffer.bufnum, rate.kr, 1, startPos.kr, loop.kr, 2);
+			var playbuf = PlayBuf.ar(num_outputs, buffer.bufnum, rate.kr, 1, start_pos.kr, loop.kr, 2);
 			Out.ar(master_internal, playbuf);
 		}).add;
 
@@ -57,7 +57,7 @@ MGU_groover : MGU_AbstractBufferModule { // more complex player
 
 	parameterCallBack { |parameter_name, value|
 		switch(parameter_name)
-		{ \rate } { pitch.val_(MGU_conversionLib.ratio_st(value), callback: false) }
+		{ \rate } { pitch.val_(MGU_conversionLib.ratio_st(value), callback: false) } // to avoid overflow
 		{ \pitch } { rate.val_(MGU_conversionLib.st_ratio(value), callback: false) };
 	}
 
@@ -70,7 +70,7 @@ MGU_groover : MGU_AbstractBufferModule { // more complex player
 
 		def = SynthDef(name, {
 			var freq, free_imp, imp, phs, bufrd, first_sample;
-			first_sample = Line.kr(0, 1, 0.05).floor();
+			first_sample = Line.kr(0, 1, 0.05).floor(); // <- better solution to be found
 			freq = (end_pos.kr - start_pos.kr / SampleRate.ir).reciprocal;
 			imp = Impulse.ar(freq);
 			free_imp = Impulse.kr(freq);

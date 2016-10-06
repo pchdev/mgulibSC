@@ -204,16 +204,16 @@ MGU_parameter {
 				absolute_val = val;
 
 				// unit conversion
-				if((inUnit.notNil) && (outUnit.notNil) && (absolute_unit == false), {
+				if((inUnit.notNil) && (outUnit.notNil) && (absolute_unit == false)) {
 					this.unitCheck(val)
-				});
+				};
 
 				// sending value on server
-				if(onServ, {
+				if(onServ) {
 					node[0] ?? { node = [defaultNode] };
 					node[0] ?? { Error("[PARAMETER] /!\ NODE NOT DEFINED" + name).throw };
 					node[i].set(defName, val);
-				});
+				};
 			});
 
 			// call parent methods
@@ -266,7 +266,7 @@ MGU_parameter {
 	}
 
 
-	// DEF MTHODS (change to kr, ar etc.)
+	// CONVENIENCE DEF MTHODS (change to kr, ar etc.)
 
 	smb {
 		^defName.asSymbol

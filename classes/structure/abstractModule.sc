@@ -29,9 +29,15 @@ MGU_AbstractModule {
 
 		// defaults
 		server ?? { server = Server.default };
-		name ?? {name = this.class.asCompileString.split($_)[1] ++ "_" ++ this_instance };
+		name ?? {
+			var classname = this.class.asCompileString;
+			if(classname.split($_).size() == 2) {
+				name = classname.split($_)[1] ++ "_" ++ this_instance } { // else
+				name = classname;
+			}
+		};
 
-		// node arrays
+		// init node arrays
 		node_group = Group(1, 'addToTail');
 		node_array = [];
 		node_array_send = [];
@@ -65,8 +71,8 @@ MGU_AbstractModule {
 		this.initMasterDef();
 	}
 
-	out_ { |newOut|
-		out = newOut;
+	out_ { |new_out|
+		out = new_out;
 		this.initMasterDef()
 	}
 
@@ -97,7 +103,7 @@ MGU_AbstractModule {
 
 	// DEFS & SYNTHS
 
-	initMasterDef {
+	initMasterDef { // this has to be simplified...
 
 		var reply_address = '/' ++ name ++ '/reply'; // <- for vu meters
 
@@ -215,7 +221,7 @@ MGU_AbstractModule {
 
 	}
 
-	generateSendSynthDefFromEffect { |target, fader_mode, fx_mode|
+	generateSendSynthDefFromEffect { |target, fader_mode, fx_mode| // this has to be simplified...
 
 		case
 
@@ -310,14 +316,14 @@ MGU_AbstractModule {
 
 	// CONTROLLERS
 
-	pushLearn { // this doesn't work for container with >9 parameters...
+	pushLearn { // this doesn't work for containers with >=9 parameters...
 		container.paramAccesses.do({|param, i|
 			param.pushLearnResponder(71+i);
 		});
 
 	}
 
-	// PRESET SUPPORT
+	// PRESET SUPPORT // JSON TBI with concretely defined parameter names and matching check
 
 	getPresetFolderPath {
 		var folder_path;
