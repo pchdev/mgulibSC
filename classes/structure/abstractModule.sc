@@ -380,7 +380,7 @@ MGU_AbstractModule {
 		this.instVarSize.do({|i|
 			if(this.instVarAt(i).class == MGU_parameter) {
 				this.instVarAt(i).val = stateArray[j];
-				j = j + 1;
+				j = j+1;
 			};
 		});
 	}

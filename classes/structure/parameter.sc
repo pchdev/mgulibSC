@@ -37,7 +37,6 @@ MGU_parameter {
 		// register to parent container
 		container.registerParameter(this);
 		this.val_(default, onServ: false);
-
 		this.initOSC();
 
 	}
@@ -254,46 +253,21 @@ MGU_parameter {
 	}
 
 	// MINUIT
-
 	enableListening { |netaddr, device| // accessed by minuit interfaces only
 		listening = true;
 		netaddr_responder ?? { netaddr_responder = netaddr };
 		responder_device ?? { responder_device = device };
 	}
 
-	disableListening {
-		listening = false;
-	}
-
+	disableListening { listening = false }
 
 	// CONVENIENCE DEF MTHODS (change to kr, ar etc.)
-
-	smb {
-		^defName.asSymbol
-	}
-
-	kr {
-		^defName.asSymbol.kr
-	}
-
-	ar {
-		^defName.asSymbol.ar
-	}
-
-	tr {
-		^defName.asSymbol.tr
-	}
-
-	defNameKr {
-		^("\\" ++ defName ++ ".kr");
-	}
-
-	defNameAr {
-		^("\\" ++ defName ++ ".ar");
-	}
-
-	defNameTr {
-		^("\\" ++ defName ++ ".tr");
-	}
+	smb {^defName.asSymbol}
+	kr {^defName.asSymbol.kr}
+	ar {^defName.asSymbol.ar}
+	tr {^defName.asSymbol.tr}
+	defNameKr {^("\\" ++ defName ++ ".kr")}
+	defNameAr {^("\\" ++ defName ++ ".ar")}
+	defNameTr {^("\\" ++ defName ++ ".tr")}
 
 }

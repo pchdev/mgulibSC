@@ -97,8 +97,7 @@ MGU_minuitInterface {
 			attributes = [\tag, \service, \description, \priority];
 		} { // else
 			node_type = \Data;
-			attributes = [\rangeBounds, \service, \active, \tag,
-				\type, \repetitionsFilter, \description, \priority, \valueDefault, \value]
+			attributes = [\type, \rangeBounds, \service,  \value]
 		};
 
 		this.sendResponse("namespace", node, node_type, sub_nodes, attributes: attributes);
@@ -131,12 +130,12 @@ MGU_minuitInterface {
 		node_access ?? { Error("Minuit: error, couldn't find node:" + node).throw };
 
 		switch(attribute,
-			nil, { },
+			nil, { attribute_value = [node_access.val(true)]},
 			"rangeBounds", { attribute_value = node_access.range },
 			"service", { if(node_access.isKindOf(MGU_container))
 				{ attribute_value = ["model"]}
 				{ attribute_value = ["parameter"] }},
-			"value", { attribute_value = [node_access.absolute_val]},
+			"value", { attribute_value = [node_access.val(true)]},
 			"priority", { attribute_value = [0] },
 			"type", { switch(node_access.type,
 				Float, { attribute_value = [\decimal] },
@@ -146,8 +145,9 @@ MGU_minuitInterface {
 			"rangeClipmode", { attribute_value = [\both] }
 		);
 
-		attribute ?? { response = node + attribute_value };
 		attribute !? { response = node ++ ":" ++ attribute };
+		attribute ?? { response = node };
+
 		this.sendResponse("get", response, values: attribute_value);
 	}
 
@@ -174,7 +174,7 @@ MGU_minuitInterface {
 			node_access.enableListening(respAddr, address) } {
 			node_access.disableListening};
 
-		this.sendResponse("listen", response, values: [node_access.absolute_val]);
+		//this.sendResponse("listen", response, values: [node_access.val(true)]);
 	}
 
 	sendResponse { |msg_type, subject_node, node_type, nodes, values, attributes|

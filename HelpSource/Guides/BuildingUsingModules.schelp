@@ -62,57 +62,51 @@ p.start_pos;
 
 Let's stop right there for a minute. Notice something? The post-window returns no interesting value to us, just emphasis::"a MGU_parameter".::
 
-Ok, it seems that some explaining needs to be done at this point. A parameter in the MGU_module system is actually an link::Classes/Object:: in itself, containing multiple attributes and methods, such as code::.address::, code::.range::, code::.default::, code::.range::, code::.inUnit::, code::.outUnit::, etc. So in this context, the emphasis::value:: attribute that we want to check is called through the code::.val:: accesser (getter method). Let's try it again with the correct method:
+Ok, it seems that some explaining needs to be done at this point. A parameter in the MGU_module system is actually an link::Classes/Object:: in itself, containing multiple attributes and methods, such as code::.address::, code::.default::, code::.range::, code::.inUnit::, code::.outUnit::, etc. So in this context, the emphasis::value:: attribute that we want to check is called through the code::.val:: accesser (getter method). Let's try it again with the correct method:
 code::
 p.loop.val; // returns 1
 p.start_pos.val; // returns 0
 ::
 
-That's fine, but how do we change the value of these parameters? In this case, the correct answer is the simplest one, which you may have intuitively guessed: with the code::.val =:: method (or more accurately the code::.val_():: method). Let's try it with the gain parameter:
+	That's fine, but how do we change the value of these parameters? In this case, the correct answer is the simplest one, which you may have intuitively guessed: with the code::.val =:: method (or more accurately the code::.val_():: method). Let's try it with the level (gain) parameter:
 code::
-p.gain.val = 10;
-p.gain.val; // checking value
+p.level.val = 16;
+p.level.val; // checking value
 ::
 
-emphasis::Wait.. something's seems to be wrong, I've entered:: code::10:: emphasis::as a gain value, and the post-window displays:: code::4::
+emphasis::Wait.. something's seems to be wrong, I've entered:: code::16:: emphasis::as a level value, and the post-window displays:: code::12::
 
 That's right, its time to talk about some of the other parameter's basic methods. I mentioned earlier on the code::range:: attribute of link::Classes/MGU_parameter:: objects. Parameters have automatic clipping functionnalities when the values are higher or lower than the defined range. You can check it by yourself:
 code::
-p.gain.range; // posts [0, 4]
-p.startPos.range; // posts [0, inf]
+p.level.range; // posts [-96, 12]
+p.start_pos.range; // posts [0, inf]
 p.loop.range; // posts [0, 1]
-p.playstop.range; // posts [\play, \stop]
 ::
-
-For symbol-based parameters, the code::.range():: getter method posts the accepted symbol values.
 
 You can also see the Parameter's strong::type:: with the code::.type():: getter method, which can be useful when entering new values:
 code::
-p.gain.type; // posts "Float"
+p.level.type; // posts "Float"
 p.loop.type; // posts "Integer", will round to the lowest integer value
-p.playstop.range; // posts "Symbol"
 ::
 
 That's it about parameters for now. Let's tweak them a little bit and make some sound:
 code::
 
-s.boot; // In most cases, the server needs to be booted BEFORE any module declaration and definition
+s.waitForBoot({
+		boot; // In most cases, the server needs to be booted BEFORE any module declaration and definition
+		p = MGU_sfPlayer(0, s);
+		p.readFile();
+		p.level.val = 6;
+		p.loop.val = 0;
+		p.start_pos.val = 0;
 
-p = MGU_sfPlayer(0, s);
-p.readFile();
-p.gain.val = 0.5;
-p.loop.val = 0;
-p.startPos.val = 0;
+		p.sendSynth(); // <-- send an instance of this 'synth' to the server
 
-p.playstop.val = \play;
-p.playstop.val = \stop;
+		p.start_pos.val = 300; // change the start position to 300 milliseconds
+		p.level.val = -12;
 
-p.startPos.val = 300; // change the start position to 300 milliseconds
-p.playstop.val = \play;
+	});
 
-p.gain.val = 0.1;
-
-p.playstop.val = \stop;
 ::
 
 subsection::Connecting Modules
@@ -158,10 +152,7 @@ z = PO_zitaSTS(0); // ... and zita is connected to the audio-output
 p.connectToModule(z);
 ::
 
-It is that simple. Yet, under the wheel, the connexion is actually "reversed". Indeed, when calling the code::.connectToModule(z):: method on the link::Classes/MGU_sfPlayer:: module instance, it is in fact link::Classes/PO_zitaSTS:: that connects its input bus to the link::Classes/MGU_sfPlayer:: module's output bus.
-
-NOTE:: This has some consequences that are important to know, and will allow us to make a short parenthesis on strong::Multichannel support::.
-::
+Yes, it is that simple.
 
 You might have noticed beforehand the code::numChannels:: instantiation argument. Just as in DAWs, each module (or plugin) have generally a fixed number of input and output channels. strong::The Waves VST bundle:: for example indicates this information by adding a emphasis::(m):: or emphasis::(s):: mention in each of its plugins' name.
 

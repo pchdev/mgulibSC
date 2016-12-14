@@ -20,8 +20,8 @@ MGU_sfPlayer : MGU_AbstractBufferModule { // simple soundFile player
 	}
 
 	bufferLoaded {
-		startPos.range[1] = (num_frames / samplerate) * 1000;
-		startPos.sr = samplerate; //
+		start_pos.range[1] = (num_frames / samplerate) * 1000;
+		start_pos.sr = samplerate; //
 		def = SynthDef(name, {
 			var playbuf = PlayBuf.ar(num_outputs, buffer.bufnum, rate.kr, 1, start_pos.kr, loop.kr, 2);
 			Out.ar(master_internal, playbuf);
@@ -61,7 +61,7 @@ MGU_groover : MGU_AbstractBufferModule { // more complex player
 		{ \pitch } { rate.val_(MGU_conversionLib.st_ratio(value), callback: false) };
 	}
 
-	bufferLoaded {
+	bufferLoaded { // add a crossfade for loops + make it in c++
 
 		start_pos.range[1] = num_frames/samplerate * 1000;
 		end_pos.range[1] = start_pos.range[1];
