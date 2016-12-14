@@ -17,7 +17,10 @@ Module's output bus. If code::nil::, the module will create its own private outp
 ARGUMENT:: server
 Server target. If code::nil::, code::Server.default:: will be automatically chosen.
 
-ARGUMENT:: numChannels
+ARGUMENT:: num_inputs
+Number of input channels, designed for Multichannel Expansion.
+
+ARGUMENT:: num_outputs
 Number of output channels, designed for Multichannel Expansion.
 
 ARGUMENT:: name
@@ -44,7 +47,7 @@ instantiate a module synth on the server.
 
 returns:: A link::Classes/Synth:: on the designated server, based on the module's link::Classes/SynthDef:: and parameter values.
 
-METHOD:: killSynths
+METHOD:: killAllSynths
 kill all synths sent by this module on the server
 
 METHOD:: saveState
@@ -56,16 +59,21 @@ an instance of link::Classes/String:: containing the preset's name
 METHOD:: recallState
 recalls a previously saved state
 
-METHOD:: availablePresets
-returns an array containing the name of all previously saved states
-
-returns:: an link::Classes/Array:: of link::Classes/String::
-
 ARGUMENT:: fileName
 an instance of link::Classes/String:: containing the preset's name (see code::.availablePresets:: method)
 
 ARGUMENT:: interp
 parameter interpolation from current state (not yet implemented)
+
+ARGUMENT:: length
+the length of the interpolation (if true), in milliseconds (not yet implemented)
+
+ARGUMENT::curve
+the curve chosen for the interpolation (if true) - not yet implemented
+
+METHOD:: getAvailablePresets
+returns an array containing the name of all previously saved states
+returns:: an link::Classes/Array:: of link::Classes/String::
 
 METHOD:: getPresetFolderPath
 returns:: an instance of link::Classes/String:: containing the folder path used for saving & recalling preset files
@@ -109,8 +117,6 @@ returns:: a link::Classes/SynthDef::
 
 METHOD:: generateUI
 generates and display an UI based on the module's descriptions and parameters.
-
-
 
 
 EXAMPLES::

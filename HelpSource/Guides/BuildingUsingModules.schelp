@@ -52,9 +52,10 @@ code::
 p = MGU_sfPlayer(0, s);
 p.readFile();
 ::
-A dialog window should now open, asking us to chose a specific sound file (only .wav & .aif are currently supported within superCollider's link::Classes/Buffer::). Once the sound file is chosen, the post window should confirm us that the sound file has been succesfully loaded (or not).
 
-	The module has now a soundfile loaded into its link::Classes/Buffer:: and is ready to play it. But we first want to verify the value of certain parameters. The modules's documentation lists the following : code::.loop::, code::.start_pos::, code::.level::. We will now access the parameters individually to check their default value:
+
+A dialog window should now open, asking us to chose a specific sound file - only .wav & .aif are currently supported within superCollider buffers. Once the sound file is chosen, the post window should confirm us that the sound file has been succesfully loaded (or not).
+The module has now a soundfile loaded into its link::Classes/Buffer:: and is ready to play it. But we first want to verify the value of certain parameters. The modules's documentation lists the following : code::.loop::, code::.start_pos::, code::.level::, code::.rate::. We will now access the parameters individually to check their default value:
 code::
 p.loop;
 p.start_pos;
@@ -68,24 +69,24 @@ p.loop.val; // returns 1
 p.start_pos.val; // returns 0
 ::
 
-	That's fine, but how do we change the value of these parameters? In this case, the correct answer is the simplest one, which you may have intuitively guessed: with the code::.val =:: method (or more accurately the code::.val_():: method). Let's try it with the level (gain) parameter:
+	That's fine, but how do we change the value of these parameters? In this case, the correct answer is the simplest one, which you may have intuitively guessed: with the code::.val =:: method (or more accurately the code::.val_():: method). Let's try it with the loop parameter:
 code::
-p.level.val = 16;
-p.level.val; // checking value
+p.loop.val = 10;
+p.loop.val; // checking value
 ::
 
-emphasis::Wait.. something's seems to be wrong, I've entered:: code::16:: emphasis::as a level value, and the post-window displays:: code::12::
+emphasis::Wait.. something's seems to be wrong, I've entered:: code::10:: emphasis::as a loop value, and the post-window displays:: code::1::
 
 That's right, its time to talk about some of the other parameter's basic methods. I mentioned earlier on the code::range:: attribute of link::Classes/MGU_parameter:: objects. Parameters have automatic clipping functionnalities when the values are higher or lower than the defined range. You can check it by yourself:
 code::
-p.level.range; // posts [-96, 12]
+p.rate.range; // posts [-16, 16]
 p.start_pos.range; // posts [0, inf]
 p.loop.range; // posts [0, 1]
 ::
 
 You can also see the Parameter's strong::type:: with the code::.type():: getter method, which can be useful when entering new values:
 code::
-p.level.type; // posts "Float"
+p.rate.type; // posts "Float"
 p.loop.type; // posts "Integer", will round to the lowest integer value
 ::
 
@@ -96,14 +97,14 @@ s.waitForBoot({
 		boot; // In most cases, the server needs to be booted BEFORE any module declaration and definition
 		p = MGU_sfPlayer(0, s);
 		p.readFile();
-		p.level.val = 6;
 		p.loop.val = 0;
 		p.start_pos.val = 0;
 
 		p.sendSynth(); // <-- send an instance of this 'synth' to the server
 
 		p.start_pos.val = 300; // change the start position to 300 milliseconds
-		p.level.val = -12;
+		p.killAllSynths();
+		p.sendSynth();
 
 	});
 
@@ -148,7 +149,6 @@ code::
 
 p = MGU_sfPlayer(nil); // MGU_sfPlayer creates its own private output bus.
 z = PO_zitaSTS(0); // ... and zita is connected to the audio-output
-
 p.connectToModule(z);
 ::
 
@@ -172,14 +172,13 @@ s.boot;
 
 p = MGU_sfPlayer(nil); // ideally with a stereo sound file
 p.readFile();
-p.gain.val = 0.75;
+p.level.val = -6;
 
 z = PO_zitaSTS(0);
 
 p.connectToModule(z);
-
-p.playstop.val = \play;
-p.playstop.val = \stop;
+	p.sendSynth();
+	p.killAllSynths();
 
 ::
 
@@ -191,16 +190,14 @@ s.boot;
 
 p = MGU_sfPlayer(nil); // ideally with a stereo sound file
 p.readFile();
-p.gain.val = 0.75;
+p.level.val = -6;
 
 z = PO_zitaSTS(0);
 
 p.connectToModule(z);
 
 z.sendSynth(); // instantiating zita BEFORE sfPlayer on the Server
-
-p.playstop.val = \play;
-p.playstop.val = \stop;
+	p.sendSynth();
 
 ::
 
