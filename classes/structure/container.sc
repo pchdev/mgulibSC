@@ -35,9 +35,7 @@ MGU_container {
 	getDirectHierarchy {
 
 		var branch_number, children = [];
-
 		branch_number = address.split($/).size;
-
 		container_array.do({|container_target|
 			if(container_target.address.split($/).size == (branch_number + 1))
 			{ children = children.add(container_target.name) };
