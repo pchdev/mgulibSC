@@ -49,9 +49,9 @@ MGU_Module {
 	}
 
 	// MINUIT
-	registerToMinuit {|minuitInterface|
-		minuitInterface.addContainer(m_main_container);
-		m_main_container.parentContainer = minuitInterface;
+	registerToMinuit {
+		MGU_PREFS.registerNodeToMinuit(m_main_container);
+		m_main_container.parentContainer = MGU_PREFS.getMinuitInterface();
 	}
 
 	generateUI {|always_on_top = false|}

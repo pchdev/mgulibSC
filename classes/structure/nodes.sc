@@ -23,6 +23,39 @@ MGU_Node {
 
 }
 
+MGU_minuitDevice : MGU_Node {
+
+	var m_name, m_osc_host_address, m_osc_send_port, m_osc_receive_port;
+	var m_osc_osc_replier;
+	var am_containers, am_parameters;
+
+	*new {|device_name, device_address, device_send_port, device_receive_port|
+		^this.newCopyArgs(
+			device_name,
+			device_address,
+			device_send_port,
+			device_receive_port).nodeCtor.minuitCtor()
+	}
+
+	minuitCtor {
+
+	}
+
+	registerNode { |node|
+		node.setDefinitionName(m_name ++ "_"
+			++ node.getDefinitionName());
+		node.setAddress(m_address ++ "_"
+			++ node.getAddress());
+		node.setNodeGroup(m_node_group);
+
+		if(node.isKindOf(MGU_parameter)) {
+			am_parameters = am_parameters.add(node)} {
+			am_containers = am_containers.add(node) };
+
+	}
+
+}
+
 MGU_container2 : MGU_Node {
 
 	var am_parameters, am_containers;
@@ -69,7 +102,8 @@ MGU_parameter2 : MGU_Node {
 
 	var m_type, am_range, m_default_value;
 	var m_update_on_serv, m_in_unit, m_out_unit;
-	var m_val, m_absolute_val;
+	var m_value, m_absolute_value;
+	var m_custom_func_target, m_custom_func;
 	var r_osc_replier, m_osc_func;
 	var m_listening;
 	var m_gui, m_description;
@@ -93,11 +127,10 @@ MGU_parameter2 : MGU_Node {
 	parameterCtor {
 		m_audio_bus = inf;
 		m_control_bus = inf;
-		m_bound_to_ui = false;
 		m_listening = false;
 		m_description = "no description available";
-		m_parent !? { container.registerNode(this) };
-		m_val = m_default_value;
+		m_parent !? { m_parent.registerNode(this) };
+		m_value = m_default_value;
 		this.initOSC();
 	}
 
@@ -105,30 +138,52 @@ MGU_parameter2 : MGU_Node {
 		m_osc_func !?  { m_osc_func.free() };
 		m_osc_func = OSCFunc({|msg, time, addr, recv_port|
 			msg.postln();
-			setValue(msg[1])}, m_address, nil, osc_port);
+			setValue(msg[1])}, m_address, nil, MGU_PREFS.getOSCReceivePort());
+	}
+
+	enableListening { m_listening = true }
+	disableListening { m_listening = false }
+
+	getValue { |in_value = false|
+		if(in_value) { ^m_absolute_value } { ^m_value }
 	}
 
 	setValue { |value|
 
 		if((value == inf) || (value == -inf)) {
 			value = value.asInteger()};
-
 		if((value.isKindOf(Integer)) && (m_type == Float)) {
 			value = value.asFloat()};
-
 		if((value.isKindOf(Float)) && (m_type == Integer)) {
 			value = value.asInteger()};
-
 		if(value.isKindOf(m_type) == false) {
 			Error("MGU_parameter: wrong type for value").throw() };
 
-		m_absolute_val = value;
+		m_absolute_value = value;
 
 		if((m_in_unit.notNil()) && (m_out_unit.notNil())) {
 			MGU_LIB.translateValue(Ref(value), m_in_unit, m_out_unit)};
 
-		if(update_on_serv) {}
+		if(m_update_on_serv) {
+			m_node_group.set(m_name, m_value);
+		};
+
+		if((m_custom_func_target.notNil()) && (m_custom_func.notNil())) {
+			(m_custom_func_target ++ "." ++ m_custom_func).interpret();
+		};
+
+		if(m_listening) {MGU_PREFS.sendMinuitReply(m_address, m_value)};
 
 	}
+
+	// CONVENIENCE DEF MTHODS (change to kr, ar etc.)
+
+	smb {^m_name.asSymbol}
+	kr {^m_name.asSymbol.kr}
+	ar {^m_name.asSymbol.ar}
+	tr {^m_name.asSymbol.tr}
+	defNameKr {^("\\" ++ m_name ++ ".kr")}
+	defNameAr {^("\\" ++ m_name ++ ".ar")}
+	defNameTr {^("\\" ++ m_name ++ ".tr")}
 
 }
