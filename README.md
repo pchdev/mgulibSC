@@ -1,4 +1,4 @@
-# mgulibSC
+# mgulibSC (DEPRECATED, see https://github.com/pchdev/ossia-sc instead)
 _set of tools for superCollider_
 
 Please note that the library as it currently is should not yet be used
